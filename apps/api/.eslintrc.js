@@ -20,5 +20,5 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
   },
-  ignorePatterns: ['dist/', 'node_modules/', 'src/generated/'],
+  ignorePatterns: ['dist/', 'node_modules/', 'src/generated/**', '**/*.js', '**/*.d.ts'],
 };

@@ -2,7 +2,6 @@ import { PrismaClient } from '../generated/prisma';
 
 // Extend global type to include prisma
 declare global {
-  // eslint-disable-next-line no-var
   var __prisma: PrismaClient | undefined;
 }
 
