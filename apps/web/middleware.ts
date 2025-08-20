@@ -16,6 +16,16 @@ const publicApiRoutes = [
   '/api/auth/logout',
 ];
 
+// Define admin-only routes
+const adminOnlyRoutes = [
+  '/admin',
+];
+
+// Define admin-only API routes
+const adminOnlyApiRoutes = [
+  '/api/admin',
+];
+
 // Helper function to check if a path is public
 function isPublicRoute(pathname: string): boolean {
   // Check exact matches for public routes
@@ -83,6 +93,18 @@ export function middleware(request: NextRequest) {
     });
     
     return response;
+  }
+  
+  // Check admin-only routes
+  const isAdminRoute = adminOnlyRoutes.some(route => pathname.startsWith(route));
+  const isAdminApiRoute = adminOnlyApiRoutes.some(route => pathname.startsWith(route));
+  
+  if (isAdminRoute || isAdminApiRoute) {
+    if (payload.role !== 'ADMIN') {
+      // Not an admin, redirect to home page
+      const homeUrl = new URL('/', request.url);
+      return NextResponse.redirect(homeUrl);
+    }
   }
   
   // Token is valid, add user info to headers for API routes

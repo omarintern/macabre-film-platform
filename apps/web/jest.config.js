@@ -24,17 +24,26 @@ const customJestConfig = {
     '!**/*.d.ts',
     '!**/node_modules/**',
   ],
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+  },
   projects: [
     {
       displayName: 'jsdom',
       testEnvironment: 'jsdom',
       setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
       testMatch: ['<rootDir>/app/**/page.test.tsx', '<rootDir>/components/**/*.test.tsx'],
+      transform: {
+        '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+      },
     },
     {
       displayName: 'node',
       testEnvironment: 'node',
       testMatch: ['<rootDir>/app/api/**/*.test.ts'],
+      transform: {
+        '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+      },
     },
   ],
 }

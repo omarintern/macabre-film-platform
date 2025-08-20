@@ -1,5 +1,5 @@
-import '@testing-library/jest-dom'
-import { TextEncoder, TextDecoder } from 'util'
+require('@testing-library/jest-dom')
+const { TextEncoder, TextDecoder } = require('util')
 
 // Polyfill for Node.js environment
 global.TextEncoder = TextEncoder

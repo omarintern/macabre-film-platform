@@ -2,12 +2,12 @@ import { NextRequest } from 'next/server';
 import { POST } from './route';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { userService } from '../../../../../api/src/services/database';
+import { userService } from '../../../../../lib/database';
 
 // Mock dependencies
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
-jest.mock('../../../../../api/src/services/database');
+jest.mock('../../../../../lib/database');
 
 const mockedBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
 const mockedJwt = jwt as jest.Mocked<typeof jwt>;

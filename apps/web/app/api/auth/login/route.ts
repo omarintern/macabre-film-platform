@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { userService } from '../../../../../api/src/services/database';
+import { userService } from '../../../../lib/database';
 import { signToken } from '../../../../lib/utils/jwt';
 
 interface LoginRequest {

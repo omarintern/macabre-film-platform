@@ -3,7 +3,7 @@ import { POST } from './route';
 import bcrypt from 'bcrypt';
 
 // Mock the userService
-jest.mock('../../../../../../api/src/services/database', () => ({
+jest.mock('../../../../../lib/database', () => ({
   userService: {
     createUser: jest.fn(),
   },
