@@ -15,8 +15,6 @@ interface UserSessionState {
   isAuthenticated: boolean;
   setUserSession: (user: User, token: string) => void;
   clearUserSession: () => void;
-  hydrated: boolean;
-  setHydrated: () => void;
 }
 
 export const useUserSessionStore = create<UserSessionState>()(
@@ -25,7 +23,6 @@ export const useUserSessionStore = create<UserSessionState>()(
       user: null,
       token: null,
       isAuthenticated: false,
-      hydrated: false,
       
       setUserSession: (user: User, token: string) => {
         set({
@@ -42,10 +39,6 @@ export const useUserSessionStore = create<UserSessionState>()(
           isAuthenticated: false,
         });
       },
-      
-      setHydrated: () => {
-        set({ hydrated: true });
-      },
     }),
     {
       name: 'user-session-storage',
@@ -54,19 +47,16 @@ export const useUserSessionStore = create<UserSessionState>()(
         token: state.token,
         isAuthenticated: state.isAuthenticated,
       }),
-      onRehydrateStorage: () => (state) => {
-        state?.setHydrated();
-      },
     }
   )
 );
 
 // Helper hook for checking authentication status
 export const useAuth = () => {
-  const { isAuthenticated, user, hydrated } = useUserSessionStore();
+  const { isAuthenticated, user } = useUserSessionStore();
   return {
     isAuthenticated,
     user,
-    isLoading: !hydrated,
+    isLoading: false, // Simplified - remove loading state for now
   };
 };

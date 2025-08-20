@@ -113,7 +113,7 @@ describe('/api/auth/logout', () => {
     const setCookieHeader = response.headers.get('set-cookie');
     expect(setCookieHeader).toContain('auth-token=');
     expect(setCookieHeader).toContain('HttpOnly');
-    expect(setCookieHeader).toContain('SameSite=Strict');
+    expect(setCookieHeader).toContain('SameSite=strict');
     expect(setCookieHeader).toContain('Max-Age=0');
     expect(setCookieHeader).toContain('Path=/');
   });

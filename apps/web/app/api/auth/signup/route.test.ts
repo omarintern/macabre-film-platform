@@ -1,17 +1,20 @@
 import { NextRequest } from 'next/server';
 import { POST } from './route';
 import bcrypt from 'bcrypt';
+import { userService } from '../../../../lib/database';
 
 // Mock the userService
-jest.mock('../../../../../lib/database', () => ({
+jest.mock('../../../../lib/database', () => ({
   userService: {
     createUser: jest.fn(),
+    findUserByEmail: jest.fn(),
   },
 }));
 
 // Mock bcrypt
 jest.mock('bcrypt');
 const mockedBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
+const mockedUserService = userService as jest.Mocked<typeof userService>;
 
 describe('/api/auth/signup', () => {
   beforeEach(() => {
@@ -23,8 +26,7 @@ describe('/api/auth/signup', () => {
     mockedBcrypt.hash.mockResolvedValue('hashed_password_123');
 
     // Mock userService.createUser
-    const { userService } = await import('../../../../../../api/src/services/database');
-    userService.createUser.mockResolvedValue({
+    mockedUserService.createUser.mockResolvedValue({
       id: 'user_123',
       email: 'test@example.com',
       role: 'CLIENT',
@@ -137,8 +139,7 @@ describe('/api/auth/signup', () => {
     mockedBcrypt.hash.mockResolvedValue('hashed_password_123');
 
     // Mock userService to throw duplicate email error
-    const { userService } = await import('../../../../../../api/src/services/database');
-    userService.createUser.mockRejectedValue(new Error('User with this email already exists'));
+    mockedUserService.createUser.mockRejectedValue(new Error('User with this email already exists'));
 
     const request = new NextRequest('http://localhost:3000/api/auth/signup', {
       method: 'POST',
@@ -163,8 +164,7 @@ describe('/api/auth/signup', () => {
     mockedBcrypt.hash.mockResolvedValue('hashed_password_123');
 
     // Mock userService to throw unexpected error
-    const { userService } = await import('../../../../../../api/src/services/database');
-    userService.createUser.mockRejectedValue(new Error('Database connection failed'));
+    mockedUserService.createUser.mockRejectedValue(new Error('Database connection failed'));
 
     const request = new NextRequest('http://localhost:3000/api/auth/signup', {
       method: 'POST',

@@ -2,12 +2,16 @@ import { NextRequest } from 'next/server';
 import { POST } from './route';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { userService } from '../../../../../lib/database';
+import { userService } from '../../../../lib/database';
 
 // Mock dependencies
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
-jest.mock('../../../../../lib/database');
+jest.mock('../../../../lib/database', () => ({
+  userService: {
+    findUserByEmail: jest.fn(),
+  },
+}));
 
 const mockedBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
 const mockedJwt = jwt as jest.Mocked<typeof jwt>;
