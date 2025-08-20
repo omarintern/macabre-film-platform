@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyToken } from '../../../lib/utils/jwt';
+import { verifyToken } from '../../../../lib/utils/jwt';
 
 interface LogoutResponse {
   success: boolean;
