@@ -227,8 +227,11 @@ describe('LoginPage', () => {
   it('should redirect to intended destination after login', async () => {
     const user = userEvent.setup();
     
-    // Mock window.location.search
-    window.location.search = '?redirect=/dashboard';
+    // Mock URLSearchParams to return redirect parameter
+    const originalURLSearchParams = global.URLSearchParams;
+    global.URLSearchParams = jest.fn().mockImplementation(() => ({
+      get: jest.fn().mockReturnValue('/dashboard'),
+    })) as any;
     
     (global.fetch as jest.Mock).mockResolvedValue({
       ok: true,
@@ -252,6 +255,9 @@ describe('LoginPage', () => {
     await waitFor(() => {
       expect(mockPush).toHaveBeenCalledWith('/dashboard');
     });
+
+    // Restore original URLSearchParams
+    global.URLSearchParams = originalURLSearchParams;
   });
 
   it('should redirect authenticated users', () => {
