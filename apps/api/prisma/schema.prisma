@@ -26,7 +26,25 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Relations
+  works Work[] // One-to-many relationship with works
+
   @@map("users")
+}
+
+// Work model for creative content submissions
+model Work {
+  id            String   @id @default(cuid())
+  title         String
+  body          String   // Max 1000 characters (enforced in validation)
+  classification String  // "Synopsis", "Scene Description", or "Other"
+  tags          String[] // Array of tags/hashtags
+  creatorId     String
+  creator       User     @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("works")
 }
 
 enum UserRole {

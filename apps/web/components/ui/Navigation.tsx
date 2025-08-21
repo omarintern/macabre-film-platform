@@ -50,6 +50,12 @@ export default function Navigation() {
                 {user.role === 'CREATOR' && (
                   <>
                     <Link 
+                      href="/submit" 
+                      className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors font-medium"
+                    >
+                      Submit New Work
+                    </Link>
+                    <Link 
                       href={`/profile/${user.id}`}
                       className="text-gray-600 hover:text-gray-800 transition-colors"
                     >

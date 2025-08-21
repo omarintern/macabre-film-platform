@@ -164,4 +164,110 @@ export const userService = {
       },
     });
   },
+
+  // Create a new work
+  async createWork(data: { 
+    title: string; 
+    body: string; 
+    classification: string; 
+    tags: string[]; 
+    creatorId: string; 
+  }) {
+    if (!data.creatorId?.trim()) {
+      throw new Error('Creator ID is required');
+    }
+
+    if (!data.title?.trim()) {
+      throw new Error('Title is required');
+    }
+
+    if (!data.body?.trim()) {
+      throw new Error('Body is required');
+    }
+
+    if (data.body.length > 1000) {
+      throw new Error('Body must be 1000 characters or less');
+    }
+
+    if (!data.classification?.trim()) {
+      throw new Error('Classification is required');
+    }
+
+    const validClassifications = ['Synopsis', 'Scene Description', 'Other'];
+    if (!validClassifications.includes(data.classification)) {
+      throw new Error('Classification must be Synopsis, Scene Description, or Other');
+    }
+
+    // Validate and sanitize tags
+    const sanitizedTags = Array.isArray(data.tags) 
+      ? data.tags.filter(tag => typeof tag === 'string' && tag.trim()).map(tag => tag.trim())
+      : [];
+
+    try {
+      return await prisma.work.create({
+        data: {
+          title: data.title.trim(),
+          body: data.body.trim(),
+          classification: data.classification.trim(),
+          tags: sanitizedTags,
+          creatorId: data.creatorId,
+        },
+        include: {
+          creator: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error && 'code' in error && error.code === 'P2003') {
+        throw new Error('Creator not found');
+      }
+      throw error;
+    }
+  },
+
+  // Get works by creator
+  async getWorksByCreator(creatorId: string) {
+    if (!creatorId?.trim()) {
+      return [];
+    }
+
+    return await prisma.work.findMany({
+      where: { creatorId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  },
+
+  // Get work by ID
+  async getWorkById(id: string) {
+    if (!id?.trim()) {
+      return null;
+    }
+
+    return await prisma.work.findUnique({
+      where: { id },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+  },
 };

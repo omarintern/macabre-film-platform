@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useEffect, useState } from 'react';
 
 export interface User {
   id: string;
@@ -53,12 +54,29 @@ export const useUserSessionStore = create<UserSessionState>()(
   )
 );
 
-// Helper hook for checking authentication status
+// Helper hook for checking authentication status with hydration support
 export const useAuth = () => {
   const { isAuthenticated, user } = useUserSessionStore();
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    // This effect runs only on the client side after hydration
+    setIsHydrated(true);
+  }, []);
+
+  // During SSR and before hydration, return safe defaults
+  if (!isHydrated) {
+    return {
+      isAuthenticated: false,
+      user: null,
+      isLoading: true,
+    };
+  }
+
+  // After hydration, return the actual store values
   return {
     isAuthenticated,
     user,
-    isLoading: false, // Simplified - remove loading state for now
+    isLoading: false,
   };
 };
