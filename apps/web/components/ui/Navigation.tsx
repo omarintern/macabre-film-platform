@@ -47,8 +47,24 @@ export default function Navigation() {
                     Admin
                   </Link>
                 )}
+                {user.role === 'CREATOR' && (
+                  <>
+                    <Link 
+                      href={`/profile/${user.id}`}
+                      className="text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                      My Profile
+                    </Link>
+                    <Link 
+                      href="/profile/edit" 
+                      className="text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                      Edit Profile
+                    </Link>
+                  </>
+                )}
                 <span className="text-sm text-gray-600">
-                  Welcome, {user.email}
+                  Welcome, {user.name || user.email}
                 </span>
                 <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
                   {user.role}

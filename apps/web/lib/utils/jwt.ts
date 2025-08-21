@@ -31,7 +31,7 @@ export function signToken(
   expiresIn: string = '7d'
 ): string {
   const secret = getJWTSecret();
-  return jwt.sign(payload, secret, { expiresIn });
+  return jwt.sign(payload, secret, { expiresIn } as jwt.SignOptions);
 }
 
 /**

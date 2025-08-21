@@ -41,7 +41,7 @@ export default function UserPromotionForm({ onSuccess }: UserPromotionFormProps)
         setSearchedUser(null);
         setMessage({ type: 'error', text: result.error || 'User not found' });
       }
-    } catch (error) {
+    } catch {
       setSearchedUser(null);
       setMessage({ type: 'error', text: 'Failed to search user' });
     } finally {
@@ -71,7 +71,7 @@ export default function UserPromotionForm({ onSuccess }: UserPromotionFormProps)
       } else {
         setMessage({ type: 'error', text: result.error || 'Failed to promote user' });
       }
-    } catch (error) {
+    } catch {
       setMessage({ type: 'error', text: 'Failed to promote user' });
     } finally {
       setIsSubmitting(false);

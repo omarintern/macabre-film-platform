@@ -5,6 +5,8 @@ export interface User {
   id: string;
   email: string;
   role: 'CLIENT' | 'CREATOR' | 'ADMIN';
+  name?: string;
+  bio?: string;
   createdAt: string;
   updatedAt: string;
 }

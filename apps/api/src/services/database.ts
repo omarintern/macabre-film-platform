@@ -105,4 +105,63 @@ export const userService = {
       throw error;
     }
   },
+
+  // Update user profile
+  async updateUserProfile(id: string, data: { name?: string; bio?: string }) {
+    if (!id?.trim()) {
+      throw new Error('User ID is required');
+    }
+
+    // Validate and sanitize input
+    const sanitizedData: { name?: string; bio?: string } = {};
+    
+    if (data.name !== undefined) {
+      sanitizedData.name = data.name?.trim() || undefined;
+    }
+    
+    if (data.bio !== undefined) {
+      sanitizedData.bio = data.bio?.trim() || undefined;
+    }
+
+    try {
+      return await prisma.user.update({
+        where: { id },
+        data: sanitizedData,
+        select: {
+          id: true,
+          email: true,
+          role: true,
+          name: true,
+          bio: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error && 'code' in error && error.code === 'P2025') {
+        throw new Error('User not found');
+      }
+      throw error;
+    }
+  },
+
+  // Get user profile (public info only)
+  async getUserProfile(id: string) {
+    if (!id?.trim()) {
+      return null;
+    }
+
+    return await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        name: true,
+        bio: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  },
 };

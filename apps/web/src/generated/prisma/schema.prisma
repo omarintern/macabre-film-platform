@@ -21,6 +21,8 @@ model User {
   email     String   @unique
   password  String
   role      UserRole @default(CLIENT)
+  name      String?
+  bio       String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
