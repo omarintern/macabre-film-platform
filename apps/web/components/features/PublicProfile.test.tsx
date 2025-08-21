@@ -69,19 +69,23 @@ describe('PublicProfile', () => {
     expect(bioElement).toHaveClass('whitespace-pre-wrap');
   });
 
-  it('shows works placeholder section', () => {
+  it('shows works section with loading state', () => {
     render(<PublicProfile profile={mockProfile} />);
 
     expect(screen.getByText('Works')).toBeInTheDocument();
-    expect(screen.getByText('No works yet')).toBeInTheDocument();
-    expect(screen.getByText("This creator hasn't submitted any works yet. Check back later!")).toBeInTheDocument();
+    // The component now shows loading state initially
+    expect(screen.getByText('...')).toBeInTheDocument(); // Loading indicator in stats
   });
 
-  it('shows stats section with zero values', () => {
+  it('shows stats section with loading state', () => {
     render(<PublicProfile profile={mockProfile} />);
 
+    // Works Published shows loading state initially
+    expect(screen.getByText('...')).toBeInTheDocument();
+    
+    // Other stats show 0
     const statsValues = screen.getAllByText('0');
-    expect(statsValues).toHaveLength(3);
+    expect(statsValues).toHaveLength(2); // Collaborations and Projects
 
     expect(screen.getByText('Works Published')).toBeInTheDocument();
     expect(screen.getByText('Collaborations')).toBeInTheDocument();
@@ -124,9 +128,12 @@ describe('PublicProfile', () => {
     expect(mainHeading).toHaveTextContent('John Creator');
 
     const sectionHeadings = screen.getAllByRole('heading', { level: 2 });
-    expect(sectionHeadings).toHaveLength(2);
+    expect(sectionHeadings).toHaveLength(1); // Only About section has h2
     expect(sectionHeadings[0]).toHaveTextContent('About');
-    expect(sectionHeadings[1]).toHaveTextContent('Works');
+    
+    // Works section now uses h3 (from CreatorWorksList component)
+    const worksHeading = screen.getByRole('heading', { level: 3 });
+    expect(worksHeading).toHaveTextContent('Works');
   });
 
   it('displays empty bio message with proper styling', () => {

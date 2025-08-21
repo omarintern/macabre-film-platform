@@ -1,11 +1,17 @@
+'use client';
+
 import React from 'react';
 import { PublicProfile as PublicProfileType } from '../../lib/services/profileService';
+import CreatorWorksList from './CreatorWorksList';
+import { useWorksByCreator } from '../../hooks/useWorksByCreator';
 
 interface PublicProfileProps {
   profile: PublicProfileType;
 }
 
 const PublicProfile: React.FC<PublicProfileProps> = ({ profile }) => {
+  const { works, isLoading, error } = useWorksByCreator(profile.id);
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -59,39 +65,22 @@ const PublicProfile: React.FC<PublicProfileProps> = ({ profile }) => {
             )}
           </div>
 
-          {/* Works Section - Placeholder for future implementation */}
+          {/* Works Section */}
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Works</h2>
-            <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
-              <div className="text-gray-400">
-                <svg
-                  className="mx-auto h-12 w-12 mb-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No works yet
-                </h3>
-                <p className="text-gray-500">
-                  This creator hasn&apos;t submitted any works yet. Check back later!
-                </p>
-              </div>
-            </div>
+            <CreatorWorksList 
+              creatorId={profile.id}
+              works={works}
+              isLoading={isLoading}
+              error={error}
+            />
           </div>
 
-          {/* Stats Section - Placeholder for future implementation */}
+          {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-gray-50 rounded-lg p-6 text-center">
-              <div className="text-2xl font-bold text-gray-900">0</div>
+              <div className="text-2xl font-bold text-gray-900">
+                {isLoading ? '...' : works.length}
+              </div>
               <div className="text-sm text-gray-600">Works Published</div>
             </div>
             <div className="bg-gray-50 rounded-lg p-6 text-center">
