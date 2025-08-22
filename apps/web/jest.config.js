@@ -33,6 +33,9 @@ const customJestConfig = {
       testEnvironment: 'jsdom',
       setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
       testMatch: ['<rootDir>/app/**/page.test.tsx', '<rootDir>/components/**/*.test.tsx'],
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/$1',
+      },
       transform: {
         '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
       },
@@ -41,6 +44,9 @@ const customJestConfig = {
       displayName: 'node',
       testEnvironment: 'node',
       testMatch: ['<rootDir>/app/api/**/*.test.ts'],
+      moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/$1',
+      },
       transform: {
         '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
       },
