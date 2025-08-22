@@ -21,38 +21,38 @@ const WorkCard: React.FC<WorkCardProps> = ({ work }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+    <div className="group bg-card rounded-lg border border-border hover:border-border/60 hover:shadow-lg transition-all duration-300 overflow-hidden">
       <div className="p-6">
         {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+        <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
           {work.title}
         </h3>
 
         {/* Classification Badge */}
-        <div className="mb-3">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+        <div className="mb-4">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
             {work.classification}
           </span>
         </div>
 
         {/* Body Preview */}
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+        <p className="text-muted-foreground text-sm mb-5 line-clamp-3 leading-relaxed">
           {truncateText(work.body, 150)}
         </p>
 
         {/* Tags */}
         {work.tags && work.tags.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-1">
+          <div className="mb-5 flex flex-wrap gap-2">
             {work.tags.slice(0, 3).map((tag, index) => (
               <span
                 key={index}
-                className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700"
+                className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground border border-border/50"
               >
                 #{tag}
               </span>
             ))}
             {work.tags.length > 3 && (
-              <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-500">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted/50 text-muted-foreground/70">
                 +{work.tags.length - 3} more
               </span>
             )}
@@ -60,24 +60,24 @@ const WorkCard: React.FC<WorkCardProps> = ({ work }) => {
         )}
 
         {/* Creator and Date */}
-        <div className="flex items-center justify-between text-sm text-gray-500">
+        <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
           <div className="flex items-center">
-            <span className="font-medium text-gray-700">
+            <span className="font-medium text-foreground">
               {work.creator?.name || 'Anonymous Creator'}
             </span>
           </div>
-          <span>{formatDate(work.createdAt)}</span>
+          <span className="font-medium">{formatDate(work.createdAt)}</span>
         </div>
 
         {/* View Details Link */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
+        <div className="pt-4 border-t border-border/50">
           <Link
             href={`/works/${work.id}`}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center"
+            className="text-primary hover:text-primary/80 text-sm font-medium inline-flex items-center group/link transition-colors duration-200"
           >
             View Details
             <svg
-              className="ml-1 h-4 w-4"
+              className="ml-2 h-4 w-4 group-hover/link:translate-x-1 transition-transform duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

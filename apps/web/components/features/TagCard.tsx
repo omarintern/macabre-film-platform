@@ -15,20 +15,20 @@ const TagCard: React.FC<TagCardProps> = ({ tag }) => {
       href={`/tags/${encodeURIComponent(tag.name)}`}
       className="block group"
     >
-      <Card className="hover:shadow-md hover:border-gray-300 transition-all duration-200">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+      <Card className="hover:shadow-lg hover:border-border/60 transition-all duration-300 group-hover:scale-[1.02]">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200">
               #{tag.name}
             </h3>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
               {tag.count}
             </span>
           </div>
           
-          <div className="flex items-center text-sm text-gray-500">
+          <div className="flex items-center text-sm text-muted-foreground mb-4">
             <svg
-              className="w-4 h-4 mr-1"
+              className="w-4 h-4 mr-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -37,15 +37,15 @@ const TagCard: React.FC<TagCardProps> = ({ tag }) => {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
               />
             </svg>
             {tag.count === 1 ? '1 work' : `${tag.count} works`}
           </div>
 
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <span className="text-xs text-blue-600 group-hover:text-blue-800 transition-colors">
+          <div className="pt-4 border-t border-border/50">
+            <span className="text-xs text-primary group-hover:text-primary/80 transition-colors duration-200 font-medium">
               View works →
             </span>
           </div>

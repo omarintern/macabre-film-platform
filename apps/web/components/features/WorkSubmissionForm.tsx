@@ -170,12 +170,12 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
 
   if (isSuccess) {
     return (
-      <Card className="max-w-2xl mx-auto">
-        <CardContent className="p-6">
+      <Card className="max-w-2xl mx-auto shadow-lg border-border/50">
+        <CardContent className="p-8">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <svg
-                className="h-5 w-5 text-green-400"
+                className="h-6 w-6 text-green-500"
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 aria-hidden="true"
@@ -187,20 +187,21 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
                 />
               </svg>
             </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-green-800">
+            <div className="ml-4">
+              <h3 className="text-lg font-semibold text-foreground">
                 Work submitted successfully!
               </h3>
-              <div className="mt-2 text-sm text-green-700">
+              <div className="mt-2 text-muted-foreground">
                 <p>Your work has been added to your portfolio.</p>
               </div>
             </div>
           </div>
-          <div className="mt-4">
+          <div className="mt-6">
             <Button
               onClick={handleReset}
               variant="secondary"
-              size="sm"
+              size="md"
+              className="font-medium"
             >
               Submit Another Work
             </Button>
@@ -212,12 +213,12 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
 
   return (
     <div className="max-w-2xl mx-auto">
-      <Card>
-        <CardHeader>
-          <CardTitle>Submit New Work</CardTitle>
+      <Card className="shadow-lg border-border/50">
+        <CardHeader className="pb-6">
+          <CardTitle className="text-2xl font-semibold text-foreground">Submit New Work</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {errors.general && (
               <ErrorAlert
                 title="Error"
@@ -238,8 +239,8 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
               errorMessage={errors.title}
             />
 
-            <div>
-              <label htmlFor="classification" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="space-y-3">
+              <label htmlFor="classification" className="block text-sm font-medium text-foreground">
                 Classification *
               </label>
               <select
@@ -247,9 +248,11 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
                 name="classification"
                 value={formData.classification}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border ${
-                  errors.classification ? 'border-red-300' : 'border-gray-300'
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500`}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 ${
+                  errors.classification 
+                    ? 'border-destructive bg-destructive/5' 
+                    : 'border-border bg-background hover:border-border/60'
+                }`}
                 aria-describedby={errors.classification ? 'classification-error' : undefined}
               >
                 <option value="">Select classification</option>
@@ -258,14 +261,14 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
                 <option value="Other">Other</option>
               </select>
               {errors.classification && (
-                <p id="classification-error" className="mt-1 text-sm text-red-600">
+                <p id="classification-error" className="text-sm text-destructive font-medium">
                   {errors.classification}
                 </p>
               )}
             </div>
 
-            <div>
-              <label htmlFor="body" className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="space-y-3">
+              <label htmlFor="body" className="block text-sm font-medium text-foreground">
                 Body *
               </label>
               <textarea
@@ -274,24 +277,26 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
                 rows={8}
                 value={formData.body}
                 onChange={handleInputChange}
-                className={`w-full px-3 py-2 border ${
-                  errors.body ? 'border-red-300' : 'border-gray-300'
-                } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-vertical`}
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-vertical transition-all duration-200 ${
+                  errors.body 
+                    ? 'border-destructive bg-destructive/5' 
+                    : 'border-border bg-background hover:border-border/60'
+                }`}
                 placeholder="Enter your work content here..."
                 aria-describedby={errors.body ? 'body-error' : 'body-counter'}
               />
-              <div className="mt-1 flex justify-between items-center">
+              <div className="flex justify-between items-center">
                 <div>
                   {errors.body && (
-                    <p id="body-error" className="text-sm text-red-600">
+                    <p id="body-error" className="text-sm text-destructive font-medium">
                       {errors.body}
                     </p>
                   )}
                 </div>
                 <p
                   id="body-counter"
-                  className={`text-sm ${
-                    remainingChars < 0 ? 'text-red-600' : remainingChars < 100 ? 'text-yellow-600' : 'text-gray-500'
+                  className={`text-sm font-medium ${
+                    remainingChars < 0 ? 'text-destructive' : remainingChars < 100 ? 'text-amber-600' : 'text-muted-foreground'
                   }`}
                 >
                   {remainingChars} characters remaining
@@ -312,13 +317,13 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
               helperText="Optional. Separate multiple tags with commas."
             />
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 pt-4">
               <Button
                 type="submit"
                 disabled={isLoading}
                 loading={isLoading}
                 variant="primary"
-                fullWidth
+                className="flex-1 font-medium"
               >
                 {isLoading ? 'Submitting...' : 'Submit Work'}
               </Button>
@@ -328,7 +333,7 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
                 onClick={handleReset}
                 disabled={isLoading}
                 variant="secondary"
-                fullWidth
+                className="flex-1 font-medium"
               >
                 Reset
               </Button>

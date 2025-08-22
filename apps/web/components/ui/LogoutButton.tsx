@@ -54,7 +54,11 @@ export default function LogoutButton({
       loading={isLoggingOut}
       variant={buttonVariant}
       size={buttonSize}
-      className={className}
+      className={`font-medium transition-all duration-200 ${
+        variant === 'link' 
+          ? 'text-muted-foreground hover:text-foreground hover:bg-muted/50' 
+          : 'border-border hover:bg-muted/50'
+      } ${className}`}
     >
       {children}
     </Button>
