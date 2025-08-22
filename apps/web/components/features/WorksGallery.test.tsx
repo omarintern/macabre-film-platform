@@ -82,15 +82,13 @@ describe('WorksGallery', () => {
 
     render(<WorksGallery />);
 
-    // Check for loading skeleton cards (6 skeleton divs with animate-pulse)
-    const loadingCards = screen.getAllByText('').filter(el => 
-      el.closest('.animate-pulse') && el.closest('.bg-white')
-    );
-    expect(loadingCards.length).toBeGreaterThan(0);
+    // Check for loading skeleton cards (6 skeleton divs)
+    const skeletonElements = document.querySelectorAll('[class*="animate-pulse"]');
+    expect(skeletonElements.length).toBeGreaterThan(0);
     
-    // Check that we have skeleton elements
-    const skeletonElements = document.querySelectorAll('.animate-pulse');
-    expect(skeletonElements).toHaveLength(6);
+    // Check that we have skeleton elements with the new structure
+    const skeletonCards = document.querySelectorAll('.bg-white.rounded-lg.shadow-sm');
+    expect(skeletonCards.length).toBe(6);
   });
 
   it('renders error state correctly', () => {

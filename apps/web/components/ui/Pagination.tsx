@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from './design-system';
 
 interface PaginationProps {
   currentPage: number;
@@ -48,52 +49,56 @@ const Pagination: React.FC<PaginationProps> = ({
   const visiblePages = getVisiblePages();
 
   return (
-    <nav className="flex items-center justify-center space-x-1">
+    <nav 
+      className="flex items-center justify-center space-x-1"
+      role="navigation"
+      aria-label="Pagination"
+    >
       {/* Previous Button */}
-      <button
+      <Button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={!hasPrev}
-        className={`px-3 py-2 text-sm font-medium rounded-md ${
-          hasPrev
-            ? 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700'
-            : 'text-gray-300 bg-white border border-gray-200 cursor-not-allowed'
-        }`}
+        variant="secondary"
+        size="sm"
+        aria-label={`Go to previous page, page ${currentPage - 1}`}
       >
         Previous
-      </button>
+      </Button>
 
       {/* Page Numbers */}
       {visiblePages.map((page, index) => (
         <React.Fragment key={index}>
           {page === '...' ? (
-            <span className="px-3 py-2 text-sm text-gray-500">...</span>
+            <span 
+              className="px-3 py-2 text-sm text-gray-500"
+              aria-hidden="true"
+            >
+              ...
+            </span>
           ) : (
-            <button
+            <Button
               onClick={() => onPageChange(page as number)}
-              className={`px-3 py-2 text-sm font-medium rounded-md ${
-                currentPage === page
-                  ? 'bg-blue-600 text-white border border-blue-600'
-                  : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700'
-              }`}
+              variant={currentPage === page ? 'primary' : 'secondary'}
+              size="sm"
+              aria-label={`Go to page ${page}`}
+              aria-current={currentPage === page ? 'page' : undefined}
             >
               {page}
-            </button>
+            </Button>
           )}
         </React.Fragment>
       ))}
 
       {/* Next Button */}
-      <button
+      <Button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={!hasNext}
-        className={`px-3 py-2 text-sm font-medium rounded-md ${
-          hasNext
-            ? 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-700'
-            : 'text-gray-300 bg-white border border-gray-200 cursor-not-allowed'
-        }`}
+        variant="secondary"
+        size="sm"
+        aria-label={`Go to next page, page ${currentPage + 1}`}
       >
         Next
-      </button>
+      </Button>
     </nav>
   );
 };

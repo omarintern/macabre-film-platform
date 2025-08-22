@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useAuth } from '../../stores/userSessionStore';
 import LogoutButton from './LogoutButton';
+import { Button, Skeleton } from '../ui/design-system';
 
 export default function Navigation() {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -18,7 +19,7 @@ export default function Navigation() {
               </Link>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="animate-pulse bg-gray-200 h-8 w-16 rounded"></div>
+              <Skeleton className="h-8 w-16" />
             </div>
           </div>
         </div>
@@ -61,12 +62,11 @@ export default function Navigation() {
                 )}
                 {user.role === 'CREATOR' && (
                   <>
-                    <Link 
-                      href="/submit" 
-                      className="bg-gray-900 text-white px-4 py-2 rounded-md hover:bg-gray-800 transition-colors font-medium"
-                    >
-                      Submit New Work
-                    </Link>
+                    <Button asChild variant="primary" size="sm">
+                      <Link href="/submit">
+                        Submit New Work
+                      </Link>
+                    </Button>
                     <Link 
                       href={`/profile/${user.id}`}
                       className="text-gray-600 hover:text-gray-800 transition-colors"
@@ -97,12 +97,11 @@ export default function Navigation() {
                 >
                   Login
                 </Link>
-                <Link 
-                  href="/signup" 
-                  className="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
-                >
-                  Sign Up
-                </Link>
+                <Button asChild variant="primary" size="sm">
+                  <Link href="/signup">
+                    Sign Up
+                  </Link>
+                </Button>
               </>
             )}
           </div>

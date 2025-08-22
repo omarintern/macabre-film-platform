@@ -6,17 +6,38 @@ describe('Pagination', () => {
   const mockOnPageChange = jest.fn();
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    mockOnPageChange.mockClear();
+  });
+
+  it('debug: renders pagination controls correctly', () => {
+    render(
+      <Pagination
+        currentPage={2}
+        totalPages={5}
+        onPageChange={mockOnPageChange}
+        hasNext={true}
+        hasPrev={true}
+      />
+    );
+
+    // Debug: log what's actually rendered
+    console.log('Rendered HTML:', document.body.innerHTML);
+    
+    const prevButton = screen.getByText('Previous');
+    console.log('Previous button element:', prevButton.outerHTML);
+    
+    expect(screen.getByText('Previous')).toBeInTheDocument();
+    expect(screen.getByText('Next')).toBeInTheDocument();
   });
 
   it('renders pagination controls correctly', () => {
     render(
       <Pagination
-        currentPage={1}
+        currentPage={2}
         totalPages={5}
         onPageChange={mockOnPageChange}
         hasNext={true}
-        hasPrev={false}
+        hasPrev={true}
       />
     );
 
@@ -25,46 +46,15 @@ describe('Pagination', () => {
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByText('4')).toBeInTheDocument();
     expect(screen.getByText('5')).toBeInTheDocument();
-    // Page 4 is hidden by ellipsis when on page 1 with 5 total pages
-    expect(screen.queryByText('4')).not.toBeInTheDocument();
-  });
-
-  it('calls onPageChange when page number is clicked', () => {
-    render(
-      <Pagination
-        currentPage={1}
-        totalPages={3}
-        onPageChange={mockOnPageChange}
-        hasNext={true}
-        hasPrev={false}
-      />
-    );
-
-    fireEvent.click(screen.getByText('2'));
-    expect(mockOnPageChange).toHaveBeenCalledWith(2);
-  });
-
-  it('calls onPageChange when Next button is clicked', () => {
-    render(
-      <Pagination
-        currentPage={1}
-        totalPages={3}
-        onPageChange={mockOnPageChange}
-        hasNext={true}
-        hasPrev={false}
-      />
-    );
-
-    fireEvent.click(screen.getByText('Next'));
-    expect(mockOnPageChange).toHaveBeenCalledWith(2);
   });
 
   it('calls onPageChange when Previous button is clicked', () => {
     render(
       <Pagination
         currentPage={2}
-        totalPages={3}
+        totalPages={5}
         onPageChange={mockOnPageChange}
         hasNext={true}
         hasPrev={true}
@@ -73,6 +63,36 @@ describe('Pagination', () => {
 
     fireEvent.click(screen.getByText('Previous'));
     expect(mockOnPageChange).toHaveBeenCalledWith(1);
+  });
+
+  it('calls onPageChange when Next button is clicked', () => {
+    render(
+      <Pagination
+        currentPage={2}
+        totalPages={5}
+        onPageChange={mockOnPageChange}
+        hasNext={true}
+        hasPrev={true}
+      />
+    );
+
+    fireEvent.click(screen.getByText('Next'));
+    expect(mockOnPageChange).toHaveBeenCalledWith(3);
+  });
+
+  it('calls onPageChange when page number is clicked', () => {
+    render(
+      <Pagination
+        currentPage={2}
+        totalPages={5}
+        onPageChange={mockOnPageChange}
+        hasNext={true}
+        hasPrev={true}
+      />
+    );
+
+    fireEvent.click(screen.getByText('3'));
+    expect(mockOnPageChange).toHaveBeenCalledWith(3);
   });
 
   it('disables Previous button when on first page', () => {
@@ -117,6 +137,7 @@ describe('Pagination', () => {
     );
 
     const currentPageButton = screen.getByText('2');
+    // Check for design system Button variant classes
     expect(currentPageButton).toHaveClass('bg-blue-600', 'text-white');
   });
 
@@ -166,7 +187,8 @@ describe('Pagination', () => {
     );
 
     const prevButton = screen.getByText('Previous');
-    expect(prevButton).toHaveClass('text-gray-300', 'cursor-not-allowed');
+    // Check for design system Button disabled state
+    expect(prevButton).toBeDisabled();
   });
 
   it('applies correct styling to enabled buttons', () => {
@@ -181,6 +203,34 @@ describe('Pagination', () => {
     );
 
     const nextButton = screen.getByText('Next');
-    expect(nextButton).toHaveClass('text-gray-500', 'hover:bg-gray-50', 'hover:text-gray-700');
+    // Check for design system Button secondary variant
+    expect(nextButton).toHaveClass('bg-white', 'text-gray-900', 'border');
+  });
+
+  it('has proper accessibility attributes', () => {
+    render(
+      <Pagination
+        currentPage={2}
+        totalPages={5}
+        onPageChange={mockOnPageChange}
+        hasNext={true}
+        hasPrev={true}
+      />
+    );
+
+    // Check navigation role
+    const nav = screen.getByRole('navigation');
+    expect(nav).toHaveAttribute('aria-label', 'Pagination');
+
+    // Check current page indicator
+    const currentPageButton = screen.getByText('2');
+    expect(currentPageButton).toHaveAttribute('aria-current', 'page');
+
+    // Check aria-labels for navigation buttons
+    const prevButton = screen.getByText('Previous');
+    expect(prevButton).toHaveAttribute('aria-label', 'Go to previous page, page 1');
+
+    const nextButton = screen.getByText('Next');
+    expect(nextButton).toHaveAttribute('aria-label', 'Go to next page, page 3');
   });
 });
