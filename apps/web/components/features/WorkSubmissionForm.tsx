@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Input, Button, ErrorAlert, Card, CardContent, CardHeader, CardTitle } from '../ui/design-system';
 
 export interface Work {
   id: string;
@@ -169,204 +170,172 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
 
   if (isSuccess) {
     return (
-      <div className="max-w-2xl mx-auto p-6 bg-green-50 border border-green-200 rounded-lg">
-        <div className="flex items-center">
-          <div className="flex-shrink-0">
-            <svg
-              className="h-5 w-5 text-green-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-green-800">
-              Work submitted successfully!
-            </h3>
-            <div className="mt-2 text-sm text-green-700">
-              <p>Your work has been added to your portfolio.</p>
+      <Card className="max-w-2xl mx-auto">
+        <CardContent className="p-6">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-green-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-green-800">
+                Work submitted successfully!
+              </h3>
+              <div className="mt-2 text-sm text-green-700">
+                <p>Your work has been added to your portfolio.</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="mt-4">
-          <button
-            onClick={handleReset}
-            className="bg-green-100 text-green-800 px-4 py-2 rounded-md hover:bg-green-200 transition-colors text-sm font-medium"
-          >
-            Submit Another Work
-          </button>
-        </div>
-      </div>
+          <div className="mt-4">
+            <Button
+              onClick={handleReset}
+              variant="secondary"
+              size="sm"
+            >
+              Submit Another Work
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
     <div className="max-w-2xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* General Error */}
-        {errors.general && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-4">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg
-                  className="h-5 w-5 text-red-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm text-red-800">{errors.general}</p>
-              </div>
-            </div>
-          </div>
-        )}
+      <Card>
+        <CardHeader>
+          <CardTitle>Submit New Work</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {errors.general && (
+              <ErrorAlert
+                title="Error"
+                message={errors.general}
+                variant="error"
+              />
+            )}
 
-        {/* Title Field */}
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-            Title *
-          </label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border ${
-              errors.title ? 'border-red-300' : 'border-gray-300'
-            } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500`}
-            placeholder="Enter the title of your work"
-            aria-describedby={errors.title ? 'title-error' : undefined}
-          />
-          {errors.title && (
-            <p id="title-error" className="mt-1 text-sm text-red-600">
-              {errors.title}
-            </p>
-          )}
-        </div>
+            <Input
+              id="title"
+              name="title"
+              type="text"
+              label="Title *"
+              value={formData.title}
+              onChange={handleInputChange}
+              placeholder="Enter the title of your work"
+              error={!!errors.title}
+              errorMessage={errors.title}
+            />
 
-        {/* Classification Field */}
-        <div>
-          <label htmlFor="classification" className="block text-sm font-medium text-gray-700 mb-2">
-            Classification *
-          </label>
-          <select
-            id="classification"
-            name="classification"
-            value={formData.classification}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border ${
-              errors.classification ? 'border-red-300' : 'border-gray-300'
-            } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500`}
-            aria-describedby={errors.classification ? 'classification-error' : undefined}
-          >
-            <option value="">Select classification</option>
-            <option value="Synopsis">Synopsis</option>
-            <option value="Scene Description">Scene Description</option>
-            <option value="Other">Other</option>
-          </select>
-          {errors.classification && (
-            <p id="classification-error" className="mt-1 text-sm text-red-600">
-              {errors.classification}
-            </p>
-          )}
-        </div>
-
-        {/* Body Field */}
-        <div>
-          <label htmlFor="body" className="block text-sm font-medium text-gray-700 mb-2">
-            Body *
-          </label>
-          <textarea
-            id="body"
-            name="body"
-            rows={8}
-            value={formData.body}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border ${
-              errors.body ? 'border-red-300' : 'border-gray-300'
-            } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-vertical`}
-            placeholder="Enter your work content here..."
-            aria-describedby={errors.body ? 'body-error' : 'body-counter'}
-          />
-          <div className="mt-1 flex justify-between items-center">
             <div>
-              {errors.body && (
-                <p id="body-error" className="text-sm text-red-600">
-                  {errors.body}
+              <label htmlFor="classification" className="block text-sm font-medium text-gray-700 mb-2">
+                Classification *
+              </label>
+              <select
+                id="classification"
+                name="classification"
+                value={formData.classification}
+                onChange={handleInputChange}
+                className={`w-full px-3 py-2 border ${
+                  errors.classification ? 'border-red-300' : 'border-gray-300'
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500`}
+                aria-describedby={errors.classification ? 'classification-error' : undefined}
+              >
+                <option value="">Select classification</option>
+                <option value="Synopsis">Synopsis</option>
+                <option value="Scene Description">Scene Description</option>
+                <option value="Other">Other</option>
+              </select>
+              {errors.classification && (
+                <p id="classification-error" className="mt-1 text-sm text-red-600">
+                  {errors.classification}
                 </p>
               )}
             </div>
-            <p
-              id="body-counter"
-              className={`text-sm ${
-                remainingChars < 0 ? 'text-red-600' : remainingChars < 100 ? 'text-yellow-600' : 'text-gray-500'
-              }`}
-            >
-              {remainingChars} characters remaining
-            </p>
-          </div>
-        </div>
 
-        {/* Tags Field */}
-        <div>
-          <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
-            Tags/Hashtags
-          </label>
-          <input
-            type="text"
-            id="tags"
-            name="tags"
-            value={formData.tags}
-            onChange={handleInputChange}
-            className={`w-full px-3 py-2 border ${
-              errors.tags ? 'border-red-300' : 'border-gray-300'
-            } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500`}
-            placeholder="Enter tags separated by commas (e.g., drama, thriller, action)"
-            aria-describedby={errors.tags ? 'tags-error' : 'tags-help'}
-          />
-          {errors.tags ? (
-            <p id="tags-error" className="mt-1 text-sm text-red-600">
-              {errors.tags}
-            </p>
-          ) : (
-            <p id="tags-help" className="mt-1 text-sm text-gray-500">
-              Optional. Separate multiple tags with commas.
-            </p>
-          )}
-        </div>
+            <div>
+              <label htmlFor="body" className="block text-sm font-medium text-gray-700 mb-2">
+                Body *
+              </label>
+              <textarea
+                id="body"
+                name="body"
+                rows={8}
+                value={formData.body}
+                onChange={handleInputChange}
+                className={`w-full px-3 py-2 border ${
+                  errors.body ? 'border-red-300' : 'border-gray-300'
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-vertical`}
+                placeholder="Enter your work content here..."
+                aria-describedby={errors.body ? 'body-error' : 'body-counter'}
+              />
+              <div className="mt-1 flex justify-between items-center">
+                <div>
+                  {errors.body && (
+                    <p id="body-error" className="text-sm text-red-600">
+                      {errors.body}
+                    </p>
+                  )}
+                </div>
+                <p
+                  id="body-counter"
+                  className={`text-sm ${
+                    remainingChars < 0 ? 'text-red-600' : remainingChars < 100 ? 'text-yellow-600' : 'text-gray-500'
+                  }`}
+                >
+                  {remainingChars} characters remaining
+                </p>
+              </div>
+            </div>
 
-        {/* Submit Buttons */}
-        <div className="flex gap-4">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="flex-1 bg-gray-900 text-white py-3 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-          >
-            {isLoading ? 'Submitting...' : 'Submit Work'}
-          </button>
-          
-          <button
-            type="button"
-            onClick={handleReset}
-            disabled={isLoading}
-            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-          >
-            Reset
-          </button>
-        </div>
-      </form>
+            <Input
+              id="tags"
+              name="tags"
+              type="text"
+              label="Tags/Hashtags"
+              value={formData.tags}
+              onChange={handleInputChange}
+              placeholder="Enter tags separated by commas (e.g., drama, thriller, action)"
+              error={!!errors.tags}
+              errorMessage={errors.tags}
+              helperText="Optional. Separate multiple tags with commas."
+            />
+
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                disabled={isLoading}
+                loading={isLoading}
+                variant="primary"
+                fullWidth
+              >
+                {isLoading ? 'Submitting...' : 'Submit Work'}
+              </Button>
+              
+              <Button
+                type="button"
+                onClick={handleReset}
+                disabled={isLoading}
+                variant="secondary"
+                fullWidth
+              >
+                Reset
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

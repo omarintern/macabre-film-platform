@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Input, Button, ErrorAlert, Card, CardContent, CardHeader, CardTitle } from '../ui/design-system';
 
 interface ProfileEditFormProps {
   initialName?: string;
@@ -80,104 +81,86 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Edit Profile</h2>
-        
-        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-          {errors.general && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-              {errors.general}
-            </div>
-          )}
+      <Card>
+        <CardHeader>
+          <CardTitle>Edit Profile</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+            {errors.general && (
+              <ErrorAlert
+                title="Error"
+                message={errors.general}
+                variant="error"
+              />
+            )}
 
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Display Name
-            </label>
-            <input
+            <Input
               id="name"
               name="name"
               type="text"
+              label="Display Name"
               value={formData.name}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 border ${
-                errors.name ? 'border-red-300' : 'border-gray-300'
-              } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500`}
               placeholder="Enter your display name"
-
-              aria-describedby={errors.name ? 'name-error' : undefined}
+              error={!!errors.name}
+              errorMessage={errors.name}
+              helperText={`${formData.name.length}/100 characters`}
             />
-            {errors.name && (
-              <p id="name-error" className="mt-1 text-sm text-red-600" role="alert">
-                {errors.name}
-              </p>
-            )}
-            <p className="mt-1 text-sm text-gray-500">
-              {formData.name.length}/100 characters
-            </p>
-          </div>
 
-          <div>
-            <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
-              Bio
-            </label>
-            <textarea
-              id="bio"
-              name="bio"
-              rows={4}
-              value={formData.bio}
-              onChange={handleInputChange}
-              className={`w-full px-3 py-2 border ${
-                errors.bio ? 'border-red-300' : 'border-gray-300'
-              } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-vertical`}
-              placeholder="Tell others about yourself..."
-
-              aria-describedby={errors.bio ? 'bio-error' : undefined}
-            />
-            {errors.bio && (
-              <p id="bio-error" className="mt-1 text-sm text-red-600" role="alert">
-                {errors.bio}
-              </p>
-            )}
-            <p className="mt-1 text-sm text-gray-500">
-              {formData.bio.length}/1000 characters
-            </p>
-          </div>
-
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              disabled={isSubmitting || isLoading}
-              className={`flex-1 py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
-                isSubmitting || isLoading
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'
-              } transition-colors`}
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2 inline-block"></div>
-                  Saving...
-                </>
-              ) : (
-                'Save Profile'
+            <div>
+              <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
+                Bio
+              </label>
+              <textarea
+                id="bio"
+                name="bio"
+                rows={4}
+                value={formData.bio}
+                onChange={handleInputChange}
+                className={`w-full px-3 py-2 border ${
+                  errors.bio ? 'border-red-300' : 'border-gray-300'
+                } rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 resize-vertical`}
+                placeholder="Tell others about yourself..."
+                aria-describedby={errors.bio ? 'bio-error' : 'bio-counter'}
+              />
+              {errors.bio && (
+                <p id="bio-error" className="mt-1 text-sm text-red-600" role="alert">
+                  {errors.bio}
+                </p>
               )}
-            </button>
-            
-            <button
-              type="button"
-              onClick={() => {
-                setFormData({ name: initialName, bio: initialBio });
-                setErrors({});
-              }}
-              disabled={isSubmitting || isLoading}
-              className="flex-1 py-2 px-4 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Reset
-            </button>
-          </div>
-        </form>
-      </div>
+              <p id="bio-counter" className="mt-1 text-sm text-gray-500">
+                {formData.bio.length}/1000 characters
+              </p>
+            </div>
+
+            <div className="flex gap-4">
+              <Button
+                type="submit"
+                disabled={isSubmitting || isLoading}
+                loading={isSubmitting}
+                variant="primary"
+                fullWidth
+              >
+                {isSubmitting ? 'Saving...' : 'Save Profile'}
+              </Button>
+              
+              <Button
+                type="button"
+                onClick={() => {
+                  setFormData({ name: initialName, bio: initialBio });
+                  setErrors({});
+                }}
+                disabled={isSubmitting || isLoading}
+                variant="secondary"
+                fullWidth
+              >
+                Reset
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

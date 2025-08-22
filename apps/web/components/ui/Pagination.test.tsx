@@ -9,27 +9,6 @@ describe('Pagination', () => {
     mockOnPageChange.mockClear();
   });
 
-  it('debug: renders pagination controls correctly', () => {
-    render(
-      <Pagination
-        currentPage={2}
-        totalPages={5}
-        onPageChange={mockOnPageChange}
-        hasNext={true}
-        hasPrev={true}
-      />
-    );
-
-    // Debug: log what's actually rendered
-    console.log('Rendered HTML:', document.body.innerHTML);
-    
-    const prevButton = screen.getByText('Previous');
-    console.log('Previous button element:', prevButton.outerHTML);
-    
-    expect(screen.getByText('Previous')).toBeInTheDocument();
-    expect(screen.getByText('Next')).toBeInTheDocument();
-  });
-
   it('renders pagination controls correctly', () => {
     render(
       <Pagination
@@ -107,7 +86,9 @@ describe('Pagination', () => {
     );
 
     const prevButton = screen.getByText('Previous');
-    expect(prevButton).toBeDisabled();
+    // Since the Button component renders as a span, we need to check the parent button element
+    const buttonElement = prevButton.closest('button');
+    expect(buttonElement).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('disables Next button when on last page', () => {
@@ -122,7 +103,9 @@ describe('Pagination', () => {
     );
 
     const nextButton = screen.getByText('Next');
-    expect(nextButton).toBeDisabled();
+    // Since the Button component renders as a span, we need to check the parent button element
+    const buttonElement = nextButton.closest('button');
+    expect(buttonElement).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('highlights current page correctly', () => {
@@ -137,8 +120,10 @@ describe('Pagination', () => {
     );
 
     const currentPageButton = screen.getByText('2');
-    // Check for design system Button variant classes
-    expect(currentPageButton).toHaveClass('bg-blue-600', 'text-white');
+    // Since the Button component renders as a span, we need to check the parent button element
+    const buttonElement = currentPageButton.closest('button');
+    expect(buttonElement).toHaveClass('bg-blue-600');
+    expect(buttonElement).toHaveClass('text-white');
   });
 
   it('shows ellipsis for large page ranges', () => {
@@ -171,8 +156,12 @@ describe('Pagination', () => {
 
     const pageButtons = screen.getAllByText('1');
     expect(pageButtons.length).toBeGreaterThan(0);
-    expect(screen.getByText('Previous')).toBeDisabled();
-    expect(screen.getByText('Next')).toBeDisabled();
+    
+    // Since the Button component renders as a span, we need to check the parent button element
+    const prevButtonElement = screen.getByText('Previous').closest('button');
+    const nextButtonElement = screen.getByText('Next').closest('button');
+    expect(prevButtonElement).toHaveAttribute('aria-disabled', 'true');
+    expect(nextButtonElement).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('applies correct styling to disabled buttons', () => {
@@ -187,8 +176,9 @@ describe('Pagination', () => {
     );
 
     const prevButton = screen.getByText('Previous');
-    // Check for design system Button disabled state
-    expect(prevButton).toBeDisabled();
+    // Since the Button component renders as a span, we need to check the parent button element
+    const buttonElement = prevButton.closest('button');
+    expect(buttonElement).toHaveAttribute('aria-disabled', 'true');
   });
 
   it('applies correct styling to enabled buttons', () => {
@@ -203,8 +193,11 @@ describe('Pagination', () => {
     );
 
     const nextButton = screen.getByText('Next');
-    // Check for design system Button secondary variant
-    expect(nextButton).toHaveClass('bg-white', 'text-gray-900', 'border');
+    // Since the Button component renders as a span, we need to check the parent button element
+    const buttonElement = nextButton.closest('button');
+    expect(buttonElement).toHaveClass('bg-white');
+    expect(buttonElement).toHaveClass('text-gray-900');
+    expect(buttonElement).toHaveClass('border');
   });
 
   it('has proper accessibility attributes', () => {
@@ -222,15 +215,18 @@ describe('Pagination', () => {
     const nav = screen.getByRole('navigation');
     expect(nav).toHaveAttribute('aria-label', 'Pagination');
 
-    // Check current page indicator
+    // Check current page indicator - look for aria-current on the button element
     const currentPageButton = screen.getByText('2');
-    expect(currentPageButton).toHaveAttribute('aria-current', 'page');
+    const buttonElement = currentPageButton.closest('button');
+    expect(buttonElement).toHaveAttribute('aria-current', 'page');
 
     // Check aria-labels for navigation buttons
     const prevButton = screen.getByText('Previous');
-    expect(prevButton).toHaveAttribute('aria-label', 'Go to previous page, page 1');
+    const prevButtonElement = prevButton.closest('button');
+    expect(prevButtonElement).toHaveAttribute('aria-label', 'Go to previous page, page 1');
 
     const nextButton = screen.getByText('Next');
-    expect(nextButton).toHaveAttribute('aria-label', 'Go to next page, page 3');
+    const nextButtonElement = nextButton.closest('button');
+    expect(nextButtonElement).toHaveAttribute('aria-label', 'Go to next page, page 3');
   });
 });
