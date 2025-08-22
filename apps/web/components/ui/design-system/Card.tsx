@@ -65,7 +65,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
 Card.displayName = 'Card';
 
 // Card header props type
-export type CardHeaderProps = React.HTMLAttributes<HTMLDivElement>;
+type CardHeaderProps = React.HTMLAttributes<HTMLDivElement>;
 
 // Card header component
 const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
@@ -83,7 +83,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
 CardHeader.displayName = 'CardHeader';
 
 // Card title props type
-export type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement>;
+type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement>;
 
 // Card title component
 const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
@@ -104,7 +104,7 @@ const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
 CardTitle.displayName = 'CardTitle';
 
 // Card description props type
-export type CardDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
+type CardDescriptionProps = React.HTMLAttributes<HTMLParagraphElement>;
 
 // Card description component
 const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionProps>(
@@ -122,7 +122,7 @@ const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionPr
 CardDescription.displayName = 'CardDescription';
 
 // Card content props type
-export type CardContentProps = React.HTMLAttributes<HTMLDivElement>;
+type CardContentProps = React.HTMLAttributes<HTMLDivElement>;
 
 // Card content component
 const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
@@ -140,7 +140,7 @@ const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
 CardContent.displayName = 'CardContent';
 
 // Card footer props type
-export type CardFooterProps = React.HTMLAttributes<HTMLDivElement>;
+type CardFooterProps = React.HTMLAttributes<HTMLDivElement>;
 
 // Card footer component
 const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
@@ -168,7 +168,6 @@ export {
   cardVariants,
 };
 export type {
-  CardProps,
   CardHeaderProps,
   CardTitleProps,
   CardDescriptionProps,

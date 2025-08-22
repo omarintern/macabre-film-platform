@@ -1,98 +1,104 @@
 /**
  * Design System Tokens
  * 
- * Inspired by Barnsworthburning.net minimalist aesthetic
+ * Sophisticated minimalist aesthetic inspired by Barnsworthburning.net
+ * Content-forward design with elegant typography and refined spacing
  * WCAG 2.1 AA compliant color contrast ratios
  * Mobile-first responsive design system
  */
 
 // ============================================================================
-// COLOR PALETTE
+// COLOR PALETTE - Sophisticated Minimalist
 // ============================================================================
 
 export const colors = {
-  // Primary Colors - Minimalist palette
+  // Primary Colors - Refined neutral palette
   primary: {
-    50: '#f8fafc',   // Lightest background
-    100: '#f1f5f9',  // Light background
-    200: '#e2e8f0',  // Border/subtle background
-    300: '#cbd5e1',  // Disabled state
-    400: '#94a3b8',  // Placeholder text
-    500: '#64748b',  // Secondary text
-    600: '#475569',  // Primary text
-    700: '#334155',  // Strong text
-    800: '#1e293b',  // Headings
-    900: '#0f172a',  // Darkest text
+    50: '#fafafa',   // Pure white background
+    100: '#f5f5f5',  // Subtle background
+    200: '#e5e5e5',  // Light borders
+    300: '#d4d4d4',  // Medium borders
+    400: '#a3a3a3',  // Placeholder text
+    500: '#737373',  // Secondary text
+    600: '#525252',  // Body text
+    700: '#404040',  // Strong text
+    800: '#262626',  // Headings
+    900: '#171717',  // Primary text
   },
   
-  // Accent Colors - Limited palette for emphasis
+  // Accent Colors - Minimal, purposeful
   accent: {
-    blue: '#3b82f6',    // Primary action
-    blueHover: '#2563eb',
-    green: '#10b981',   // Success
-    red: '#ef4444',     // Error
-    yellow: '#f59e0b',  // Warning
+    blue: '#2563eb',     // Primary action - refined blue
+    blueHover: '#1d4ed8',
+    blueLight: '#dbeafe',
+    green: '#059669',    // Success - muted green
+    red: '#dc2626',      // Error - refined red
+    yellow: '#d97706',   // Warning - muted amber
   },
   
   // Semantic Colors
   semantic: {
-    success: '#10b981',
-    error: '#ef4444',
-    warning: '#f59e0b',
-    info: '#3b82f6',
+    success: '#059669',
+    error: '#dc2626',
+    warning: '#d97706',
+    info: '#2563eb',
   },
   
-  // Background Colors
+  // Background Colors - Clean hierarchy
   background: {
     primary: '#ffffff',
-    secondary: '#f8fafc',
-    tertiary: '#f1f5f9',
-    overlay: 'rgba(0, 0, 0, 0.5)',
+    secondary: '#fafafa',
+    tertiary: '#f5f5f5',
+    overlay: 'rgba(0, 0, 0, 0.4)',
+    subtle: 'rgba(0, 0, 0, 0.02)',
   },
   
-  // Text Colors
+  // Text Colors - Typography-focused
   text: {
-    primary: '#0f172a',
-    secondary: '#475569',
-    tertiary: '#64748b',
-    disabled: '#94a3b8',
+    primary: '#171717',
+    secondary: '#525252',
+    tertiary: '#737373',
+    disabled: '#a3a3a3',
     inverse: '#ffffff',
+    muted: '#a3a3a3',
   },
   
-  // Border Colors
+  // Border Colors - Subtle and refined
   border: {
-    light: '#e2e8f0',
-    medium: '#cbd5e1',
-    dark: '#94a3b8',
+    light: '#f5f5f5',
+    medium: '#e5e5e5',
+    dark: '#d4d4d4',
+    subtle: 'rgba(0, 0, 0, 0.06)',
   },
 } as const;
 
 // ============================================================================
-// TYPOGRAPHY
+// TYPOGRAPHY - Sophisticated and Content-Focused
 // ============================================================================
 
 export const typography = {
-  // Font Families
+  // Font Families - Professional and readable
   fontFamily: {
-    sans: ['Inter', 'system-ui', 'sans-serif'],
-    mono: ['JetBrains Mono', 'monospace'],
+    sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+    mono: ['JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'monospace'],
+    serif: ['Georgia', 'Times', 'serif'],
   },
   
-  // Font Sizes - Mobile-first scale
+  // Font Sizes - Refined scale for content hierarchy
   fontSize: {
-    xs: '0.75rem',    // 12px
-    sm: '0.875rem',   // 14px
-    base: '1rem',     // 16px
-    lg: '1.125rem',   // 18px
-    xl: '1.25rem',    // 20px
-    '2xl': '1.5rem',  // 24px
-    '3xl': '1.875rem', // 30px
-    '4xl': '2.25rem',  // 36px
-    '5xl': '3rem',     // 48px
-    '6xl': '3.75rem',  // 60px
+    xs: '0.75rem',     // 12px - Captions, metadata
+    sm: '0.875rem',    // 14px - Small text, labels
+    base: '1rem',      // 16px - Body text
+    lg: '1.125rem',    // 18px - Large body
+    xl: '1.25rem',     // 20px - Subheadings
+    '2xl': '1.5rem',   // 24px - Section headings
+    '3xl': '1.875rem', // 30px - Page titles
+    '4xl': '2.25rem',  // 36px - Hero titles
+    '5xl': '3rem',     // 48px - Large hero
+    '6xl': '3.75rem',  // 60px - Display text
   },
   
-  // Font Weights
+  // Font Weights - Refined weight system
   fontWeight: {
     light: '300',
     normal: '400',
@@ -102,16 +108,16 @@ export const typography = {
     extrabold: '800',
   },
   
-  // Line Heights
+  // Line Heights - Optimized for readability
   lineHeight: {
-    tight: '1.25',
-    snug: '1.375',
-    normal: '1.5',
-    relaxed: '1.625',
-    loose: '2',
+    tight: '1.2',      // Headings
+    snug: '1.375',     // Subheadings
+    normal: '1.6',     // Body text
+    relaxed: '1.75',   // Large body
+    loose: '2',        // Poetry, quotes
   },
   
-  // Letter Spacing
+  // Letter Spacing - Refined spacing
   letterSpacing: {
     tighter: '-0.05em',
     tight: '-0.025em',
@@ -123,14 +129,14 @@ export const typography = {
 } as const;
 
 // ============================================================================
-// SPACING SYSTEM
+// SPACING SYSTEM - Elegant and Consistent
 // ============================================================================
 
 export const spacing = {
-  // Base spacing units (4px grid)
+  // Base spacing units (8px grid for elegance)
   0: '0',
-  1: '0.25rem',   // 4px
-  2: '0.5rem',    // 8px
+  1: '0.25rem',   // 4px - Minimal spacing
+  2: '0.5rem',    // 8px - Base unit
   3: '0.75rem',   // 12px
   4: '1rem',      // 16px
   5: '1.25rem',   // 20px
@@ -149,34 +155,34 @@ export const spacing = {
 } as const;
 
 // ============================================================================
-// BORDER RADIUS
+// BORDER RADIUS - Subtle and Refined
 // ============================================================================
 
 export const borderRadius = {
   none: '0',
-  sm: '0.125rem',   // 2px
-  base: '0.25rem',  // 4px
-  md: '0.375rem',   // 6px
-  lg: '0.5rem',     // 8px
-  xl: '0.75rem',    // 12px
-  '2xl': '1rem',    // 16px
-  '3xl': '1.5rem',  // 24px
+  sm: '0.125rem',   // 2px - Subtle
+  base: '0.25rem',  // 4px - Default
+  md: '0.375rem',   // 6px - Medium
+  lg: '0.5rem',     // 8px - Large
+  xl: '0.75rem',    // 12px - Extra large
+  '2xl': '1rem',    // 16px - Cards
+  '3xl': '1.5rem',  // 24px - Large cards
   full: '9999px',
 } as const;
 
 // ============================================================================
-// SHADOWS
+// SHADOWS - Subtle and Elegant
 // ============================================================================
 
 export const shadows = {
   none: 'none',
-  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-  base: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-  md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-  xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-  '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
+  sm: '0 1px 2px 0 rgba(0, 0, 0, 0.04)',
+  base: '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04)',
+  md: '0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04)',
+  lg: '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04)',
+  xl: '0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+  '2xl': '0 25px 50px -12px rgba(0, 0, 0, 0.12)',
+  inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.04)',
 } as const;
 
 // ============================================================================
@@ -192,30 +198,38 @@ export const breakpoints = {
 } as const;
 
 // ============================================================================
-// COMPONENT VARIANTS
+// COMPONENT VARIANTS - Refined and Purposeful
 // ============================================================================
 
 export const componentVariants = {
-  // Button Variants
+  // Button Variants - Clean and purposeful
   button: {
     primary: {
       backgroundColor: colors.accent.blue,
       color: colors.text.inverse,
       border: 'none',
+      fontWeight: typography.fontWeight.medium,
       '&:hover': {
         backgroundColor: colors.accent.blueHover,
+        transform: 'translateY(-1px)',
+        boxShadow: shadows.md,
       },
       '&:focus': {
         outline: `2px solid ${colors.accent.blue}`,
         outlineOffset: '2px',
+      },
+      '&:active': {
+        transform: 'translateY(0)',
       },
     },
     secondary: {
       backgroundColor: 'transparent',
       color: colors.text.primary,
       border: `1px solid ${colors.border.medium}`,
+      fontWeight: typography.fontWeight.normal,
       '&:hover': {
         backgroundColor: colors.background.secondary,
+        borderColor: colors.border.dark,
       },
       '&:focus': {
         outline: `2px solid ${colors.accent.blue}`,
@@ -226,8 +240,9 @@ export const componentVariants = {
       backgroundColor: 'transparent',
       color: colors.text.secondary,
       border: 'none',
+      fontWeight: typography.fontWeight.normal,
       '&:hover': {
-        backgroundColor: colors.background.secondary,
+        backgroundColor: colors.background.subtle,
         color: colors.text.primary,
       },
       '&:focus': {
@@ -239,8 +254,11 @@ export const componentVariants = {
       backgroundColor: colors.semantic.error,
       color: colors.text.inverse,
       border: 'none',
+      fontWeight: typography.fontWeight.medium,
       '&:hover': {
-        backgroundColor: '#dc2626',
+        backgroundColor: '#b91c1c',
+        transform: 'translateY(-1px)',
+        boxShadow: shadows.md,
       },
       '&:focus': {
         outline: `2px solid ${colors.semantic.error}`,
@@ -249,36 +267,41 @@ export const componentVariants = {
     },
   },
   
-  // Input Variants
+  // Input Variants - Clean and accessible
   input: {
     default: {
       border: `1px solid ${colors.border.medium}`,
       backgroundColor: colors.background.primary,
       color: colors.text.primary,
+      borderRadius: borderRadius.base,
       '&:focus': {
         borderColor: colors.accent.blue,
         outline: 'none',
-        boxShadow: `0 0 0 3px ${colors.accent.blue}20`,
+        boxShadow: `0 0 0 3px ${colors.accent.blueLight}`,
       },
       '&:disabled': {
         backgroundColor: colors.background.secondary,
         color: colors.text.disabled,
         cursor: 'not-allowed',
       },
+      '&::placeholder': {
+        color: colors.text.muted,
+      },
     },
     error: {
       border: `1px solid ${colors.semantic.error}`,
       backgroundColor: colors.background.primary,
       color: colors.text.primary,
+      borderRadius: borderRadius.base,
       '&:focus': {
         borderColor: colors.semantic.error,
         outline: 'none',
-        boxShadow: `0 0 0 3px ${colors.semantic.error}20`,
+        boxShadow: `0 0 0 3px rgba(220, 38, 38, 0.1)`,
       },
     },
   },
   
-  // Card Variants
+  // Card Variants - Elegant and content-focused
   card: {
     default: {
       backgroundColor: colors.background.primary,
@@ -292,34 +315,43 @@ export const componentVariants = {
       borderRadius: borderRadius.lg,
       boxShadow: shadows.lg,
     },
+    subtle: {
+      backgroundColor: colors.background.secondary,
+      border: 'none',
+      borderRadius: borderRadius.lg,
+    },
   },
 } as const;
 
 // ============================================================================
-// ANIMATIONS
+// ANIMATIONS - Smooth and Purposeful
 // ============================================================================
 
 export const animations = {
-  // Transitions
+  // Transitions - Refined timing
   transition: {
-    fast: '150ms ease-in-out',
-    normal: '250ms ease-in-out',
-    slow: '350ms ease-in-out',
+    fast: '150ms cubic-bezier(0.4, 0, 0.2, 1)',
+    normal: '250ms cubic-bezier(0.4, 0, 0.2, 1)',
+    slow: '350ms cubic-bezier(0.4, 0, 0.2, 1)',
   },
   
-  // Keyframes
+  // Keyframes - Elegant animations
   keyframes: {
     fadeIn: {
-      '0%': { opacity: '0' },
-      '100%': { opacity: '1' },
+      '0%': { opacity: '0', transform: 'translateY(10px)' },
+      '100%': { opacity: '1', transform: 'translateY(0)' },
     },
     slideUp: {
-      '0%': { transform: 'translateY(10px)', opacity: '0' },
+      '0%': { transform: 'translateY(20px)', opacity: '0' },
       '100%': { transform: 'translateY(0)', opacity: '1' },
     },
     scaleIn: {
-      '0%': { transform: 'scale(0.95)', opacity: '0' },
+      '0%': { transform: 'scale(0.98)', opacity: '0' },
       '100%': { transform: 'scale(1)', opacity: '1' },
+    },
+    shimmer: {
+      '0%': { transform: 'translateX(-100%)' },
+      '100%': { transform: 'translateX(100%)' },
     },
   },
 } as const;

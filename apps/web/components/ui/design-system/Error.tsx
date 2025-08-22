@@ -39,7 +39,7 @@ const errorAlertVariants = cva(
 );
 
 // Error alert props interface
-export interface ErrorAlertProps
+interface ErrorAlertProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof errorAlertVariants> {
   title?: string;
@@ -162,7 +162,7 @@ const ErrorAlert = React.forwardRef<HTMLDivElement, ErrorAlertProps>(
 ErrorAlert.displayName = 'ErrorAlert';
 
 // Error page component
-export interface ErrorPageProps {
+interface ErrorPageProps {
   title?: string;
   message?: string;
   error?: Error;
@@ -246,13 +246,13 @@ const ErrorPage = React.forwardRef<HTMLDivElement, ErrorPageProps>(
 ErrorPage.displayName = 'ErrorPage';
 
 // Error boundary component
-export interface ErrorBoundaryProps {
+interface ErrorBoundaryProps {
   children: React.ReactNode;
   fallback?: React.ComponentType<{ error: Error; resetError: () => void }>;
   onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
 }
 
-export interface ErrorBoundaryState {
+interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
 }

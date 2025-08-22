@@ -10,15 +10,15 @@ export default function Navigation() {
 
   if (isLoading) {
     return (
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link href="/" className="text-xl font-bold text-gray-900">
+              <Link href="/" className="text-2xl font-bold text-gray-900 tracking-tight">
                 Macabre
               </Link>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
               <Skeleton className="h-8 w-16" />
             </div>
           </div>
@@ -28,72 +28,85 @@ export default function Navigation() {
   }
 
   return (
-    <nav className="bg-white shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex items-center space-x-8">
-            <Link href="/" className="text-xl font-bold text-gray-900">
+          <div className="flex items-center space-x-12">
+            <Link href="/" className="text-2xl font-bold text-gray-900 tracking-tight hover:text-gray-700 transition-colors">
               Macabre
             </Link>
-            <Link 
-              href="/spaces" 
-              className="text-gray-600 hover:text-gray-800 transition-colors font-medium"
-            >
-              Spaces
-            </Link>
-            <Link 
-              href="/index" 
-              className="text-gray-600 hover:text-gray-800 transition-colors font-medium"
-            >
-              Index
-            </Link>
+            <div className="hidden md:flex items-center space-x-8">
+              <Link 
+                href="/spaces" 
+                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm tracking-wide"
+              >
+                Spaces
+              </Link>
+              <Link 
+                href="/index" 
+                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm tracking-wide"
+              >
+                Index
+              </Link>
+            </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             {isAuthenticated && user ? (
               <>
-                {user.role === 'ADMIN' && (
-                  <Link 
-                    href="/admin" 
-                    className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                  >
-                    Admin
-                  </Link>
-                )}
-                {user.role === 'CREATOR' && (
-                  <>
-                    <Button asChild variant="primary" size="sm">
+                <div className="hidden md:flex items-center space-x-6">
+                  {user.role === 'ADMIN' && (
+                    <Link 
+                      href="/admin" 
+                      className="text-blue-600 hover:text-blue-800 font-medium transition-colors text-sm"
+                    >
+                      Admin
+                    </Link>
+                  )}
+                  {user.role === 'CREATOR' && (
+                    <>
+                      <Link 
+                        href={`/profile/${user.id}`}
+                        className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+                      >
+                        Profile
+                      </Link>
+                      <Link 
+                        href="/profile/edit" 
+                        className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+                      >
+                        Settings
+                      </Link>
+                    </>
+                  )}
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="hidden sm:flex items-center space-x-3">
+                    <span className="text-sm text-gray-600 font-medium">
+                      {user.name || user.email}
+                    </span>
+                    <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium tracking-wide">
+                      {user.role}
+                    </span>
+                  </div>
+                  
+                  {user.role === 'CREATOR' && (
+                    <Button asChild variant="primary" size="sm" className="hidden sm:inline-flex">
                       <Link href="/submit">
-                        Submit New Work
+                        Submit Work
                       </Link>
                     </Button>
-                    <Link 
-                      href={`/profile/${user.id}`}
-                      className="text-gray-600 hover:text-gray-800 transition-colors"
-                    >
-                      My Profile
-                    </Link>
-                    <Link 
-                      href="/profile/edit" 
-                      className="text-gray-600 hover:text-gray-800 transition-colors"
-                    >
-                      Edit Profile
-                    </Link>
-                  </>
-                )}
-                <span className="text-sm text-gray-600">
-                  Welcome, {user.name || user.email}
-                </span>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                  {user.role}
-                </span>
-                <LogoutButton variant="link" />
+                  )}
+                  
+                  <LogoutButton variant="link" />
+                </div>
               </>
             ) : (
               <>
                 <Link 
                   href="/login" 
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
+                  className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
                 >
                   Login
                 </Link>

@@ -56,7 +56,7 @@ const inputVariants = cva(
 );
 
 // Input props interface
-export interface InputProps
+interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof inputVariants> {
   error?: boolean;

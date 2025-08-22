@@ -101,7 +101,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant,
       size,
       fullWidth,
-      asChild = false,
+
       loading = false,
       leftIcon,
       rightIcon,
@@ -209,7 +209,7 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
       >
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
-            const childClassName = (child.props as any)?.className || '';
+            const childClassName = (child.props as React.HTMLAttributes<HTMLElement>)?.className || '';
             return React.cloneElement(child, {
               className: cn(
                 childClassName,

@@ -29,7 +29,7 @@ const spinnerVariants = cva(
 );
 
 // Loading spinner props interface
-export interface SpinnerProps
+interface SpinnerProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof spinnerVariants> {
   'aria-label'?: string;
@@ -79,7 +79,7 @@ const skeletonVariants = cva(
 );
 
 // Loading skeleton props interface
-export interface SkeletonProps
+interface SkeletonProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof skeletonVariants> {}
 
@@ -100,7 +100,7 @@ const Skeleton = React.forwardRef<HTMLDivElement, SkeletonProps>(
 Skeleton.displayName = 'Skeleton';
 
 // Loading page component
-export interface LoadingPageProps {
+interface LoadingPageProps {
   message?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
@@ -129,7 +129,7 @@ const LoadingPage = React.forwardRef<HTMLDivElement, LoadingPageProps>(
 LoadingPage.displayName = 'LoadingPage';
 
 // Loading overlay component
-export interface LoadingOverlayProps {
+interface LoadingOverlayProps {
   isVisible: boolean;
   message?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -168,7 +168,7 @@ const LoadingOverlay = React.forwardRef<HTMLDivElement, LoadingOverlayProps>(
 LoadingOverlay.displayName = 'LoadingOverlay';
 
 // Loading button component
-export interface LoadingButtonProps {
+interface LoadingButtonProps {
   loading?: boolean;
   children: React.ReactNode;
   loadingText?: string;

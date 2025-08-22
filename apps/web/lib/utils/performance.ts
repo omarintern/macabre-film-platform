@@ -149,7 +149,7 @@ export function withPerformanceMonitoring<T extends unknown[], R>(
       endTimer();
       return result;
     } catch (error) {
-      endTimer(undefined, undefined, undefined, error instanceof Error ? error.message : 'Unknown error');
+      endTimer();
       throw error;
     }
   };
