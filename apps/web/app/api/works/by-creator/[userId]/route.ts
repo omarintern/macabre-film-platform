@@ -3,20 +3,21 @@ import { userService } from '../../../../../lib/database';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: Promise<{ userId: string }> }
 ) {
   try {
+    const params = await context.params;
     const { userId } = params;
-
-    // Validate userId parameter
-    if (!userId?.trim()) {
+    
+    // Validate userId
+    if (!userId || typeof userId !== 'string') {
       return NextResponse.json(
-        { error: 'Creator ID is required' },
+        { error: 'Invalid user ID' },
         { status: 400 }
       );
     }
 
-    // Get works by creator, ordered by createdAt DESC (most recent first)
+    // Get works by creator
     const works = await userService.getWorksByCreator(userId);
 
     return NextResponse.json({
@@ -25,17 +26,8 @@ export async function GET(
     });
 
   } catch (error) {
-    console.error('Works retrieval by creator error:', error);
+    console.error('Error fetching works by creator:', error);
     
-    if (error instanceof Error) {
-      if (error.message.includes('Creator not found') || error.message.includes('User not found')) {
-        return NextResponse.json(
-          { error: 'Creator not found' },
-          { status: 404 }
-        );
-      }
-    }
-
     return NextResponse.json(
       { error: 'An unexpected error occurred. Please try again.' },
       { status: 500 }

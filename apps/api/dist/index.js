@@ -39,7 +39,7 @@ app.use((req, res) => {
         message: `Route ${req.originalUrl} not found`,
     });
 });
-app.use((err, _req, res, _next) => {
+app.use((err, _req, res) => {
     console.error(err.stack);
     res.status(500).json({
         error: 'Internal Server Error',

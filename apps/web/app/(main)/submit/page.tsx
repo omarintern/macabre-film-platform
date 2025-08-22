@@ -1,20 +1,11 @@
-import React from 'react';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
 import Link from 'next/link';
+import jwt from 'jsonwebtoken';
 import WorkSubmissionForm, { Work } from '../../../components/features/WorkSubmissionForm';
-
-function getJWTSecret(): string {
-  const jwtSecret = process.env.JWT_SECRET;
-  if (!jwtSecret) {
-    throw new Error('JWT_SECRET not configured');
-  }
-  return jwtSecret;
-}
+import { getJWTSecret } from '../../../lib/utils/jwt';
 
 export default async function SubmitPage() {
-  // Check authentication and role
   const cookieStore = await cookies();
   const token = cookieStore.get('auth-token')?.value;
 
@@ -25,7 +16,8 @@ export default async function SubmitPage() {
   let decoded: { userId: string; email: string; role: string };
   try {
     const jwtSecret = getJWTSecret();
-    decoded = jwt.verify(token, jwtSecret);
+    const verified = jwt.verify(token, jwtSecret);
+    decoded = verified as { userId: string; email: string; role: string };
   } catch {
     redirect('/login');
   }

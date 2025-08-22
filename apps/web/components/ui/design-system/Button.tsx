@@ -85,13 +85,11 @@ const buttonVariants = cva(
 );
 
 // Button props interface
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   loading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+  asChild?: boolean;
   'aria-describedby'?: string;
 }
 
@@ -211,16 +209,17 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
       >
         {React.Children.map(children, (child, index) => {
           if (React.isValidElement(child)) {
+            const childClassName = (child.props as any)?.className || '';
             return React.cloneElement(child, {
               className: cn(
-                child.props.className,
+                childClassName,
                 // Remove border radius from middle buttons
                 index !== 0 && 'rounded-l-none',
                 index !== React.Children.count(children) - 1 && 'rounded-r-none',
                 // Add border to separate buttons
                 index !== 0 && '-ml-px'
               ),
-            });
+            } as React.HTMLAttributes<HTMLElement>);
           }
           return child;
         })}

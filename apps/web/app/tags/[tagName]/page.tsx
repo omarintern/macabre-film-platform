@@ -2,13 +2,14 @@ import React from 'react';
 import TagWorksGallery from '../../../components/features/TagWorksGallery';
 
 interface TagResultsPageProps {
-  params: {
+  params: Promise<{
     tagName: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: TagResultsPageProps) {
-  const tagName = decodeURIComponent(params.tagName);
+  const resolvedParams = await params;
+  const tagName = decodeURIComponent(resolvedParams.tagName);
   
   return {
     title: `Works tagged "${tagName}" - Macabre`,
@@ -16,8 +17,9 @@ export async function generateMetadata({ params }: TagResultsPageProps) {
   };
 }
 
-export default function TagResultsPage({ params }: TagResultsPageProps) {
-  const tagName = decodeURIComponent(params.tagName);
+export default async function TagResultsPage({ params }: TagResultsPageProps) {
+  const resolvedParams = await params;
+  const tagName = decodeURIComponent(resolvedParams.tagName);
 
   // Validate tag name
   if (!tagName || tagName.trim() === '') {

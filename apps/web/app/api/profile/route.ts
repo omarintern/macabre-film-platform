@@ -88,13 +88,10 @@ export async function PUT(request: NextRequest) {
       bio,
     });
 
-    // Return updated profile (excluding password)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, ...profileData } = updatedUser;
-    
+    // Return updated profile
     return NextResponse.json({
       success: true,
-      user: profileData,
+      user: updatedUser,
     });
 
   } catch (error) {
