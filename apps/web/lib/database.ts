@@ -325,4 +325,53 @@ export const userService = {
 
     return tags;
   },
+
+  // Get works by tag with pagination
+  async getWorksByTag(tagName: string, page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    // Get total count of works with this tag
+    const total = await prisma.work.count({
+      where: {
+        tags: {
+          has: tagName,
+        },
+      },
+    });
+
+    // Get works with this tag and pagination
+    const works = await prisma.work.findMany({
+      where: {
+        tags: {
+          has: tagName,
+        },
+      },
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    const totalPages = Math.ceil(total / limit);
+    const hasNext = page < totalPages;
+    const hasPrev = page > 1;
+
+    return {
+      works,
+      page,
+      limit,
+      total,
+      totalPages,
+      hasNext,
+      hasPrev,
+    };
+  },
 };

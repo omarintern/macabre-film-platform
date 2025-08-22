@@ -11,7 +11,7 @@ interface TagCardProps {
 const TagCard: React.FC<TagCardProps> = ({ tag }) => {
   return (
     <Link
-      href={`/spaces?tag=${encodeURIComponent(tag.name)}`}
+      href={`/tags/${encodeURIComponent(tag.name)}`}
       className="block group"
     >
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md hover:border-gray-300 transition-all duration-200">

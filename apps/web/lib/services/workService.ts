@@ -302,6 +302,56 @@ class WorkServiceClass {
       throw new Error('An unexpected error occurred while retrieving tags');
     }
   }
+
+  /**
+   * Get works filtered by tag with pagination
+   */
+  async getWorksByTag(tagName: string, page: number = 1, limit: number = 12): Promise<{
+    works: Work[];
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  }> {
+    try {
+      const encodedTagName = encodeURIComponent(tagName);
+      const response = await fetch(`${this.baseUrl}/by-tag/${encodedTagName}?page=${page}&limit=${limit}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // No credentials needed for public access
+      });
+
+      const data: PaginatedWorksResponse | WorkServiceError = await response.json();
+
+      if (!response.ok) {
+        const errorData = data as WorkServiceError;
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const successData = data as PaginatedWorksResponse;
+      return {
+        works: successData.works,
+        page: successData.pagination.page,
+        limit: successData.pagination.limit,
+        total: successData.pagination.total,
+        totalPages: successData.pagination.totalPages,
+        hasNext: successData.pagination.hasNext,
+        hasPrev: successData.pagination.hasPrev,
+      };
+    } catch (error) {
+      console.error('Tag works retrieval error:', error);
+      
+      if (error instanceof Error) {
+        throw error;
+      }
+      
+      throw new Error('An unexpected error occurred while retrieving works by tag');
+    }
+  }
 }
 
 // Export singleton instance

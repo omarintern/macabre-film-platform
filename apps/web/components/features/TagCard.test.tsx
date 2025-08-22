@@ -39,7 +39,7 @@ describe('TagCard', () => {
     render(<TagCard tag={mockTag} />);
     
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/spaces?tag=action');
+    expect(link).toHaveAttribute('href', '/tags/action');
   });
 
   it('should have proper accessibility attributes', () => {
@@ -57,7 +57,7 @@ describe('TagCard', () => {
     render(<TagCard tag={specialTag} />);
     
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/spaces?tag=sci-fi');
+    expect(link).toHaveAttribute('href', '/tags/sci-fi');
     expect(screen.getByText('#sci-fi')).toBeInTheDocument();
   });
 
@@ -66,7 +66,7 @@ describe('TagCard', () => {
     render(<TagCard tag={emptyTag} />);
     
     const link = screen.getByRole('link');
-    expect(link).toHaveAttribute('href', '/spaces?tag=');
+    expect(link).toHaveAttribute('href', '/tags/');
     expect(screen.getByText('#')).toBeInTheDocument();
   });
 });
