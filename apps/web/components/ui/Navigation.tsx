@@ -40,6 +40,12 @@ export default function Navigation() {
             >
               Spaces
             </Link>
+            <Link 
+              href="/index" 
+              className="text-gray-600 hover:text-gray-800 transition-colors font-medium"
+            >
+              Index
+            </Link>
           </div>
           
           <div className="flex items-center space-x-4">

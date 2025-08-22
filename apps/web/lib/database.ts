@@ -295,4 +295,34 @@ export const userService = {
       hasPrev,
     };
   },
+
+  // Get all unique tags with counts
+  async getAllTags() {
+    // Get all works with their tags
+    const works = await prisma.work.findMany({
+      select: {
+        tags: true,
+      },
+    });
+
+    // Count occurrences of each tag
+    const tagCounts: { [key: string]: number } = {};
+    
+    works.forEach(work => {
+      if (work.tags && Array.isArray(work.tags)) {
+        work.tags.forEach(tag => {
+          if (tag && typeof tag === 'string') {
+            tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+          }
+        });
+      }
+    });
+
+    // Convert to array format and sort alphabetically
+    const tags = Object.entries(tagCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    return tags;
+  },
 };

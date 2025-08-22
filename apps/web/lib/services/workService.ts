@@ -46,6 +46,16 @@ export interface PaginatedWorksResponse {
   };
 }
 
+export interface Tag {
+  name: string;
+  count: number;
+}
+
+export interface TagsResponse {
+  success: boolean;
+  tags: Tag[];
+}
+
 export interface WorkServiceError {
   error: string;
 }
@@ -258,6 +268,39 @@ class WorkServiceClass {
       wordCount: work.body.split(/\s+/).filter(word => word).length,
       characterCount: work.body.length,
     };
+  }
+
+  /**
+   * Get all unique tags with counts
+   */
+  async getAllTags(): Promise<Tag[]> {
+    try {
+      const response = await fetch(`${this.baseUrl.replace('/works', '/tags')}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // No credentials needed for public access
+      });
+
+      const data: TagsResponse | WorkServiceError = await response.json();
+
+      if (!response.ok) {
+        const errorData = data as WorkServiceError;
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const successData = data as TagsResponse;
+      return successData.tags;
+    } catch (error) {
+      console.error('Tags retrieval error:', error);
+      
+      if (error instanceof Error) {
+        throw error;
+      }
+      
+      throw new Error('An unexpected error occurred while retrieving tags');
+    }
   }
 }
 
