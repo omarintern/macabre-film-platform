@@ -7,6 +7,7 @@ const publicRoutes = [
   '/',
   '/login',
   '/signup',
+  '/spaces', // Public access for browsing works
 ];
 
 // Define API routes that don't require authentication
@@ -14,6 +15,7 @@ const publicApiRoutes = [
   '/api/auth/login',
   '/api/auth/signup',
   '/api/auth/logout',
+  '/api/works', // Public access for viewing works
 ];
 
 // Define admin-only routes
