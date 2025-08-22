@@ -6,6 +6,7 @@ import React from 'react';
 
 // Extend Jest matchers for accessibility testing
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
     interface Matchers<R> {
       toHaveNoViolations(): R;
@@ -15,7 +16,7 @@ declare global {
 
 // Simple accessibility test function
 export const testAccessibility = async (component: React.ReactElement) => {
-  const { container } = render(component);
+  render(component);
   // Basic accessibility check - just return true for now
   return true;
 };
@@ -29,7 +30,7 @@ export const renderWithAccessibility = (
 };
 
 // WCAG 2.1 AA compliance test
-export const testWCAG21AA = async (container: HTMLElement) => {
+export const testWCAG21AA = async () => {
   // Basic implementation - just return true for now
   return true;
 };
@@ -88,8 +89,8 @@ export const createAccessibilityTest = <P extends Record<string, unknown>>(
   props: P
 ) => {
   return async () => {
-    const { container } = renderWithAccessibility(React.createElement(Component, props));
-    await testWCAG21AA(container);
+    renderWithAccessibility(React.createElement(Component, props));
+    await testWCAG21AA();
   };
 };
 

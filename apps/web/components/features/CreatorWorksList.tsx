@@ -2,13 +2,13 @@ import React from 'react';
 import { Work } from '../../lib/services/workService';
 
 interface CreatorWorksListProps {
-  creatorId: string; // Used for data fetching in parent component
+  creatorId?: string; // Used for data fetching in parent component
   works?: Work[];
   isLoading?: boolean;
   error?: string | null;
 }
 
-const CreatorWorksList = ({ creatorId, works = [], isLoading = false, error }: CreatorWorksListProps) => {
+const CreatorWorksList = ({ works = [], isLoading = false, error }: CreatorWorksListProps) => {
   // Loading state
   if (isLoading) {
     return (

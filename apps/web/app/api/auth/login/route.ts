@@ -22,7 +22,33 @@ interface LoginResponse {
   error?: string;
 }
 
+/**
+ * Performance monitoring helper
+ */
+function logPerformance(operation: string, startTime: number) {
+  const duration = Date.now() - startTime;
+  console.log(`[PERFORMANCE] ${operation} completed in ${duration}ms`);
+  
+  // Log slow operations for optimization
+  if (duration > 1000) {
+    console.warn(`[PERFORMANCE] Slow operation detected: ${operation} took ${duration}ms`);
+  }
+}
+
+/**
+ * Sets appropriate cache headers for authentication endpoints
+ */
+function setAuthCacheHeaders(response: NextResponse) {
+  // Authentication endpoints should not be cached
+  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  response.headers.set('Pragma', 'no-cache');
+  response.headers.set('Expires', '0');
+  response.headers.set('Surrogate-Control', 'no-store');
+}
+
 export async function POST(request: NextRequest): Promise<NextResponse<LoginResponse>> {
+  const operationStart = Date.now();
+  
   // TODO: Implement rate limiting for production to prevent brute force attacks
   // Consider using libraries like 'rate-limiter-flexible' or middleware-based solutions
   
@@ -109,10 +135,16 @@ export async function POST(request: NextRequest): Promise<NextResponse<LoginResp
       path: '/',
     });
 
+    // Set cache headers for authentication endpoint
+    setAuthCacheHeaders(response);
+    
+    logPerformance('Login operation', operationStart);
     return response;
 
   } catch (error) {
     console.error('Login error:', error);
+    logPerformance('Login operation (failed)', operationStart);
+    
     return NextResponse.json(
       { success: false, error: 'An unexpected error occurred. Please try again.' },
       { status: 500 }
