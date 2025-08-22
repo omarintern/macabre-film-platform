@@ -186,21 +186,36 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET endpoint to retrieve works (for future use)
+// GET endpoint to retrieve works (public access with pagination)
 export async function GET(request: NextRequest) {
   try {
-    // Authenticate user and verify CREATOR role
-    const authResult = await authenticateCreator(request);
-    if (authResult instanceof NextResponse) {
-      return authResult; // Return error response
+    // Parse pagination parameters from query string
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 50); // Max 50 items per page
+
+    // Validate pagination parameters
+    if (page < 1 || limit < 1) {
+      return NextResponse.json(
+        { error: 'Invalid pagination parameters. Page and limit must be positive numbers.' },
+        { status: 400 }
+      );
     }
 
-    // Get works by creator
-    const works = await userService.getWorksByCreator(authResult.userId);
+    // Get all works with pagination
+    const result = await userService.getAllWorks(page, limit);
 
     return NextResponse.json({
       success: true,
-      works,
+      works: result.works,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: result.totalPages,
+        hasNext: result.hasNext,
+        hasPrev: result.hasPrev,
+      },
     });
 
   } catch (error) {

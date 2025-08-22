@@ -257,4 +257,42 @@ export const userService = {
       },
     });
   },
+
+  // Get all works with pagination
+  async getAllWorks(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+
+    // Get total count
+    const total = await prisma.work.count();
+
+    // Get works with pagination
+    const works = await prisma.work.findMany({
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    const totalPages = Math.ceil(total / limit);
+    const hasNext = page < totalPages;
+    const hasPrev = page > 1;
+
+    return {
+      works,
+      page,
+      limit,
+      total,
+      totalPages,
+      hasNext,
+      hasPrev,
+    };
+  },
 };

@@ -8,6 +8,7 @@ jest.mock('../../../lib/database', () => ({
   userService: {
     createWork: jest.fn(),
     getWorksByCreator: jest.fn(),
+    getAllWorks: jest.fn(),
   },
 }));
 
@@ -306,20 +307,21 @@ describe('/api/works', () => {
       },
     ];
 
-    it('should return works for authenticated user', async () => {
-      mockedJwt.verify.mockReturnValue({
-        userId: 'user_123',
-        email: 'creator@example.com',
-        role: 'CREATOR',
-      } as any);
+    const mockPaginatedResult = {
+      works: mockWorks,
+      page: 1,
+      limit: 20,
+      total: 1,
+      totalPages: 1,
+      hasNext: false,
+      hasPrev: false,
+    };
 
-      mockedUserService.getWorksByCreator.mockResolvedValue(mockWorks as any);
+    it('should return paginated works for public access', async () => {
+      mockedUserService.getAllWorks.mockResolvedValue(mockPaginatedResult as any);
 
-      const request = new NextRequest('http://localhost/api/works', {
+      const request = new NextRequest('http://localhost/api/works?page=1&limit=20', {
         method: 'GET',
-        headers: {
-          'Cookie': 'auth-token=valid-token',
-        },
       });
 
       const response = await GET(request);
@@ -328,10 +330,20 @@ describe('/api/works', () => {
       expect(response.status).toBe(200);
       expect(data.success).toBe(true);
       expect(data.works).toEqual(mockWorks);
-      expect(mockedUserService.getWorksByCreator).toHaveBeenCalledWith('user_123');
+      expect(data.pagination).toEqual({
+        page: 1,
+        limit: 20,
+        total: 1,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      });
+      expect(mockedUserService.getAllWorks).toHaveBeenCalledWith(1, 20);
     });
 
-    it('should return 401 if no auth token provided', async () => {
+    it('should use default pagination parameters when not provided', async () => {
+      mockedUserService.getAllWorks.mockResolvedValue(mockPaginatedResult as any);
+
       const request = new NextRequest('http://localhost/api/works', {
         method: 'GET',
       });
@@ -339,8 +351,49 @@ describe('/api/works', () => {
       const response = await GET(request);
       const data = await response.json();
 
-      expect(response.status).toBe(401);
-      expect(data.error).toBe('Authentication required');
+      expect(response.status).toBe(200);
+      expect(data.success).toBe(true);
+      expect(mockedUserService.getAllWorks).toHaveBeenCalledWith(1, 20);
+    });
+
+    it('should return 400 for invalid pagination parameters', async () => {
+      const request = new NextRequest('http://localhost/api/works?page=0&limit=20', {
+        method: 'GET',
+      });
+
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(data.error).toBe('Invalid pagination parameters. Page and limit must be positive numbers.');
+    });
+
+    it('should limit maximum items per page to 50', async () => {
+      mockedUserService.getAllWorks.mockResolvedValue(mockPaginatedResult as any);
+
+      const request = new NextRequest('http://localhost/api/works?page=1&limit=100', {
+        method: 'GET',
+      });
+
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockedUserService.getAllWorks).toHaveBeenCalledWith(1, 50);
+    });
+
+    it('should handle database errors gracefully', async () => {
+      mockedUserService.getAllWorks.mockRejectedValue(new Error('Database connection failed'));
+
+      const request = new NextRequest('http://localhost/api/works?page=1&limit=20', {
+        method: 'GET',
+      });
+
+      const response = await GET(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(500);
+      expect(data.error).toBe('An unexpected error occurred. Please try again.');
     });
   });
 });

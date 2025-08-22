@@ -33,6 +33,19 @@ export interface GetWorksResponse {
   works: Work[];
 }
 
+export interface PaginatedWorksResponse {
+  success: boolean;
+  works: Work[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
+
 export interface WorkServiceError {
   error: string;
 }
@@ -137,6 +150,42 @@ class WorkServiceClass {
       }
       
       throw new Error('An unexpected error occurred while retrieving the work');
+    }
+  }
+
+  /**
+   * Get all works with pagination (public access)
+   */
+  async getAllWorks(page: number = 1, limit: number = 20): Promise<PaginatedWorksResponse['pagination'] & { works: Work[] }> {
+    try {
+      const response = await fetch(`${this.baseUrl}?page=${page}&limit=${limit}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // No credentials needed for public access
+      });
+
+      const data: PaginatedWorksResponse | WorkServiceError = await response.json();
+
+      if (!response.ok) {
+        const errorData = data as WorkServiceError;
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const successData = data as PaginatedWorksResponse;
+      return {
+        works: successData.works,
+        ...successData.pagination,
+      };
+    } catch (error) {
+      console.error('Works retrieval error:', error);
+      
+      if (error instanceof Error) {
+        throw error;
+      }
+      
+      throw new Error('An unexpected error occurred while retrieving works');
     }
   }
 
