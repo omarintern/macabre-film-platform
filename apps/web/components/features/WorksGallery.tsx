@@ -73,8 +73,8 @@ const WorksGallery: React.FC = () => {
 
   return (
     <div className="space-y-12">
-      {/* Works Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Works Grid - Using masonry-style layout for content-relative sizing */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {works.map((work) => (
           <WorkCard key={work.id} work={work} />
         ))}
@@ -95,7 +95,7 @@ const WorksGallery: React.FC = () => {
 
       {/* Results info */}
       {pagination && (
-        <div className="text-center text-sm text-muted-foreground font-medium">
+        <div className="text-center text-sm text-gray-500 font-medium">
           Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
           {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
           {pagination.total} works

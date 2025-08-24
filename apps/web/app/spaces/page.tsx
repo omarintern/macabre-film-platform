@@ -8,21 +8,25 @@ export const metadata = {
 
 export default function SpacesPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <div className="min-h-screen bg-white">
+      {/* Header Section */}
+      <section className="py-12 px-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Spaces
           </h1>
-          <p className="text-lg text-gray-600">
-            Browse all short text works submitted by creators
+          <p className="text-lg text-gray-600 mb-8">
+            Browse all works submitted by creators
           </p>
         </div>
+      </section>
 
-        {/* Works Gallery */}
-        <WorksGallery />
-      </div>
+      {/* Content Section */}
+      <section className="px-8 pb-12">
+        <div className="max-w-6xl mx-auto">
+          <WorksGallery />
+        </div>
+      </section>
     </div>
   );
 }

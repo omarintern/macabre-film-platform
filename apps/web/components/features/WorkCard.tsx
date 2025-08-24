@@ -1,6 +1,5 @@
 import React from 'react';
 import { Work } from '../../lib/services/workService';
-import Link from 'next/link';
 
 interface WorkCardProps {
   work: Work;
@@ -15,82 +14,69 @@ const WorkCard: React.FC<WorkCardProps> = ({ work }) => {
     });
   };
 
-  const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength).trim() + '...';
+  // Generate pastel color based on work content for consistent but varied appearance
+  const getCardColor = (work: Work) => {
+    const colors = [
+      'card-orange', // Light orange/cream
+      'card-red',    // Light pink/red
+      'card-green',  // Light green
+      'card-pink',   // Light pink
+      'card-blue',   // Light blue
+    ];
+    
+    // Use work ID or title to consistently assign colors
+    const hash = work.id.charCodeAt(0) + work.title.charCodeAt(0);
+    return colors[hash % colors.length];
   };
 
+  const cardColor = getCardColor(work);
+  const borderColor = cardColor.replace('card-', 'border-') + '-300';
+
   return (
-    <div className="group bg-card rounded-lg border border-border hover:border-border/60 hover:shadow-lg transition-all duration-300 overflow-hidden">
-      <div className="p-6">
-        {/* Title */}
-        <h3 className="text-lg font-semibold text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors duration-200">
-          {work.title}
-        </h3>
+    <div className={`${cardColor} p-8 border-l-4 ${borderColor} rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group`}>
+      {/* Title */}
+      <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-gray-700 transition-colors duration-200">
+        {work.title}
+      </h3>
 
-        {/* Classification Badge */}
-        <div className="mb-4">
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
-            {work.classification}
-          </span>
-        </div>
+      {/* Body Content - No truncation, let content determine height */}
+      <p className="text-gray-700 mb-4 leading-relaxed">
+        {work.body}
+      </p>
 
-        {/* Body Preview */}
-        <p className="text-muted-foreground text-sm mb-5 line-clamp-3 leading-relaxed">
-          {truncateText(work.body, 150)}
-        </p>
+      {/* Creator */}
+      <p className="text-sm text-gray-500 mb-4">
+        by {work.creator?.name || 'Anonymous Creator'}
+      </p>
 
-        {/* Tags */}
-        {work.tags && work.tags.length > 0 && (
-          <div className="mb-5 flex flex-wrap gap-2">
-            {work.tags.slice(0, 3).map((tag, index) => (
+      {/* Tags with color-coordinated styling */}
+      {work.tags && work.tags.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {work.tags.slice(0, 4).map((tag, index) => {
+            const tagColor = cardColor.replace('card-', 'bg-') + '-100';
+            const textColor = cardColor.replace('card-', 'text-') + '-800';
+            
+            return (
               <span
                 key={index}
-                className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground border border-border/50"
+                className={`text-xs ${tagColor} ${textColor} px-3 py-1 rounded-full font-medium`}
               >
                 #{tag}
               </span>
-            ))}
-            {work.tags.length > 3 && (
-              <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-muted/50 text-muted-foreground/70">
-                +{work.tags.length - 3} more
-              </span>
-            )}
-          </div>
-        )}
-
-        {/* Creator and Date */}
-        <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-          <div className="flex items-center">
-            <span className="font-medium text-foreground">
-              {work.creator?.name || 'Anonymous Creator'}
+            );
+          })}
+          {work.tags.length > 4 && (
+            <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
+              +{work.tags.length - 4} more
             </span>
-          </div>
-          <span className="font-medium">{formatDate(work.createdAt)}</span>
+          )}
         </div>
+      )}
 
-        {/* View Details Link */}
-        <div className="pt-4 border-t border-border/50">
-          <Link
-            href={`/works/${work.id}`}
-            className="text-primary hover:text-primary/80 text-sm font-medium inline-flex items-center group/link transition-colors duration-200"
-          >
-            View Details
-            <svg
-              className="ml-2 h-4 w-4 group-hover/link:translate-x-1 transition-transform duration-200"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Link>
-        </div>
+      {/* Classification and Date - Subtle footer */}
+      <div className="flex items-center justify-between text-xs text-gray-400 mt-4 pt-3 border-t border-gray-200">
+        <span className="font-medium">{work.classification}</span>
+        <span>{formatDate(work.createdAt)}</span>
       </div>
     </div>
   );
