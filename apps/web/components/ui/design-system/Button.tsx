@@ -101,13 +101,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant,
       size,
       fullWidth,
-
       loading = false,
       leftIcon,
       rightIcon,
       children,
       disabled,
       'aria-describedby': ariaDescribedby,
+      asChild, // Destructure but don't use to prevent warning
       ...props
     },
     ref
@@ -174,16 +174,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       </>
     );
 
-    // Destructure asChild from props to prevent it from being passed to DOM
-    const { asChild, ...buttonProps } = props;
-
     return (
       <button
         className={buttonClasses}
         ref={ref}
         disabled={isDisabled}
         {...accessibilityProps}
-        {...buttonProps}
+        {...props}
       >
         {buttonContent}
       </button>

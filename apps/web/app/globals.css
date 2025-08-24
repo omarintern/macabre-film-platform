@@ -333,11 +333,13 @@ input:focus, textarea:focus, select:focus {
 }
 
 .sidebar-nav-item svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
   flex-shrink: 0;
   min-width: 1.25rem;
   min-height: 1.25rem;
+  max-width: 1.25rem;
+  max-height: 1.25rem;
 }
 
 .sidebar-nav-item:hover {

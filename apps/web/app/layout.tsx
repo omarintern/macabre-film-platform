@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "../components/ui/Sidebar";
+import ErrorBoundary from "../components/ui/ErrorBoundary";
 
 export const metadata: Metadata = {
   title: "Macabre",
@@ -13,10 +14,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Sidebar />
-        <main className="main-content">
-          {children}
-        </main>
+        <ErrorBoundary>
+          <Sidebar />
+          <main className="main-content">
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
+          </main>
+        </ErrorBoundary>
       </body>
     </html>
   );
