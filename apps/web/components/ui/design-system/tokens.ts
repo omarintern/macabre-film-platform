@@ -252,7 +252,7 @@ export const componentVariants = {
         color: colors.text.primary,
       },
       '&:focus': {
-        outline: `2px solid ${colors.accent.blue}`,
+        outline: `2px solid ${colors.semantic.info}`,
         outlineOffset: '2px',
       },
     },
@@ -281,9 +281,9 @@ export const componentVariants = {
       color: colors.text.primary,
       borderRadius: borderRadius.base,
       '&:focus': {
-        borderColor: colors.accent.blue,
+        borderColor: colors.semantic.info,
         outline: 'none',
-        boxShadow: `0 0 0 3px ${colors.accent.blueLight}`,
+        boxShadow: `0 0 0 3px rgba(37, 99, 235, 0.1)`,
       },
       '&:disabled': {
         backgroundColor: colors.background.secondary,

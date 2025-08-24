@@ -3,7 +3,7 @@ import "./globals.css";
 import Sidebar from "../components/ui/Sidebar";
 
 export const metadata: Metadata = {
-  title: "Film Collaboration Platform",
+  title: "Macabre",
   description: "A professional platform for screenplay collaboration between writers, producers, and directors",
 };
 

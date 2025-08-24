@@ -216,40 +216,70 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
-/* Content card variants */
+/* Content card variants - Improved contrast and styling */
 .card-orange {
-  background-color: var(--card-orange);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card-orange:hover {
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .card-red {
-  background-color: var(--card-red);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card-red:hover {
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .card-green {
-  background-color: var(--card-green);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card-green:hover {
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .card-pink {
-  background-color: var(--card-pink);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  background-color: #fdf2f8;
+  border: 1px solid #fbcfe8;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card-pink:hover {
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .card-blue {
-  background-color: var(--card-blue);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card-blue:hover {
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 /* Sidebar navigation styles */
