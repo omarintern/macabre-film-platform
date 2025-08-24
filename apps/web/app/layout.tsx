@@ -3,15 +3,13 @@ import "./globals.css";
 import Sidebar from "../components/ui/Sidebar";
 
 export const metadata: Metadata = {
-  title: "Synopsis Hub",
+  title: "Film Collaboration Platform",
   description: "A professional platform for screenplay collaboration between writers, producers, and directors",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode; }>) {
   return (
     <html lang="en">
       <body className="antialiased">
