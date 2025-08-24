@@ -1,39 +1,46 @@
 /**
  * Design System Tokens
  * 
- * Sophisticated minimalist aesthetic inspired by Barnsworthburning.net
- * Content-forward design with elegant typography and refined spacing
+ * Synopsis Hub-inspired aesthetic with minimal pastels and clean typography
+ * Content-forward design with elegant sidebar navigation and card-based layout
  * WCAG 2.1 AA compliant color contrast ratios
  * Mobile-first responsive design system
  */
 
 // ============================================================================
-// COLOR PALETTE - Sophisticated Minimalist
+// COLOR PALETTE - Synopsis Hub Minimalist
 // ============================================================================
 
 export const colors = {
-  // Primary Colors - Refined neutral palette
+  // Primary Colors - Minimal usage
   primary: {
-    50: '#fafafa',   // Pure white background
-    100: '#f5f5f5',  // Subtle background
-    200: '#e5e5e5',  // Light borders
-    300: '#d4d4d4',  // Medium borders
-    400: '#a3a3a3',  // Placeholder text
-    500: '#737373',  // Secondary text
-    600: '#525252',  // Body text
-    700: '#404040',  // Strong text
-    800: '#262626',  // Headings
-    900: '#171717',  // Primary text
+    50: '#ffffff',   // Pure white background
+    100: '#fafafa',  // Subtle off-white
+    200: '#f5f5f5',  // Very light gray
+    300: '#e5e5e5',  // Light borders
+    400: '#d4d4d4',  // Medium borders
+    500: '#a3a3a3',  // Placeholder text
+    600: '#737373',  // Secondary text
+    700: '#525252',  // Body text
+    800: '#404040',  // Strong text
+    900: '#1a1a1a',  // Primary text
+  },
+  
+  // Content Card Colors - Subtle Pastels
+  card: {
+    orange: '#fff5f0',  // Action/Mystery content
+    red: '#fef2f2',     // Horror/Thriller content
+    green: '#f0fdf4',   // Drama/Character content
+    pink: '#fdf2f8',    // Romance content
+    blue: '#f0f9ff',    // Sci-fi/Fantasy content
+    default: '#ffffff', // Default white cards
   },
   
   // Accent Colors - Minimal, purposeful
   accent: {
-    blue: '#2563eb',     // Primary action - refined blue
-    blueHover: '#1d4ed8',
-    blueLight: '#dbeafe',
-    green: '#059669',    // Success - muted green
-    red: '#dc2626',      // Error - refined red
-    yellow: '#d97706',   // Warning - muted amber
+    primary: '#1a1a1a',    // Dark gray for primary actions
+    secondary: '#404040',  // Medium gray for secondary actions
+    subtle: '#6b7280',     // Light gray for subtle actions
   },
   
   // Semantic Colors
@@ -73,15 +80,15 @@ export const colors = {
 } as const;
 
 // ============================================================================
-// TYPOGRAPHY - Sophisticated and Content-Focused
+// TYPOGRAPHY - Synopsis Hub Clean Hierarchy
 // ============================================================================
 
 export const typography = {
-  // Font Families - Professional and readable
+  // Font Families - Georgia for titles, Inter for body
   fontFamily: {
     sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
     mono: ['JetBrains Mono', 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'monospace'],
-    serif: ['Georgia', 'Times', 'serif'],
+    serif: ['Georgia', 'Times New Roman', 'serif'],
   },
   
   // Font Sizes - Refined scale for content hierarchy
@@ -202,37 +209,36 @@ export const breakpoints = {
 // ============================================================================
 
 export const componentVariants = {
-  // Button Variants - Clean and purposeful
+  // Button Variants - Minimal Synopsis Hub Style
   button: {
     primary: {
-      backgroundColor: colors.accent.blue,
-      color: colors.text.inverse,
-      border: 'none',
+      backgroundColor: colors.primary[50], // White background
+      color: colors.primary[900], // Dark text
+      border: `1px solid ${colors.border.medium}`,
       fontWeight: typography.fontWeight.medium,
       '&:hover': {
-        backgroundColor: colors.accent.blueHover,
-        transform: 'translateY(-1px)',
-        boxShadow: shadows.md,
+        backgroundColor: colors.primary[100],
+        borderColor: colors.border.dark,
       },
       '&:focus': {
-        outline: `2px solid ${colors.accent.blue}`,
+        outline: `2px solid ${colors.accent.primary}`,
         outlineOffset: '2px',
       },
       '&:active': {
-        transform: 'translateY(0)',
+        backgroundColor: colors.primary[200],
       },
     },
     secondary: {
       backgroundColor: 'transparent',
-      color: colors.text.primary,
-      border: `1px solid ${colors.border.medium}`,
+      color: colors.text.secondary,
+      border: `1px solid ${colors.border.light}`,
       fontWeight: typography.fontWeight.normal,
       '&:hover': {
-        backgroundColor: colors.background.secondary,
-        borderColor: colors.border.dark,
+        backgroundColor: colors.background.subtle,
+        color: colors.text.primary,
       },
       '&:focus': {
-        outline: `2px solid ${colors.accent.blue}`,
+        outline: `2px solid ${colors.accent.primary}`,
         outlineOffset: '2px',
       },
     },
@@ -301,24 +307,43 @@ export const componentVariants = {
     },
   },
   
-  // Card Variants - Elegant and content-focused
+  // Card Variants - Synopsis Hub Pastel Content Cards
   card: {
     default: {
-      backgroundColor: colors.background.primary,
-      border: `1px solid ${colors.border.light}`,
+      backgroundColor: colors.card.default,
+      border: `1px solid ${colors.border.medium}`,
       borderRadius: borderRadius.lg,
       boxShadow: shadows.sm,
     },
-    elevated: {
-      backgroundColor: colors.background.primary,
-      border: 'none',
+    orange: {
+      backgroundColor: colors.card.orange,
+      border: `1px solid ${colors.border.medium}`,
       borderRadius: borderRadius.lg,
-      boxShadow: shadows.lg,
+      boxShadow: shadows.sm,
     },
-    subtle: {
-      backgroundColor: colors.background.secondary,
-      border: 'none',
+    red: {
+      backgroundColor: colors.card.red,
+      border: `1px solid ${colors.border.medium}`,
       borderRadius: borderRadius.lg,
+      boxShadow: shadows.sm,
+    },
+    green: {
+      backgroundColor: colors.card.green,
+      border: `1px solid ${colors.border.medium}`,
+      borderRadius: borderRadius.lg,
+      boxShadow: shadows.sm,
+    },
+    pink: {
+      backgroundColor: colors.card.pink,
+      border: `1px solid ${colors.border.medium}`,
+      borderRadius: borderRadius.lg,
+      boxShadow: shadows.sm,
+    },
+    blue: {
+      backgroundColor: colors.card.blue,
+      border: `1px solid ${colors.border.medium}`,
+      borderRadius: borderRadius.lg,
+      boxShadow: shadows.sm,
     },
   },
 } as const;

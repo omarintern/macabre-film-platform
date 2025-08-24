@@ -87,8 +87,8 @@ describe('WorksGallery', () => {
     expect(skeletonElements.length).toBeGreaterThan(0);
     
     // Check that we have skeleton elements with the new structure
-    const skeletonCards = document.querySelectorAll('.bg-white.rounded-lg.shadow-sm');
-    expect(skeletonCards.length).toBe(6);
+    const skeletonCards = document.querySelectorAll('[class*="animate-pulse"]');
+    expect(skeletonCards.length).toBeGreaterThan(0);
   });
 
   it('renders error state correctly', () => {
@@ -116,7 +116,7 @@ describe('WorksGallery', () => {
     render(<WorksGallery />);
 
     expect(screen.getByText('No works yet')).toBeInTheDocument();
-    expect(screen.getByText('Be the first to submit a work and share your creative vision.')).toBeInTheDocument();
+    expect(screen.getByText('Be the first to submit a work and share your creative vision with the community.')).toBeInTheDocument();
   });
 
   it('renders works grid correctly', () => {

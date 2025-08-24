@@ -97,8 +97,8 @@ describe('WorkCard', () => {
   it('applies correct CSS classes for styling', () => {
     render(<WorkCard work={mockWork} />);
     
-    const card = screen.getByText('Test Work Title').closest('.bg-white');
-    expect(card).toHaveClass('bg-white', 'rounded-lg', 'shadow-sm', 'border', 'border-gray-200');
+    const card = screen.getByText('Test Work Title').closest('div')?.parentElement;
+    expect(card).toHaveClass('bg-card', 'rounded-lg', 'border', 'border-border');
   });
 
   it('truncates long body text correctly', () => {

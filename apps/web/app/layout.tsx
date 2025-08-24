@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navigation from "../components/ui/Navigation";
+import Sidebar from "../components/ui/Sidebar";
 
 export const metadata: Metadata = {
-  title: "Film Collaboration Platform",
+  title: "Synopsis Hub",
   description: "A professional platform for screenplay collaboration between writers, producers, and directors",
 };
 
@@ -15,8 +15,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Navigation />
-        <main className="min-h-screen">
+        <Sidebar />
+        <main className="main-content">
           {children}
         </main>
       </body>

@@ -1,25 +1,33 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Georgia:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  /* Sophisticated color palette */
+  /* Synopsis Hub color palette */
   --background: #ffffff;
-  --foreground: #171717;
-  --muted: #737373;
+  --foreground: #1a1a1a;
+  --muted: #6b7280;
   --muted-background: #fafafa;
   --border: #e5e5e5;
   --input: #ffffff;
-  --primary: #2563eb;
+  --primary: #1a1a1a;
   --primary-foreground: #ffffff;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #171717;
+  --secondary: #404040;
+  --secondary-foreground: #ffffff;
   --accent: #f5f5f5;
-  --accent-foreground: #171717;
+  --accent-foreground: #1a1a1a;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --ring: #2563eb;
+  --ring: #1a1a1a;
   --radius: 0.5rem;
+  
+  /* Content card colors */
+  --card-orange: #fff5f0;
+  --card-red: #fef2f2;
+  --card-green: #f0fdf4;
+  --card-pink: #fdf2f8;
+  --card-blue: #f0f9ff;
 }
 
 @theme inline {
@@ -40,6 +48,7 @@
   --color-ring: var(--ring);
   --radius: var(--radius);
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Georgia', 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace;
 }
 
@@ -77,8 +86,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography enhancements */
+/* Typography enhancements - Synopsis Hub Style */
 h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.025em;
@@ -97,7 +107,7 @@ h2 {
 
 h3 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 600;;
 }
 
 h4 {
@@ -116,6 +126,7 @@ h6 {
 }
 
 p {
+  font-family: var(--font-sans);
   line-height: 1.75;
   color: var(--foreground);
 }
@@ -197,12 +208,109 @@ input:focus, textarea:focus, select:focus {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-/* Card styling */
+/* Card styling - Synopsis Hub Style */
 .card {
   background-color: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Content card variants */
+.card-orange {
+  background-color: var(--card-orange);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.card-red {
+  background-color: var(--card-red);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.card-green {
+  background-color: var(--card-green);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.card-pink {
+  background-color: var(--card-pink);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.card-blue {
+  background-color: var(--card-blue);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Sidebar navigation styles */
+.sidebar {
+  width: 280px;
+  background-color: var(--background);
+  border-right: 1px solid var(--border);
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+.sidebar-content {
+  padding: 1.5rem;
+}
+
+.sidebar-logo {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 2rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  color: var(--muted);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+}
+
+.sidebar-nav-item:hover {
+  background-color: var(--muted-background);
+  color: var(--foreground);
+}
+
+.sidebar-nav-item.active {
+  background-color: var(--card-orange);
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.main-content {
+  margin-left: 280px;
+  min-height: 100vh;
+  background-color: var(--background);
 }
 
 /* Subtle animations */

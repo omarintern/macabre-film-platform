@@ -20,8 +20,8 @@ describe('Pagination', () => {
       />
     );
 
-    expect(screen.getByText('Previous')).toBeInTheDocument();
-    expect(screen.getByText('Next')).toBeInTheDocument();
+    expect(screen.getByText('← Previous')).toBeInTheDocument();
+    expect(screen.getByText('Next →')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('3')).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('Pagination', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('Previous'));
+    fireEvent.click(screen.getByText('← Previous'));
     expect(mockOnPageChange).toHaveBeenCalledWith(1);
   });
 
@@ -55,7 +55,7 @@ describe('Pagination', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('Next'));
+    fireEvent.click(screen.getByText('Next →'));
     expect(mockOnPageChange).toHaveBeenCalledWith(3);
   });
 
@@ -85,7 +85,7 @@ describe('Pagination', () => {
       />
     );
 
-    const prevButton = screen.getByText('Previous');
+    const prevButton = screen.getByText('← Previous');
     // Since the Button component renders as a span, we need to check the parent button element
     const buttonElement = prevButton.closest('button');
     expect(buttonElement).toHaveAttribute('aria-disabled', 'true');
@@ -102,7 +102,7 @@ describe('Pagination', () => {
       />
     );
 
-    const nextButton = screen.getByText('Next');
+    const nextButton = screen.getByText('Next →');
     // Since the Button component renders as a span, we need to check the parent button element
     const buttonElement = nextButton.closest('button');
     expect(buttonElement).toHaveAttribute('aria-disabled', 'true');
@@ -158,8 +158,8 @@ describe('Pagination', () => {
     expect(pageButtons.length).toBeGreaterThan(0);
     
     // Since the Button component renders as a span, we need to check the parent button element
-    const prevButtonElement = screen.getByText('Previous').closest('button');
-    const nextButtonElement = screen.getByText('Next').closest('button');
+    const prevButtonElement = screen.getByText('← Previous').closest('button');
+    const nextButtonElement = screen.getByText('Next →').closest('button');
     expect(prevButtonElement).toHaveAttribute('aria-disabled', 'true');
     expect(nextButtonElement).toHaveAttribute('aria-disabled', 'true');
   });
@@ -175,7 +175,7 @@ describe('Pagination', () => {
       />
     );
 
-    const prevButton = screen.getByText('Previous');
+    const prevButton = screen.getByText('← Previous');
     // Since the Button component renders as a span, we need to check the parent button element
     const buttonElement = prevButton.closest('button');
     expect(buttonElement).toHaveAttribute('aria-disabled', 'true');
@@ -192,12 +192,12 @@ describe('Pagination', () => {
       />
     );
 
-    const nextButton = screen.getByText('Next');
+    const nextButton = screen.getByText('Next →');
     // Since the Button component renders as a span, we need to check the parent button element
     const buttonElement = nextButton.closest('button');
-    expect(buttonElement).toHaveClass('bg-white');
-    expect(buttonElement).toHaveClass('text-gray-900');
-    expect(buttonElement).toHaveClass('border');
+    expect(buttonElement).toHaveClass('bg-transparent');
+    expect(buttonElement).toHaveClass('text-gray-600');
+    expect(buttonElement).toHaveClass('hover:bg-gray-100');
   });
 
   it('has proper accessibility attributes', () => {
@@ -221,11 +221,11 @@ describe('Pagination', () => {
     expect(buttonElement).toHaveAttribute('aria-current', 'page');
 
     // Check aria-labels for navigation buttons
-    const prevButton = screen.getByText('Previous');
+    const prevButton = screen.getByText('← Previous');
     const prevButtonElement = prevButton.closest('button');
     expect(prevButtonElement).toHaveAttribute('aria-label', 'Go to previous page, page 1');
 
-    const nextButton = screen.getByText('Next');
+    const nextButton = screen.getByText('Next →');
     const nextButtonElement = nextButton.closest('button');
     expect(nextButtonElement).toHaveAttribute('aria-label', 'Go to next page, page 3');
   });
