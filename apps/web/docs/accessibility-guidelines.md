@@ -515,3 +515,4 @@ button:focus {
 Accessibility is not a feature—it's a fundamental requirement. By following these guidelines and using the provided checklist, we ensure that the Macabre Film platform is accessible to all users, regardless of their abilities or assistive technologies.
 
 Remember: **Good accessibility is good UX for everyone.**
+

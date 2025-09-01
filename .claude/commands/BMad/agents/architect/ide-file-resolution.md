@@ -8,3 +8,4 @@ IDE-FILE-RESOLUTION:
   - Example: create-doc.md → .bmad-core/tasks/create-doc.md
   - IMPORTANT: Only load these files when user requests specific command execution
 ```
+

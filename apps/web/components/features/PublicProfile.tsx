@@ -59,7 +59,7 @@ const PublicProfile: React.FC<PublicProfileProps> = ({ profile }) => {
                 </p>
               </div>
             ) : (
-              <p className="text-gray-500 italic">
+              <p className="text-gray-600 italic">
                 This creator hasn&apos;t added a bio yet.
               </p>
             )}

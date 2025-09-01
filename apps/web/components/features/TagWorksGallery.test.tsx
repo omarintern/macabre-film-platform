@@ -200,3 +200,4 @@ describe('TagWorksGallery', () => {
     expect(mockedUseTagWorksGallery).toHaveBeenCalledWith('action', 1);
   });
 });
+

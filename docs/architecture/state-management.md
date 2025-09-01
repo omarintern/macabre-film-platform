@@ -27,3 +27,4 @@ export const useUserSessionStore = create<UserSessionState>((set) => ({
   clearUserSession: () => set({ user: null, token: null }),
 }));
 ```
+

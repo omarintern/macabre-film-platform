@@ -92,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
               className="w-full px-3 py-2 pl-10 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
             />
             <svg
-              className="absolute left-3 top-2.5 w-4 h-4 text-gray-400"
+              className="absolute left-3 top-2.5 w-4 h-4 text-gray-500"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -115,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
                 {item.icon}
                 <div className="flex flex-col">
                   <span className="font-medium">{item.label}</span>
-                  <span className="text-xs text-gray-500">{item.description}</span>
+                  <span className="text-xs text-gray-600">{item.description}</span>
                 </div>
               </Link>
             );
@@ -137,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
                   <div className="flex flex-col">
                     <span className="font-medium">{item.label}</span>
                     {item.description && (
-                      <span className="text-xs text-gray-500">{item.description}</span>
+                      <span className="text-xs text-gray-600">{item.description}</span>
                     )}
                   </div>
                 </Link>
@@ -147,7 +147,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
         </div>
 
         {/* Development URL */}
-        <div className="mt-6 text-xs text-gray-400 text-center">
+        <div className="mt-6 text-xs text-gray-600 text-center">
           localhost:3000
         </div>
       </div>

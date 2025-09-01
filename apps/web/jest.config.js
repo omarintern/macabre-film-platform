@@ -43,7 +43,7 @@ const customJestConfig = {
     {
       displayName: 'node',
       testEnvironment: 'node',
-      testMatch: ['<rootDir>/app/api/**/*.test.ts'],
+      testMatch: ['<rootDir>/app/api/**/*.test.ts', '<rootDir>/lib/**/*.test.ts'],
       moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/$1',
       },

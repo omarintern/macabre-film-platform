@@ -102,7 +102,7 @@ const CreatorWorksList = ({ works = [], isLoading = false, error }: CreatorWorks
                 <h4 className="text-lg font-medium text-gray-900 mb-2">
                   {work.title}
                 </h4>
-                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                <div className="flex items-center space-x-4 text-sm text-gray-600">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                     {work.classification}
                   </span>

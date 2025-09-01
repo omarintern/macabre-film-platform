@@ -1,29 +1,14 @@
 import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
 import Link from 'next/link';
-import jwt from 'jsonwebtoken';
 import WorkSubmissionForm, { Work } from '../../../components/features/WorkSubmissionForm';
-import { getJWTSecret } from '../../../lib/utils/jwt';
+import { requireAuth } from '../../../lib/auth/server';
 
 export default async function SubmitPage() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('auth-token')?.value;
-
-  if (!token) {
-    redirect('/login');
-  }
-
-  let decoded: { userId: string; email: string; role: string };
-  try {
-    const jwtSecret = getJWTSecret();
-    const verified = jwt.verify(token, jwtSecret);
-    decoded = verified as { userId: string; email: string; role: string };
-  } catch {
-    redirect('/login');
-  }
-
+  // Server-side authentication check - will redirect if not authenticated
+  const user = await requireAuth();
+  
   // Check if user has CREATOR role
-  if (!decoded || decoded.role !== 'CREATOR') {
+  if (user.role !== 'CREATOR') {
     redirect('/');
   }
 

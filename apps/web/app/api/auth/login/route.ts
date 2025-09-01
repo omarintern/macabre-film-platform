@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
 import { userService } from '../../../../lib/database';
 import { signToken } from '../../../../lib/utils/jwt';
+import { verifyPassword } from '../../../../lib/utils/password';
 
 interface LoginRequest {
   email: string;
@@ -81,8 +81,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<LoginResp
       );
     }
 
-    // Verify password with bcrypt
-    const isValidPassword = await bcrypt.compare(password, user.password);
+    // Verify password with native Node.js scrypt
+    const isValidPassword = await verifyPassword(password, user.password);
     if (!isValidPassword) {
       return NextResponse.json(
         { success: false, error: 'Invalid email or password' },

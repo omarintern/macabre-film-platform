@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
 import { userService } from '../../../../lib/database';
+import { hashPassword } from '../../../../lib/utils/password';
 
 interface SignupRequest {
   email: string;
@@ -55,9 +55,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<SignupRes
       );
     }
 
-    // Hash password with bcrypt (salt rounds: 12)
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    // Hash password with native Node.js scrypt
+    const hashedPassword = await hashPassword(password);
 
     // Create user using existing userService
     await userService.createUser({

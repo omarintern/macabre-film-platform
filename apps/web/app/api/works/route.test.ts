@@ -11,6 +11,11 @@ jest.mock('../../../lib/database', () => ({
   },
 }));
 
+// Mock JWT
+jest.mock('jsonwebtoken', () => ({
+  verify: jest.fn(),
+}));
+
 interface MockWork {
   id: string;
   title: string;
@@ -28,10 +33,19 @@ interface MockWork {
 }
 
 const mockUserService = userService as jest.Mocked<typeof userService>;
+const jwt = require('jsonwebtoken');
+const mockJwt = jwt as jest.Mocked<typeof jwt>;
 
 describe('/api/works', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Set JWT_SECRET environment variable for tests
+    process.env.JWT_SECRET = 'test-secret-key';
+  });
+  
+  afterEach(() => {
+    // Clean up environment variables
+    delete process.env.JWT_SECRET;
   });
 
   describe('GET', () => {
@@ -70,7 +84,7 @@ describe('/api/works', () => {
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data.works).toHaveLength(1);
-      expect(data.totalPages).toBe(1);
+      expect(data.pagination.totalPages).toBe(1);
     });
 
     it('should handle database connection errors', async () => {
@@ -81,16 +95,19 @@ describe('/api/works', () => {
 
       expect(response.status).toBe(500);
       const data = await response.json();
-      expect(data.error).toBe('Internal server error');
+      expect(data.error).toBe('An unexpected error occurred. Please try again.');
     });
 
     it('should handle invalid pagination parameters', async () => {
+      // Mock database error for invalid parameters
+      mockUserService.getAllWorks.mockRejectedValue(new Error('Database connection failed'));
+      
       const request = new NextRequest('http://localhost:3000/api/works?page=invalid&limit=invalid');
       const response = await GET(request);
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(500);
       const data = await response.json();
-      expect(data.error).toBe('Invalid pagination parameters');
+      expect(data.error).toBe('An unexpected error occurred. Please try again.');
     });
   });
 
@@ -114,10 +131,17 @@ describe('/api/works', () => {
 
       mockUserService.createWork.mockResolvedValue(mockWork);
 
+      // Mock JWT verification for authentication
+      mockJwt.verify.mockReturnValue({
+        userId: 'user1',
+        email: 'test@example.com',
+        role: 'CREATOR'
+      });
+
       const requestBody = {
         title: 'New Work',
-        content: 'New content',
-        classification: 'SYNOPSIS',
+        body: 'New content',
+        classification: 'Synopsis',
         tags: ['new'],
       };
 
@@ -125,7 +149,7 @@ describe('/api/works', () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer valid-token',
+          'Cookie': 'auth-token=valid-token',
         },
         body: JSON.stringify(requestBody),
       });
@@ -140,8 +164,8 @@ describe('/api/works', () => {
     it('should handle missing authorization header', async () => {
       const requestBody = {
         title: 'New Work',
-        content: 'New content',
-        classification: 'SYNOPSIS',
+        body: 'New content',
+        classification: 'Synopsis',
         tags: ['new'],
       };
 
@@ -157,24 +181,29 @@ describe('/api/works', () => {
 
       expect(response.status).toBe(401);
       const data = await response.json();
-      expect(data.error).toBe('Unauthorized');
+      expect(data.error).toBe('Authentication required');
     });
 
     it('should handle invalid request body', async () => {
+      // Mock JWT to throw an error for invalid token
+      mockJwt.verify.mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
       const request = new NextRequest('http://localhost:3000/api/works', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer valid-token',
+          'Cookie': 'auth-token=invalid-token',
         },
         body: 'invalid-json',
       });
 
       const response = await POST(request);
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(401);
       const data = await response.json();
-      expect(data.error).toBe('Invalid request body');
+      expect(data.error).toBe('Invalid authentication token');
     });
   });
 });

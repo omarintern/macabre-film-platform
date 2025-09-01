@@ -145,7 +145,7 @@ describe('PublicProfile', () => {
     render(<PublicProfile profile={profileWithoutBio} />);
 
     const emptyBioMessage = screen.getByText("This creator hasn't added a bio yet.");
-    expect(emptyBioMessage).toHaveClass('text-gray-500', 'italic');
+    expect(emptyBioMessage).toHaveClass('text-gray-600', 'italic');
   });
 
   it('handles empty string bio same as null bio', () => {

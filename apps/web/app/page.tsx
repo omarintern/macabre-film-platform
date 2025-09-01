@@ -9,7 +9,7 @@ export default function Home() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Macabre
           </h1>
-          <p className="text-lg text-gray-600 mb-8">
+          <p className="text-lg text-gray-700 mb-8">
             A professional platform for screenplay collaboration between writers, producers, and directors
           </p>
         </div>
@@ -26,7 +26,7 @@ export default function Home() {
                 A noir thriller about a private investigator who discovers a conspiracy that goes deeper than he imagined. 
                 Set in a rain-soaked city where every shadow hides a secret.
               </p>
-              <p className="text-sm text-gray-500 mb-4">by John Smith</p>
+              <p className="text-sm text-gray-600 mb-4">by John Smith</p>
               <div className="flex flex-wrap gap-2">
                 <span className="text-xs bg-orange-100 text-orange-800 px-3 py-1 rounded-full">#thriller</span>
                 <span className="text-xs bg-orange-100 text-orange-800 px-3 py-1 rounded-full">#noir</span>
@@ -39,7 +39,7 @@ export default function Home() {
                 A sci-fi drama exploring the consequences of time travel. When a scientist discovers how to send messages 
                 to the past, the present begins to unravel in unexpected ways.
               </p>
-              <p className="text-sm text-gray-500 mb-4">by Sarah Johnson</p>
+              <p className="text-sm text-gray-600 mb-4">by Sarah Johnson</p>
               <div className="flex flex-wrap gap-2">
                 <span className="text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full">#scifi</span>
                 <span className="text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full">#drama</span>
@@ -52,7 +52,7 @@ export default function Home() {
                 A family drama set in rural America during the Dust Bowl. Three generations struggle to hold onto their 
                 farm and their relationships as the world around them changes forever.
               </p>
-              <p className="text-sm text-gray-500 mb-4">by Michael Chen</p>
+              <p className="text-sm text-gray-600 mb-4">by Michael Chen</p>
               <div className="flex flex-wrap gap-2">
                 <span className="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-full">#drama</span>
                 <span className="text-xs bg-green-100 text-green-800 px-3 py-1 rounded-full">#family</span>
@@ -65,7 +65,7 @@ export default function Home() {
                 A horror anthology series concept where each episode explores a different urban legend from around the world. 
                 From ghost stories to cryptid encounters, every tale reveals something about human nature.
               </p>
-              <p className="text-sm text-gray-500 mb-4">by Emily Rodriguez</p>
+              <p className="text-sm text-gray-600 mb-4">by Emily Rodriguez</p>
               <div className="flex flex-wrap gap-2">
                 <span className="text-xs bg-pink-100 text-pink-800 px-3 py-1 rounded-full">#horror</span>
                 <span className="text-xs bg-pink-100 text-pink-800 px-3 py-1 rounded-full">#anthology</span>
@@ -78,7 +78,7 @@ export default function Home() {
                 A historical epic about ancient strategy and the rise of a military genius. Set against the backdrop of 
                 warring kingdoms, this story explores the price of ambition and the cost of victory.
               </p>
-              <p className="text-sm text-gray-500 mb-4">by David Kim</p>
+              <p className="text-sm text-gray-600 mb-4">by David Kim</p>
               <div className="flex flex-wrap gap-2">
                 <span className="text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full">#historical</span>
                 <span className="text-xs bg-red-100 text-red-800 px-3 py-1 rounded-full">#epic</span>
@@ -91,7 +91,7 @@ export default function Home() {
                 A cyberpunk romance set in a virtual reality world where the boundaries between digital and real love 
                 become blurred. When two users fall in love online, they must decide if their connection can survive in reality.
               </p>
-              <p className="text-sm text-gray-500 mb-4">by Lisa Thompson</p>
+              <p className="text-sm text-gray-600 mb-4">by Lisa Thompson</p>
               <div className="flex flex-wrap gap-2">
                 <span className="text-xs bg-orange-100 text-orange-800 px-3 py-1 rounded-full">#cyberpunk</span>
                 <span className="text-xs bg-orange-100 text-orange-800 px-3 py-1 rounded-full">#romance</span>

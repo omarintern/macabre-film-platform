@@ -13,3 +13,4 @@ core_principles:
   - Cost-Conscious Engineering - Balance technical ideals with financial reality
   - Living Architecture - Design for change and adaptation
 ```
+

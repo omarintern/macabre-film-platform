@@ -45,7 +45,7 @@ const WorkCard: React.FC<WorkCardProps> = ({ work }) => {
       </p>
 
       {/* Creator */}
-      <p className="text-sm text-gray-500 mb-4">
+      <p className="text-sm text-gray-600 mb-4">
         by {work.creator?.name || 'Anonymous Creator'}
       </p>
 
@@ -74,7 +74,7 @@ const WorkCard: React.FC<WorkCardProps> = ({ work }) => {
       )}
 
       {/* Classification and Date - Subtle footer */}
-      <div className="flex items-center justify-between text-xs text-gray-400 mt-4 pt-3 border-t border-gray-200">
+              <div className="flex items-center justify-between text-xs text-gray-500 mt-4 pt-3 border-t border-gray-200">
         <span className="font-medium">{work.classification}</span>
         <span>{formatDate(work.createdAt)}</span>
       </div>

@@ -196,7 +196,7 @@ describe('Pagination', () => {
     // Since the Button component renders as a span, we need to check the parent button element
     const buttonElement = nextButton.closest('button');
     expect(buttonElement).toHaveClass('bg-transparent');
-    expect(buttonElement).toHaveClass('text-gray-600');
+    expect(buttonElement).toHaveClass('text-gray-700');
     expect(buttonElement).toHaveClass('hover:bg-gray-100');
   });
 

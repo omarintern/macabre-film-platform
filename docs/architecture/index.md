@@ -19,3 +19,4 @@ Final Frontend Architecture Document (v1.0)
 - [Testing Requirements](./testing-requirements.md)
 - [Environment Configuration](./environment-configuration.md)
 - [Frontend Developer Standards](./frontend-developer-standards.md)
+

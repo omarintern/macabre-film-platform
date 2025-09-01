@@ -7,7 +7,7 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:web\" \"npm run dev:api\"",
+    "dev": "npm run dev:web & npm run dev:api",
     "dev:web": "npm run dev --workspace=apps/web",
     "dev:api": "npm run dev --workspace=apps/api",
     "build": "npm run build --workspaces",
@@ -22,19 +22,11 @@
     "db:migrate": "npm run db:migrate --workspace=apps/web",
     "db:studio": "npm run db:studio --workspace=apps/web"
   },
-  "devDependencies": {
-    "concurrently": "^8.2.2"
-  },
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
   "author": "Film Collaboration Platform Team",
   "license": "MIT",
-  "dependencies": {
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "jest-axe": "^10.0.0",
-    "tailwind-merge": "^3.3.1"
-  }
+  "dependencies": {}
 }

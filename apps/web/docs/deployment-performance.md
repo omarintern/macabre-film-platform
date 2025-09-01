@@ -670,3 +670,4 @@ Following these deployment and performance guidelines ensures:
 - Optimal user experience
 
 Remember: **Performance is a feature, not an afterthought.**
+

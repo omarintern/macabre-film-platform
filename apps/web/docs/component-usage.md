@@ -713,3 +713,4 @@ When introducing breaking changes:
 This component library provides a comprehensive set of reusable, accessible, and performant components that follow our sophisticated minimalist aesthetic. By using these components consistently, we ensure a cohesive user experience across the Macabre Film platform.
 
 For questions or contributions, refer to the design system documentation and testing guidelines.
+

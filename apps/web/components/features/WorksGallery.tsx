@@ -95,7 +95,7 @@ const WorksGallery: React.FC = () => {
 
       {/* Results info */}
       {pagination && (
-        <div className="text-center text-sm text-gray-500 font-medium">
+        <div className="text-center text-sm text-gray-600 font-medium">
           Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
           {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
           {pagination.total} works

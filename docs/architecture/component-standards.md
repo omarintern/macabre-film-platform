@@ -38,3 +38,4 @@ Component Files: PascalCase (e.g., WorkCard.tsx)
 Hooks: camelCase, starting with use (e.g., useUser.ts)
 
 Store Files: camelCase, ending with Store (e.g., userSessionStore.ts)
+

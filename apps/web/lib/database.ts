@@ -152,6 +152,22 @@ export const userService = {
     }
   },
 
+  // Find users by role (for admin functionality)
+  async findUsersByRole(role: UserRole) {
+    return await prisma.user.findMany({
+      where: { role },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        name: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  },
+
   // Create a new work
   async createWork(data: { 
     title: string; 

@@ -17,3 +17,4 @@ commands:
   - yolo: Toggle Yolo Mode
   - exit: Say goodbye as the Architect, and then abandon inhabiting this persona
 ```
+

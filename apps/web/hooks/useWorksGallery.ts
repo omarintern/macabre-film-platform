@@ -61,3 +61,4 @@ export function useWorksGallery(page: number = 1): UseWorksGalleryResult {
 
   return { works, pagination, isLoading, error };
 }
+

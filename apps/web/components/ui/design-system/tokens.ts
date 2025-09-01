@@ -19,9 +19,9 @@ export const colors = {
     200: '#f5f5f5',  // Very light gray
     300: '#e5e5e5',  // Light borders
     400: '#d4d4d4',  // Medium borders
-    500: '#a3a3a3',  // Placeholder text
-    600: '#737373',  // Secondary text
-    700: '#525252',  // Body text
+    500: '#9ca3af',  // Placeholder text
+    600: '#6b7280',  // Secondary text  
+    700: '#374151',  // Body text
     800: '#404040',  // Strong text
     900: '#1a1a1a',  // Primary text
   },
@@ -63,11 +63,11 @@ export const colors = {
   // Text Colors - Typography-focused
   text: {
     primary: '#171717',
-    secondary: '#525252',
-    tertiary: '#737373',
-    disabled: '#a3a3a3',
+    secondary: '#374151',
+    tertiary: '#6b7280',
+    disabled: '#9ca3af',
     inverse: '#ffffff',
-    muted: '#a3a3a3',
+    muted: '#6b7280',
   },
   
   // Border Colors - Subtle and refined

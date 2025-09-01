@@ -43,7 +43,7 @@ describe('WorkCard', () => {
 
   it('renders creator name correctly', () => {
     render(<WorkCard work={mockWork} />);
-    expect(screen.getByText('Test Creator')).toBeInTheDocument();
+    expect(screen.getByText(/by Test Creator/)).toBeInTheDocument();
   });
 
   it('renders formatted date correctly', () => {
@@ -51,11 +51,9 @@ describe('WorkCard', () => {
     expect(screen.getByText('Jan 1, 2024')).toBeInTheDocument();
   });
 
-  it('renders view details link correctly', () => {
+  it('renders work classification correctly', () => {
     render(<WorkCard work={mockWork} />);
-    const link = screen.getByText('View Details');
-    expect(link).toBeInTheDocument();
-    expect(link.closest('a')).toHaveAttribute('href', '/works/work_1');
+    expect(screen.getByText('Synopsis')).toBeInTheDocument();
   });
 
   it('shows anonymous creator when creator name is not available', () => {
@@ -68,7 +66,7 @@ describe('WorkCard', () => {
     };
 
     render(<WorkCard work={workWithoutCreatorName} />);
-    expect(screen.getByText('Anonymous Creator')).toBeInTheDocument();
+    expect(screen.getByText(/by Anonymous Creator/)).toBeInTheDocument();
   });
 
   it('handles work without tags', () => {
@@ -91,17 +89,18 @@ describe('WorkCard', () => {
     expect(screen.getByText('#tag1')).toBeInTheDocument();
     expect(screen.getByText('#tag2')).toBeInTheDocument();
     expect(screen.getByText('#tag3')).toBeInTheDocument();
-    expect(screen.getByText('+2 more')).toBeInTheDocument();
+    expect(screen.getByText('+1 more')).toBeInTheDocument();
   });
 
   it('applies correct CSS classes for styling', () => {
     render(<WorkCard work={mockWork} />);
     
-    const card = screen.getByText('Test Work Title').closest('div')?.parentElement;
-    expect(card).toHaveClass('bg-card', 'rounded-lg', 'border', 'border-border');
+    const card = screen.getByText('Test Work Title').closest('div');
+    expect(card).toHaveClass('rounded-lg');
+    expect(card).toHaveClass('shadow-sm');
   });
 
-  it('truncates long body text correctly', () => {
+  it('displays full body text without truncation', () => {
     const workWithLongBody = {
       ...mockWork,
       body: 'A'.repeat(200), // Very long body
@@ -109,6 +108,6 @@ describe('WorkCard', () => {
 
     render(<WorkCard work={workWithLongBody} />);
     const bodyElement = screen.getByText(/A{150}/);
-    expect(bodyElement.textContent).toContain('...');
+    expect(bodyElement.textContent).toBe('A'.repeat(200));
   });
 });

@@ -38,13 +38,13 @@ export default function Navigation() {
             <div className="hidden md:flex items-center space-x-8">
               <Link 
                 href="/spaces" 
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm tracking-wide"
+                className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-sm tracking-wide"
               >
                 Spaces
               </Link>
               <Link 
                 href="/index" 
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm tracking-wide"
+                className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-sm tracking-wide"
               >
                 Index
               </Link>
@@ -67,13 +67,13 @@ export default function Navigation() {
                     <>
                       <Link 
                         href={`/profile/${user.id}`}
-                        className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+                        className="text-gray-700 hover:text-gray-900 transition-colors text-sm"
                       >
                         Profile
                       </Link>
                       <Link 
                         href="/profile/edit" 
-                        className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
+                        className="text-gray-700 hover:text-gray-900 transition-colors text-sm"
                       >
                         Settings
                       </Link>
@@ -83,10 +83,10 @@ export default function Navigation() {
                 
                 <div className="flex items-center space-x-4">
                   <div className="hidden sm:flex items-center space-x-3">
-                    <span className="text-sm text-gray-600 font-medium">
+                    <span className="text-sm text-gray-700 font-medium">
                       {user.name || user.email}
                     </span>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium tracking-wide">
+                    <span className="text-xs bg-gray-100 text-gray-700 px-3 py-1 rounded-full font-medium tracking-wide">
                       {user.role}
                     </span>
                   </div>
@@ -106,7 +106,7 @@ export default function Navigation() {
               <>
                 <Link 
                   href="/login" 
-                  className="text-gray-600 hover:text-gray-900 transition-colors font-medium text-sm"
+                  className="text-gray-700 hover:text-gray-900 transition-colors font-medium text-sm"
                 >
                   Login
                 </Link>

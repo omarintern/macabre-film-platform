@@ -1,96 +1,47 @@
 'use client';
 
 import React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
-// Design tokens imported for reference - used in component variants
 
-// Button variant definitions
-const buttonVariants = cva(
-  // Base styles
-  [
-    'inline-flex items-center justify-center',
-    'font-medium',
-    'transition-all duration-200',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
-    'disabled:opacity-50 disabled:cursor-not-allowed',
-    'active:scale-95',
-    'select-none',
-  ],
-  {
-    variants: {
-      variant: {
-        primary: [
-          'bg-blue-600 text-white',
-          'hover:bg-blue-700',
-          'focus:ring-blue-500',
-          'shadow-sm',
-        ],
-        secondary: [
-          'bg-white text-gray-900',
-          'border border-gray-300',
-          'hover:bg-gray-50',
-          'focus:ring-blue-500',
-          'shadow-sm',
-        ],
-        ghost: [
-          'bg-transparent text-gray-600',
-          'hover:bg-gray-100 hover:text-gray-900',
-          'focus:ring-blue-500',
-        ],
-        danger: [
-          'bg-red-600 text-white',
-          'hover:bg-red-700',
-          'focus:ring-red-500',
-          'shadow-sm',
-        ],
-      },
-      size: {
-        sm: [
-          'px-3 py-1.5',
-          'text-sm',
-          'rounded-md',
-          'min-h-[32px]',
-        ],
-        md: [
-          'px-4 py-2',
-          'text-sm',
-          'rounded-md',
-          'min-h-[40px]',
-        ],
-        lg: [
-          'px-6 py-3',
-          'text-base',
-          'rounded-lg',
-          'min-h-[48px]',
-        ],
-        xl: [
-          'px-8 py-4',
-          'text-lg',
-          'rounded-lg',
-          'min-h-[56px]',
-        ],
-      },
-      fullWidth: {
-        true: 'w-full',
-        false: '',
-      },
-    },
-    defaultVariants: {
-      variant: 'primary',
-      size: 'md',
-      fullWidth: false,
-    },
-  }
-);
-
-// Button props interface
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+// Button props interface (pure Tailwind implementation)
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  fullWidth?: boolean;
   loading?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  asChild?: boolean;
-  'aria-describedby'?: string;
+}
+
+// Pure Tailwind class generator function
+function getButtonClasses(
+  variant: ButtonProps['variant'] = 'primary',
+  size: ButtonProps['size'] = 'md',
+  fullWidth: ButtonProps['fullWidth'] = false
+): string {
+  // Base classes
+  const baseClasses = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 select-none';
+  
+  // Variant classes
+  const variantClasses = {
+    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm',
+    secondary: 'bg-white text-gray-900 border border-gray-300 hover:bg-gray-50 focus:ring-blue-500 shadow-sm',
+    ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-blue-500',
+    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm'
+  };
+  
+  // Size classes
+  const sizeClasses = {
+    sm: 'px-3 py-1.5 text-sm rounded-md min-h-[32px]',
+    md: 'px-4 py-2 text-sm rounded-md min-h-[40px]',
+    lg: 'px-6 py-3 text-base rounded-lg min-h-[48px]',
+    xl: 'px-8 py-4 text-lg rounded-lg min-h-[56px]'
+  };
+  
+  // Width classes
+  const widthClasses = fullWidth ? 'w-full' : '';
+  
+  return cn(baseClasses, variantClasses[variant], sizeClasses[size], widthClasses);
 }
 
 // Button component
@@ -98,16 +49,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
-      variant,
-      size,
-      fullWidth,
+      variant = 'primary',
+      size = 'md',
+      fullWidth = false,
       loading = false,
       leftIcon,
       rightIcon,
       children,
       disabled,
       'aria-describedby': ariaDescribedby,
-      asChild, // Destructure but don't use to prevent warning
       ...props
     },
     ref
@@ -142,7 +92,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     // Compose class names
     const buttonClasses = cn(
-      buttonVariants({ variant, size, fullWidth }),
+      getButtonClasses(variant, size, fullWidth),
       className
     );
 
@@ -190,46 +140,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = 'Button';
 
-// Button group component for related buttons
-interface ButtonGroupProps {
-  children: React.ReactNode;
-  className?: string;
-  'aria-label'?: string;
-}
-
-const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
-  ({ children, className, 'aria-label': ariaLabel, ...props }, ref) => {
-    return (
-      <div
-        ref={ref}
-        className={cn('inline-flex rounded-md shadow-sm', className)}
-        role="group"
-        aria-label={ariaLabel}
-        {...props}
-      >
-        {React.Children.map(children, (child, index) => {
-          if (React.isValidElement(child)) {
-            const childClassName = (child.props as React.HTMLAttributes<HTMLElement>)?.className || '';
-            return React.cloneElement(child, {
-              className: cn(
-                childClassName,
-                // Remove border radius from middle buttons
-                index !== 0 && 'rounded-l-none',
-                index !== React.Children.count(children) - 1 && 'rounded-r-none',
-                // Add border to separate buttons
-                index !== 0 && '-ml-px'
-              ),
-            } as React.HTMLAttributes<HTMLElement>);
-          }
-          return child;
-        })}
-      </div>
-    );
-  }
-);
-
-ButtonGroup.displayName = 'ButtonGroup';
-
 // Export components
-export { Button, ButtonGroup, buttonVariants };
-export type { ButtonProps, ButtonGroupProps };
+export { Button };
+export type { ButtonProps };

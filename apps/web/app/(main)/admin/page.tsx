@@ -1,8 +1,4 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '../../../stores/userSessionStore';
+import { requireAdmin } from '../../../lib/auth/server';
 import UserPromotionForm from '../../../components/features/admin/UserPromotionForm';
 
 interface User {
@@ -13,41 +9,9 @@ interface User {
   updatedAt: string;
 }
 
-export default function AdminPage() {
-  const { isAuthenticated, user, isLoading } = useAuth();
-  const router = useRouter();
-  const [recentPromotions, setRecentPromotions] = useState<User[]>([]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (!isAuthenticated) {
-        router.push('/login?redirect=/admin');
-        return;
-      }
-      
-      if (user?.role !== 'ADMIN') {
-        router.push('/');
-        return;
-      }
-    }
-  }, [isAuthenticated, user, isLoading, router]);
-
-  const handlePromotionSuccess = (promotedUser: User) => {
-    setRecentPromotions(prev => [promotedUser, ...prev.slice(0, 4)]); // Keep last 5
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" role="status" aria-label="Loading admin dashboard">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900" aria-hidden="true"></div>
-        <span className="sr-only">Loading admin dashboard...</span>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated || user?.role !== 'ADMIN') {
-    return null; // Will redirect via useEffect
-  }
+export default async function AdminPage() {
+  // Server-side authentication check - will redirect if not admin
+  const user = await requireAdmin();
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -77,34 +41,9 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* User Promotion Form */}
-          <div>
-            <UserPromotionForm onSuccess={handlePromotionSuccess} />
-          </div>
-
-          {/* Recent Promotions */}
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Recent Promotions</h2>
-            {recentPromotions.length > 0 ? (
-              <div className="space-y-3">
-                {recentPromotions.map((user, index) => (
-                  <div key={`${user.id}-${index}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{user.email}</p>
-                      <p className="text-xs text-gray-500">ID: {user.id}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-green-600">{user.role}</p>
-                      <p className="text-xs text-gray-500">Just promoted</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-500 italic">No recent promotions</p>
-            )}
-          </div>
+        {/* User Promotion Form */}
+        <div className="bg-white shadow rounded-lg p-6 mb-8">
+          <UserPromotionForm />
         </div>
 
         {/* Admin Actions */}

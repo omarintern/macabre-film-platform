@@ -7,3 +7,4 @@ templates:
   - fullstack-architecture-tmpl.yaml
   - brownfield-architecture-tmpl.yaml
 ```
+

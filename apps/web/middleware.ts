@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { verifyToken, JWTPayload } from './lib/utils/jwt';
 
 // Define public routes that don't require authentication
 const publicRoutes = [
@@ -16,6 +15,7 @@ const publicApiRoutes = [
   '/api/auth/signup',
   '/api/auth/logout',
   '/api/works', // Public access for viewing works
+  '/api/bootstrap', // Bootstrap endpoint for initial setup
 ];
 
 // Define admin-only routes
@@ -63,10 +63,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
-  // Get token from cookie
+  // Simple check: if no auth token, redirect to login for protected routes
   const token = request.cookies.get('auth-token')?.value;
   
-  // If no token, redirect to login
   if (!token) {
     const loginUrl = new URL('/login', request.url);
     // Preserve the intended destination
@@ -76,54 +75,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
   
-  // Verify token
-  const payload = verifyToken(token);
-  if (!payload) {
-    // Token is invalid, clear cookie and redirect to login
-    const loginUrl = new URL('/login', request.url);
-    if (pathname !== '/') {
-      loginUrl.searchParams.set('redirect', pathname);
-    }
-    
-    const response = NextResponse.redirect(loginUrl);
-    response.cookies.set('auth-token', '', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 0,
-      path: '/',
-    });
-    
-    return response;
-  }
-  
-  // Check admin-only routes
-  const isAdminRoute = adminOnlyRoutes.some(route => pathname.startsWith(route));
-  const isAdminApiRoute = adminOnlyApiRoutes.some(route => pathname.startsWith(route));
-  
-  if (isAdminRoute || isAdminApiRoute) {
-    if (payload.role !== 'ADMIN') {
-      // Not an admin, redirect to home page
-      const homeUrl = new URL('/', request.url);
-      return NextResponse.redirect(homeUrl);
-    }
-  }
-  
-  // Token is valid, add user info to headers for API routes
-  if (pathname.startsWith('/api/')) {
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-user-id', payload.userId);
-    requestHeaders.set('x-user-email', payload.email);
-    requestHeaders.set('x-user-role', payload.role);
-    
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
-  }
-  
-  // Allow access to protected routes
+  // Let the pages handle JWT verification and role checking
   return NextResponse.next();
 }
 

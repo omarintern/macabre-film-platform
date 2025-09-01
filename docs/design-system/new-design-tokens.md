@@ -137,3 +137,4 @@
 - **Section spacing:** `space-12` (48px)
 - **Component gaps:** `space-4` (16px)
 - **Text spacing:** `space-2` (8px) between elements
+

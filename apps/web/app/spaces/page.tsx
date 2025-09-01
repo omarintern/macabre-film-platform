@@ -15,7 +15,7 @@ export default function SpacesPage() {
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Spaces
           </h1>
-          <p className="text-lg text-gray-600 mb-8">
+          <p className="text-lg text-gray-700 mb-8">
             Browse all works submitted by creators
           </p>
         </div>

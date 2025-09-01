@@ -1,10 +1,8 @@
-// Minimal accessibility testing utilities
-// This is a simplified version to resolve import errors
-
-import { render, RenderOptions } from '@testing-library/react';
+import { render, screen, RenderOptions } from '@testing-library/react';
+import { axe } from 'jest-axe';
 import React from 'react';
 
-// Extend Jest matchers for accessibility testing
+// Extend Jest matchers for accessibility testing - done in jest.setup.js
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
@@ -14,28 +12,133 @@ declare global {
   }
 }
 
-// Simple accessibility test function
-export const testAccessibility = async (component: React.ReactElement) => {
-  render(component);
-  // Basic accessibility check - just return true for now
-  return true;
-};
+/**
+ * Test accessibility compliance for a component
+ */
+export async function testAccessibility(component: React.ReactElement): Promise<void> {
+  const { container } = render(component);
+  const results = await axe(container);
+  expect(results).toHaveNoViolations();
+}
 
-// Custom render function with accessibility testing
-export const renderWithAccessibility = (
+/**
+ * Test WCAG 2.1 AA compliance specifically
+ */
+export async function testWCAG21AA(component: React.ReactElement): Promise<void> {
+  const { container } = render(component);
+  const results = await axe(container, {
+    rules: {
+      // WCAG 2.1 AA specific rules
+      'color-contrast': { enabled: true },
+      'color-contrast-enhanced': { enabled: false }, // AAA level
+      'focus-order-semantics': { enabled: true },
+      'landmark-one-main': { enabled: false }, // Not all components need main landmark
+      'page-has-heading-one': { enabled: false }, // Not all components have h1
+      'region': { enabled: true },
+    },
+  });
+  expect(results).toHaveNoViolations();
+}
+
+/**
+ * Test WCAG 2.1 AA compliance for rendered container
+ */
+export async function testContainerAccessibility(container: HTMLElement): Promise<void> {
+  const results = await axe(container, {
+    rules: {
+      'color-contrast': { enabled: true },
+      'color-contrast-enhanced': { enabled: false },
+      'focus-order-semantics': { enabled: true },
+      'landmark-one-main': { enabled: false }, // Not all components need main landmark
+      'page-has-heading-one': { enabled: false }, // Not all components have h1
+      'region': { enabled: true },
+    },
+  });
+  expect(results).toHaveNoViolations();
+}
+
+/**
+ * Render component with accessibility testing context
+ */
+export function renderWithAccessibility(
   ui: React.ReactElement,
   options?: Omit<RenderOptions, 'wrapper'>
-) => {
+) {
   return render(ui, options);
-};
+}
 
-// WCAG 2.1 AA compliance test
-export const testWCAG21AA = async () => {
-  // Basic implementation - just return true for now
-  return true;
-};
+/**
+ * Test screen reader announcements
+ */
+export function testScreenReader(component: React.ReactElement) {
+  render(component);
+  
+  // Test for proper ARIA labels and accessible names
+  const interactiveElements = screen.queryAllByRole('button')
+    .concat(screen.queryAllByRole('link'))
+    .concat(screen.queryAllByRole('textbox'))
+    .concat(screen.queryAllByRole('combobox'));
+  
+  interactiveElements.forEach((element) => {
+    // Each interactive element should have an accessible name
+    const accessibleName = element.getAttribute('aria-label') || 
+                           element.getAttribute('aria-labelledby') || 
+                           element.textContent;
+    expect(accessibleName).toBeTruthy();
+  });
+  
+  // Test for proper heading structure
+  const headings = screen.queryAllByRole('heading');
+  headings.forEach((heading) => {
+    expect(heading).toBeVisible();
+    expect(heading.textContent).toBeTruthy();
+  });
+}
 
-// Focus management test
+/**
+ * Test color contrast ratios (basic check, jest-axe does the real work)
+ */
+export function testColorContrast(component: React.ReactElement) {
+  const { container } = render(component);
+  
+  const textElements = container.querySelectorAll('p, span, div, h1, h2, h3, h4, h5, h6, a, button');
+  
+  textElements.forEach((element) => {
+    if (element.textContent && element.textContent.trim()) {
+      const styles = window.getComputedStyle(element);
+      const color = styles.color;
+      
+      // Basic check that text has a color value
+      expect(color).toBeTruthy();
+      expect(color).not.toBe('rgba(0, 0, 0, 0)'); // Not transparent
+    }
+  });
+}
+
+/**
+ * Test keyboard navigation
+ */
+export function testKeyboardNavigation(component: React.ReactElement) {
+  render(component);
+  
+  // Test that all interactive elements are focusable
+  const focusableElements = screen.queryAllByRole('button')
+    .concat(screen.queryAllByRole('link'))
+    .concat(screen.queryAllByRole('textbox'))
+    .concat(screen.queryAllByRole('combobox'));
+  
+  focusableElements.forEach((element) => {
+    // Element should not have tabindex="-1" unless it's intentionally not focusable
+    const tabIndex = element.getAttribute('tabindex');
+    if (tabIndex !== null) {
+      expect(parseInt(tabIndex)).toBeGreaterThanOrEqual(-1);
+    }
+  });
+}
+
+/**
+ * Focus management test
+ */
 export const testFocusManagement = (container: HTMLElement) => {
   const focusableElements = container.querySelectorAll(
     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -48,39 +151,15 @@ export const testFocusManagement = (container: HTMLElement) => {
   }
 };
 
-// Keyboard navigation test
-export const testKeyboardNavigation = (container: HTMLElement) => {
-  // Basic keyboard navigation test
-  const buttons = container.querySelectorAll('button');
-  if (buttons.length > 0) {
-    const firstButton = buttons[0] as HTMLElement;
-    firstButton.focus();
-    expect(document.activeElement).toBe(firstButton);
-  }
-};
-
-// Screen reader test
-export const testScreenReader = (container: HTMLElement) => {
-  // Basic screen reader test
-  const elementsWithAria = container.querySelectorAll('[aria-label], [aria-describedby], [aria-labelledby]');
-  expect(elementsWithAria.length).toBeGreaterThanOrEqual(0);
-};
-
-// Color contrast test
-export const testColorContrast = (container: HTMLElement) => {
-  // Basic color contrast test
-  const textElements = container.querySelectorAll('p, h1, h2, h3, h4, h5, h6, span, div');
-  expect(textElements.length).toBeGreaterThanOrEqual(0);
-};
-
-// Accessibility test suite
 export const accessibilityTestSuite = {
   testAccessibility,
   testWCAG21AA,
-  testFocusManagement,
-  testKeyboardNavigation,
+  testContainerAccessibility,
+  renderWithAccessibility,
   testScreenReader,
   testColorContrast,
+  testKeyboardNavigation,
+  testFocusManagement,
 };
 
 // Create accessibility test for components
@@ -89,20 +168,21 @@ export const createAccessibilityTest = <P extends Record<string, unknown>>(
   props: P
 ) => {
   return async () => {
-    renderWithAccessibility(React.createElement(Component, props));
-    await testWCAG21AA();
+    const { container } = renderWithAccessibility(React.createElement(Component, props));
+    await testContainerAccessibility(container);
   };
 };
 
 // Export default for backward compatibility
 const accessibilityUtils = {
   testAccessibility,
-  renderWithAccessibility,
   testWCAG21AA,
-  testFocusManagement,
-  testKeyboardNavigation,
+  testContainerAccessibility,
+  renderWithAccessibility,
   testScreenReader,
   testColorContrast,
+  testKeyboardNavigation,
+  testFocusManagement,
   accessibilityTestSuite,
   createAccessibilityTest,
 };

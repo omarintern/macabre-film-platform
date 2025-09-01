@@ -98,7 +98,7 @@ const TagWorksGallery: React.FC<TagWorksGalleryProps> = ({ tagName }) => {
           />
         </svg>
         <h3 className="mt-4 text-lg font-medium text-gray-900">No works found</h3>
-        <p className="mt-2 text-sm text-gray-500">
+        <p className="mt-2 text-sm text-gray-600">
           No works have been tagged with &quot;#{tagName}&quot; yet.
         </p>
         <div className="mt-6">
@@ -136,7 +136,7 @@ const TagWorksGallery: React.FC<TagWorksGalleryProps> = ({ tagName }) => {
       )}
 
       {/* Results info */}
-      <div className="text-center text-sm text-gray-500">
+      <div className="text-center text-sm text-gray-600">
         Showing {works.length} of {pagination?.total || 0} works tagged &quot;#{tagName}&quot;
       </div>
     </div>

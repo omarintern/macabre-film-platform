@@ -41,3 +41,4 @@ export const useTags = (): UseTagsReturn => {
     refetch: fetchTags,
   };
 };
+

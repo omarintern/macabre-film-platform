@@ -1,5 +1,9 @@
 require('@testing-library/jest-dom')
 const { TextEncoder, TextDecoder } = require('util')
+const { toHaveNoViolations } = require('jest-axe')
+
+// Extend Jest matchers for accessibility testing
+expect.extend(toHaveNoViolations)
 
 // Polyfill for Node.js environment
 global.TextEncoder = TextEncoder
