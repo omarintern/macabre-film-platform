@@ -96,11 +96,14 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
 
     try {
       // Update profile using Firebase data service
-      const updatedUser = await firebaseDataService.updateUserProfile(user.id, {
+      // Update profile using Firebase data service
+      await firebaseDataService.updateUserProfile(user.id, {
         name: formData.name.trim(),
         bio: formData.bio.trim()
       });
 
+      // Fetch the updated user data
+      const updatedUser = await firebaseDataService.getUserById(user.id);
       // Update the user session store
       setUserSession(updatedUser, ''); // Firebase handles tokens internally
 

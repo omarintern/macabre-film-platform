@@ -141,7 +141,7 @@ describe('MosaicChainManager', () => {
 
   it('saves meta-title when Save is clicked', async () => {
     mockFirebaseDataService.getMosaicChainsByCreator.mockResolvedValue(mockChains);
-    mockFirebaseDataService.updateMosaicChainMetaTitle.mockResolvedValue();
+    mockFirebaseDataService.updateMosaicChain.mockResolvedValue();
 
     const user = userEvent.setup();
     render(<MosaicChainManager />);
@@ -160,7 +160,7 @@ describe('MosaicChainManager', () => {
     const saveButton = screen.getByText('Save');
     await user.click(saveButton);
 
-    expect(mockFirebaseDataService.updateMosaicChainMetaTitle).toHaveBeenCalledWith('chain1', 'Updated Horror Series');
+    expect(mockFirebaseDataService.updateMosaicChain).toHaveBeenCalledWith('chain1', 'Updated Horror Series');
   });
 
   it('calls onViewChain when View Chain is clicked', async () => {
