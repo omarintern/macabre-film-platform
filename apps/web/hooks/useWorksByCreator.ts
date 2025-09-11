@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Work } from '../lib/services/workService';
+import { firebaseDataService } from '../lib/firebase/dataService';
 
 interface UseWorksByCreatorResult {
   works: Work[];
@@ -25,26 +26,30 @@ export function useWorksByCreator(creatorId: string): UseWorksByCreatorResult {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/works/by-creator/${creatorId}`);
+        console.log('🔍 Fetching works for creatorId:', creatorId);
         
-        if (!response.ok) {
-          if (response.status === 404) {
-            setError('Creator not found');
-          } else {
-            setError('Failed to load works');
-          }
-          return;
-        }
-
-        const data = await response.json();
+        // Use Firebase service instead of API route
+        const result = await firebaseDataService.getWorksByCreator(creatorId);
+        console.log('📊 Found works:', result.works.length, result.works);
         
-        if (data.success) {
-          setWorks(data.works);
-        } else {
-          setError('Failed to load works');
+        // If no works found, let's also try to get all works to see what's in the database
+        if (result.works.length === 0) {
+          console.log('⚠️ No works found for this creator, checking all works...');
+          const allWorks = await firebaseDataService.getAllWorks();
+          console.log('📊 All works in database:', allWorks.works.length, allWorks.works);
+          
+          // Check if any works have this creatorId
+          const worksForThisCreator = allWorks.works.filter(work => work.creatorId === creatorId);
+          console.log('🎯 Works matching this creatorId:', worksForThisCreator);
+          
+          // Also check for any works that might have a different creatorId format
+          const allCreatorIds = allWorks.works.map(work => work.creatorId);
+          console.log('🔑 All creatorIds in database:', [...new Set(allCreatorIds)]);
         }
+        
+        setWorks(result.works);
       } catch (err) {
-        console.error('Error fetching works:', err);
+        console.error('❌ Error fetching works:', err);
         setError('Failed to load works');
       } finally {
         setIsLoading(false);

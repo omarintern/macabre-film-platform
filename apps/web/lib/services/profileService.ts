@@ -1,3 +1,8 @@
+// Profile service for API communication
+// Architecture-compliant version using centralized apiClient
+
+import apiClient from '../apiClient';
+
 interface User {
   id: string;
   email: string;
@@ -22,39 +27,24 @@ interface UpdateProfileData {
 }
 
 class ProfileService {
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const response = await fetch(endpoint, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || `HTTP ${response.status}: ${response.statusText}`);
-    }
-
-    return data;
-  }
-
   async updateProfile(profileData: UpdateProfileData): Promise<User> {
-    const response = await this.request<{ success: boolean; user: User }>('/api/profile', {
-      method: 'PUT',
-      body: JSON.stringify(profileData),
-    });
-
-    return response.user;
+    try {
+      const response = await apiClient.put<{ success: boolean; user: User }>('/profile', profileData);
+      return response.user;
+    } catch (error) {
+      console.error('Profile update error:', error);
+      throw error;
+    }
   }
 
   async getPublicProfile(userId: string): Promise<PublicProfile> {
-    const response = await this.request<{ success: boolean; profile: PublicProfile }>(
-      `/api/profile/${userId}`
-    );
-
-    return response.profile;
+    try {
+      const response = await apiClient.get<{ success: boolean; profile: PublicProfile }>(`/profile/${userId}`);
+      return response.profile;
+    } catch (error) {
+      console.error('Profile retrieval error:', error);
+      throw error;
+    }
   }
 }
 

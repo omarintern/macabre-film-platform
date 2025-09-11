@@ -11,9 +11,9 @@ jest.mock('../../../lib/database', () => ({
   },
 }));
 
-// Mock JWT
-jest.mock('jsonwebtoken', () => ({
-  verify: jest.fn(),
+// Mock JWT utils
+jest.mock('../../../lib/utils/jwt', () => ({
+  verifyToken: jest.fn(),
 }));
 
 interface MockWork {
@@ -32,9 +32,10 @@ interface MockWork {
   };
 }
 
+import * as jwtUtils from '../../../lib/utils/jwt';
+
 const mockUserService = userService as jest.Mocked<typeof userService>;
-const jwt = require('jsonwebtoken');
-const mockJwt = jwt as jest.Mocked<typeof jwt>;
+const mockJwtUtils = jwtUtils as jest.Mocked<typeof jwtUtils>;
 
 describe('/api/works', () => {
   beforeEach(() => {
@@ -132,10 +133,12 @@ describe('/api/works', () => {
       mockUserService.createWork.mockResolvedValue(mockWork);
 
       // Mock JWT verification for authentication
-      mockJwt.verify.mockReturnValue({
+      mockJwtUtils.verifyToken.mockReturnValue({
         userId: 'user1',
         email: 'test@example.com',
-        role: 'CREATOR'
+        role: 'CREATOR',
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 3600
       });
 
       const requestBody = {
@@ -185,10 +188,8 @@ describe('/api/works', () => {
     });
 
     it('should handle invalid request body', async () => {
-      // Mock JWT to throw an error for invalid token
-      mockJwt.verify.mockImplementation(() => {
-        throw new Error('Invalid token');
-      });
+      // Mock JWT to return null for invalid token
+      mockJwtUtils.verifyToken.mockReturnValue(null);
 
       const request = new NextRequest('http://localhost:3000/api/works', {
         method: 'POST',

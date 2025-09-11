@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { verifyToken } from '../../../lib/utils/jwt';
 import { userService } from '../../../lib/database';
 
 // Constants
@@ -34,15 +34,7 @@ const CACHE_CONFIG = {
   },
 };
 
-// Helper functions
-function getJWTSecret(): string {
-  const jwtSecret = process.env.JWT_SECRET;
-  if (!jwtSecret) {
-    console.error('JWT_SECRET not configured');
-    throw new Error('Server configuration error');
-  }
-  return jwtSecret;
-}
+// Helper functions are now imported from jwt utils
 
 /**
  * Performance monitoring helper
@@ -84,18 +76,28 @@ async function authenticateCreator(request: NextRequest): Promise<AuthenticatedU
   }
 
   try {
-    const jwtSecret = getJWTSecret();
-    const decoded = jwt.verify(token, jwtSecret) as AuthenticatedUser;
+    const decoded = verifyToken(token);
     
-    if (decoded.role !== 'CREATOR') {
+    if (!decoded) {
       return NextResponse.json(
-        { error: 'Access denied. CREATOR role required.' },
+        { error: 'Invalid authentication token' },
+        { status: 401 }
+      );
+    }
+    
+    if (decoded.role !== 'CREATOR' && decoded.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Access denied. CREATOR or ADMIN role required.' },
         { status: 403 }
       );
     }
 
     logPerformance('Authentication', authStart);
-    return decoded;
+    return {
+      userId: decoded.userId,
+      email: decoded.email,
+      role: decoded.role
+    };
   } catch (error) {
     console.error('Authentication error:', error);
     return NextResponse.json(

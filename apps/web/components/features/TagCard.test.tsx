@@ -22,17 +22,16 @@ describe('TagCard', () => {
   it('should render tag information correctly', () => {
     render(<TagCard tag={mockTag} />);
     
-    expect(screen.getByText('#action')).toBeInTheDocument();
+    expect(screen.getByText('action')).toBeInTheDocument();
     expect(screen.getByText('3')).toBeInTheDocument();
-    expect(screen.getByText('3 works')).toBeInTheDocument();
-    expect(screen.getByText('View works →')).toBeInTheDocument();
   });
 
   it('should render singular form for single work', () => {
     const singleWorkTag = { name: 'drama', count: 1 };
     render(<TagCard tag={singleWorkTag} />);
     
-    expect(screen.getByText('1 work')).toBeInTheDocument();
+    expect(screen.getByText('drama')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
   });
 
   it('should have correct link href', () => {
@@ -49,7 +48,7 @@ describe('TagCard', () => {
     expect(link).toBeInTheDocument();
     
     // Check that the tag name is accessible
-    expect(screen.getByText('#action')).toBeInTheDocument();
+    expect(screen.getByText('action')).toBeInTheDocument();
   });
 
   it('should handle special characters in tag names', () => {
@@ -58,7 +57,7 @@ describe('TagCard', () => {
     
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', '/tags/sci-fi');
-    expect(screen.getByText('#sci-fi')).toBeInTheDocument();
+    expect(screen.getByText('sci-fi')).toBeInTheDocument();
   });
 
   it('should handle empty tag name', () => {
@@ -67,6 +66,6 @@ describe('TagCard', () => {
     
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', '/tags/');
-    expect(screen.getByText('#')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
   });
 });

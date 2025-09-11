@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Input, Button, ErrorAlert, Card, CardContent, CardHeader, CardTitle } from '../ui/design-system';
+import { Button, ErrorAlert, Card, CardContent, CardHeader, CardTitle } from '../ui/design-system';
+import { workService } from '../../lib/services/workService';
+import { useAuth } from '../../stores/userSessionStore';
 
 export interface Work {
   id: string;
@@ -39,6 +41,7 @@ interface FormErrors {
 }
 
 export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissionFormProps) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     title: '',
     body: '',
@@ -52,6 +55,25 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
 
   const maxBodyLength = 1000;
   const remainingChars = maxBodyLength - formData.body.length;
+
+  // Adaptive sizing functions for flexible form fields
+  const calculateTextareaRows = (text: string): number => {
+    if (!text) return 3; // Minimum rows for empty field
+    
+    const lines = text.split('\n').length;
+    const estimatedLines = Math.ceil(text.length / 80); // Rough estimate based on average line length
+    const calculatedRows = Math.max(lines, estimatedLines);
+    
+    // Dynamic sizing based on content length with reasonable bounds
+    return Math.min(Math.max(calculatedRows, 3), 20); // Min 3 rows, max 20 rows
+  };
+
+  const calculateTitleRows = (text: string): number => {
+    if (!text) return 1; // Single row for empty title
+    
+    const estimatedLines = Math.ceil(text.length / 60); // Titles typically shorter per line
+    return Math.min(Math.max(estimatedLines, 1), 3); // Min 1 row, max 3 rows for titles
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -104,30 +126,25 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
     setErrors({});
 
     try {
+      if (!user) {
+        throw new Error('You must be logged in to submit work');
+      }
+
       // Parse tags from comma-separated string
       const parsedTags = formData.tags
         .split(',')
         .map(tag => tag.trim())
         .filter(tag => tag);
 
-      const response = await fetch('/api/works', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: formData.title.trim(),
-          body: formData.body.trim(),
-          classification: formData.classification,
-          tags: parsedTags,
-        }),
-      });
+      // Use Firebase workService directly - no API routes needed!
+      const work = await workService.createWork({
+        title: formData.title.trim(),
+        body: formData.body.trim(),
+        classification: formData.classification,
+        tags: parsedTags,
+      }, user.id);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to submit work');
-      }
+      console.log('✅ Work created successfully in Firebase:', work.title);
 
       // Success!
       setIsSuccess(true);
@@ -138,8 +155,8 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
         tags: '',
       });
 
-      if (onSubmissionSuccess && data.work) {
-        onSubmissionSuccess(data.work);
+      if (onSubmissionSuccess) {
+        onSubmissionSuccess(work);
       }
 
       // Reset success state after 3 seconds
@@ -227,17 +244,38 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
               />
             )}
 
-            <Input
-              id="title"
-              name="title"
-              type="text"
-              label="Title *"
-              value={formData.title}
-              onChange={handleInputChange}
-              placeholder="Enter the title of your work"
-              error={!!errors.title}
-              errorMessage={errors.title}
-            />
+            {/* Adaptive Title Field */}
+            <div className="w-full">
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                Title *
+              </label>
+              <div className="relative">
+                <textarea
+                  id="title"
+                  name="title"
+                  rows={calculateTitleRows(formData.title)}
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className={`flex w-full rounded-md border bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300 resize-none ${
+                    errors.title
+                      ? 'border-destructive bg-destructive/5 focus:ring-destructive/20'
+                      : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500 hover:border-gray-400'
+                  }`}
+                  placeholder="Enter the title of your work"
+                  aria-invalid={!!errors.title}
+                  aria-describedby={errors.title ? 'title-error' : undefined}
+                  style={{
+                    minHeight: '42px', // Minimum height for usability
+                    transition: 'height 0.3s ease-in-out'
+                  }}
+                />
+              </div>
+              {errors.title && (
+                <p id="title-error" className="mt-1 text-sm text-destructive font-medium">
+                  {errors.title}
+                </p>
+              )}
+            </div>
 
             <div className="space-y-3">
               <label htmlFor="classification" className="block text-sm font-medium text-foreground">
@@ -267,6 +305,7 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
               )}
             </div>
 
+            {/* Adaptive Body Field */}
             <div className="space-y-3">
               <label htmlFor="body" className="block text-sm font-medium text-foreground">
                 Body *
@@ -274,16 +313,20 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
               <textarea
                 id="body"
                 name="body"
-                rows={8}
+                rows={calculateTextareaRows(formData.body)}
                 value={formData.body}
                 onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-vertical transition-all duration-200 ${
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none transition-all duration-300 ${
                   errors.body 
                     ? 'border-destructive bg-destructive/5' 
                     : 'border-border bg-background hover:border-border/60'
                 }`}
                 placeholder="Enter your work content here..."
                 aria-describedby={errors.body ? 'body-error' : 'body-counter'}
+                style={{
+                  minHeight: '90px', // Minimum height for usability
+                  transition: 'height 0.3s ease-in-out'
+                }}
               />
               <div className="flex justify-between items-center">
                 <div>
@@ -304,18 +347,41 @@ export default function WorkSubmissionForm({ onSubmissionSuccess }: WorkSubmissi
               </div>
             </div>
 
-            <Input
-              id="tags"
-              name="tags"
-              type="text"
-              label="Tags/Hashtags"
-              value={formData.tags}
-              onChange={handleInputChange}
-              placeholder="Enter tags separated by commas (e.g., drama, thriller, action)"
-              error={!!errors.tags}
-              errorMessage={errors.tags}
-              helperText="Optional. Separate multiple tags with commas."
-            />
+            {/* Adaptive Tags Field */}
+            <div className="w-full">
+              <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-1">
+                Tags/Hashtags
+              </label>
+              <div className="relative">
+                <textarea
+                  id="tags"
+                  name="tags"
+                  rows={Math.min(Math.max(Math.ceil(formData.tags.length / 50), 1), 3)}
+                  value={formData.tags}
+                  onChange={handleInputChange}
+                  className={`flex w-full rounded-md border bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300 resize-none ${
+                    errors.tags
+                      ? 'border-destructive bg-destructive/5 focus:ring-destructive/20'
+                      : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500 hover:border-gray-400'
+                  }`}
+                  placeholder="Enter tags separated by commas (e.g., drama, thriller, action)"
+                  aria-invalid={!!errors.tags}
+                  aria-describedby={errors.tags ? 'tags-error' : 'tags-helper'}
+                  style={{
+                    minHeight: '42px', // Minimum height for usability
+                    transition: 'height 0.3s ease-in-out'
+                  }}
+                />
+              </div>
+              {errors.tags && (
+                <p id="tags-error" className="mt-1 text-sm text-destructive font-medium">
+                  {errors.tags}
+                </p>
+              )}
+              <p id="tags-helper" className="mt-1 text-sm text-gray-500">
+                Optional. Separate multiple tags with commas.
+              </p>
+            </div>
 
             <div className="flex gap-4 pt-4">
               <Button

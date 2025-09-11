@@ -19,8 +19,7 @@ interface FormErrors {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setUserSession } = useUserSessionStore();
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, signIn } = useAuth();
   
   const [formData, setFormData] = useState<FormData>({
     email: '',
@@ -84,32 +83,17 @@ export default function LoginPage() {
     setErrors({});
     
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email.toLowerCase().trim(), // Normalize email on frontend too
-          password: formData.password,
-        }),
-      });
+      // Use Firebase Auth directly - no API routes needed!
+      await signIn(formData.email.toLowerCase().trim(), formData.password);
       
-      const result = await response.json();
-      
-      if (result.success && result.user && result.token) {
-        // Update user session store
-        setUserSession(result.user, result.token);
-        
-        // Redirect to dashboard or intended destination
-        const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/';
-        router.push(redirectTo);
-      } else {
-        setErrors({ general: result.error || 'Login failed. Please try again.' });
-      }
+      // Redirect to dashboard or intended destination
+      const redirectTo = new URLSearchParams(window.location.search).get('redirect') || '/';
+      router.push(redirectTo);
     } catch (error) {
       console.error('Login error:', error);
-      setErrors({ general: 'Network error. Please check your connection and try again.' });
+      setErrors({ 
+        general: error instanceof Error ? error.message : 'Login failed. Please try again.' 
+      });
     } finally {
       setIsSubmitting(false);
     }

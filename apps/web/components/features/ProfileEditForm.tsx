@@ -1,52 +1,66 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Input, Button, ErrorAlert, Card, CardContent, CardHeader, CardTitle } from '../ui/design-system';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../stores/userSessionStore';
+import { firebaseDataService } from '../../lib/firebase/dataService';
+import { Button } from '../ui/design-system';
 
-interface ProfileEditFormProps {
-  initialName?: string;
-  initialBio?: string;
-  onSave: (data: { name: string; bio: string }) => Promise<void>;
-  isLoading?: boolean;
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  bio?: string;
+  role: 'CREATOR' | 'ADMIN';
+  createdAt: string;
+  updatedAt: string;
 }
 
-const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
-  initialName = '',
-  initialBio = '',
-  onSave,
-  isLoading = false,
-}) => {
-  const [formData, setFormData] = useState({
-    name: initialName,
-    bio: initialBio,
-  });
-  
-  const [errors, setErrors] = useState<{
-    name?: string;
-    bio?: string;
-    general?: string;
-  }>({});
+interface ProfileEditFormProps {
+  user: User;
+}
 
+interface FormData {
+  name: string;
+  bio: string;
+}
+
+interface FormErrors {
+  name?: string;
+  bio?: string;
+  general?: string;
+}
+
+export default function ProfileEditForm({ user }: ProfileEditFormProps) {
+  const { setUserSession } = useAuth();
+  const router = useRouter();
+  const [formData, setFormData] = useState<FormData>({
+    name: user?.name || '',
+    bio: user?.bio || ''
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
-    // Clear error when user starts typing
-    if (errors[name as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [name]: undefined }));
-    }
-  };
+  if (!user) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-gray-500">User not found</p>
+      </div>
+    );
+  }
 
-  const validateForm = () => {
-    const newErrors: typeof errors = {};
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
 
-    if (formData.name.trim().length > 100) {
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (formData.name.length > 100) {
       newErrors.name = 'Name must be 100 characters or less';
     }
 
-    if (formData.bio.trim().length > 1000) {
+    // Bio validation
+    if (formData.bio.length > 1000) {
       newErrors.bio = 'Bio must be 1000 characters or less';
     }
 
@@ -54,9 +68,25 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Clear error when user starts typing
+    if (errors[name as keyof FormErrors]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: undefined
+      }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -65,14 +95,21 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
     setErrors({});
 
     try {
-      await onSave({
+      // Update profile using Firebase data service
+      const updatedUser = await firebaseDataService.updateUserProfile(user.id, {
         name: formData.name.trim(),
-        bio: formData.bio.trim(),
+        bio: formData.bio.trim()
       });
+
+      // Update the user session store
+      setUserSession(updatedUser, ''); // Firebase handles tokens internally
+
+      // Redirect to profile page
+      router.push(`/profile/${user.id}`);
     } catch (error) {
-      console.error('Profile update failed:', error);
+      console.error('Profile update error:', error);
       setErrors({
-        general: error instanceof Error ? error.message : 'Failed to update profile',
+        general: 'Failed to update profile. Please try again.'
       });
     } finally {
       setIsSubmitting(false);
@@ -80,91 +117,77 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <Card className="shadow-lg border-border/50">
-        <CardHeader className="pb-6">
-          <CardTitle className="text-2xl font-semibold text-foreground">Edit Profile</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-8" noValidate>
-            {errors.general && (
-              <ErrorAlert
-                title="Error"
-                message={errors.general}
-                variant="error"
-              />
-            )}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {errors.general && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <p className="text-sm text-red-600">{errors.general}</p>
+        </div>
+      )}
 
-            <Input
-              id="name"
-              name="name"
-              type="text"
-              label="Display Name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Enter your display name"
-              error={!!errors.name}
-              errorMessage={errors.name}
-              helperText={`${formData.name.length}/100 characters`}
-            />
+      <div>
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+          Name
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleInputChange}
+          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            errors.name ? 'border-red-300' : 'border-gray-300'
+          }`}
+          placeholder="Enter your name"
+          maxLength={100}
+        />
+        {errors.name && (
+          <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+        )}
+      </div>
 
-            <div className="space-y-3">
-              <label htmlFor="bio" className="block text-sm font-medium text-foreground">
-                Bio
-              </label>
-              <textarea
-                id="bio"
-                name="bio"
-                rows={4}
-                value={formData.bio}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-vertical transition-all duration-200 ${
-                  errors.bio 
-                    ? 'border-destructive bg-destructive/5' 
-                    : 'border-border bg-background hover:border-border/60'
-                }`}
-                placeholder="Tell others about yourself..."
-                aria-describedby={errors.bio ? 'bio-error' : 'bio-counter'}
-              />
-              {errors.bio && (
-                <p id="bio-error" className="text-sm text-destructive font-medium" role="alert">
-                  {errors.bio}
-                </p>
-              )}
-              <p id="bio-counter" className="text-sm text-muted-foreground font-medium">
-                {formData.bio.length}/1000 characters
-              </p>
-            </div>
+      <div>
+        <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-2">
+          Bio
+        </label>
+        <textarea
+          id="bio"
+          name="bio"
+          value={formData.bio}
+          onChange={handleInputChange}
+          rows={4}
+          className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+            errors.bio ? 'border-red-300' : 'border-gray-300'
+          }`}
+          placeholder="Tell us about yourself..."
+          maxLength={1000}
+        />
+        <div className="mt-1 flex justify-between text-sm text-gray-500">
+          {errors.bio && (
+            <p className="text-red-600">{errors.bio}</p>
+          )}
+          <span className="ml-auto">
+            {formData.bio.length}/1000 characters
+          </span>
+        </div>
+      </div>
 
-            <div className="flex gap-4 pt-4">
-              <Button
-                type="submit"
-                disabled={isSubmitting || isLoading}
-                loading={isSubmitting}
-                variant="primary"
-                className="flex-1 font-medium"
-              >
-                {isSubmitting ? 'Saving...' : 'Save Profile'}
-              </Button>
-              
-              <Button
-                type="button"
-                onClick={() => {
-                  setFormData({ name: initialName, bio: initialBio });
-                  setErrors({});
-                }}
-                disabled={isSubmitting || isLoading}
-                variant="secondary"
-                className="flex-1 font-medium"
-              >
-                Reset
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+      <div className="flex justify-end space-x-3">
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={() => router.push(`/profile/${user.id}`)}
+          disabled={isSubmitting}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="submit"
+          variant="primary"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Saving...' : 'Save Changes'}
+        </Button>
+      </div>
+    </form>
   );
-};
-
-export default ProfileEditForm;
+}

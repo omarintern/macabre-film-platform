@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🧪 QA: Simple Admin Setup (No Emulators)</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        .warning { background: #fff3cd; border-color: #ffeaa7; color: #856404; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .step { margin: 15px 0; padding: 15px; border-left: 4px solid #007bff; background: #f8f9fa; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🧪 QA: Firebase Authentication Fix</h1>
+    
+    <div class="card error">
+        <h3>❌ Issue Identified</h3>
+        <p><strong>Firebase Authentication Error:</strong> <code>auth/configuration-not-found</code></p>
+        <p><strong>Root Cause:</strong> Firebase project authentication is not enabled in Firebase Console</p>
+    </div>
+
+    <div class="card warning">
+        <h3>⚠️ Firebase Emulators Require Login</h3>
+        <p>The Firebase emulators require <code>firebase login</code> which needs browser authentication.</p>
+        <p>Let's use a simpler approach for immediate testing.</p>
+    </div>
+
+    <div class="card info">
+        <h3>🎯 Alternative Solution: Enable Firebase Console Authentication</h3>
+        <div class="step">
+            <h4>Step 1: Enable Authentication</h4>
+            <ol>
+                <li>Go to <a href="https://console.firebase.google.com/project/macabre-4d51d" target="_blank">Firebase Console</a></li>
+                <li>Click on <strong>"Authentication"</strong> in the left sidebar</li>
+                <li>Click <strong>"Get started"</strong></li>
+                <li>Go to <strong>"Sign-in method"</strong> tab</li>
+                <li>Click on <strong>"Email/password"</strong></li>
+                <li>Toggle <strong>"Enable"</strong> and click <strong>"Save"</strong></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h4>Step 2: Create Admin User</h4>
+            <ol>
+                <li>Go to <strong>"Users"</strong> tab in Authentication</li>
+                <li>Click <strong>"Add user"</strong></li>
+                <li>Email: <code>admin@macabre.com</code></li>
+                <li>Password: <code>admin123456</code></li>
+                <li>Click <strong>"Add user"</strong></li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h4>Step 3: Set Admin Role in Firestore</h4>
+            <ol>
+                <li>Go to <strong>"Firestore Database"</strong> in the left sidebar</li>
+                <li>Click <strong>"Create database"</strong> (if not created)</li>
+                <li>Choose <strong>"Start in test mode"</strong></li>
+                <li>Create a new collection called <code>users</code></li>
+                <li>Add a document with the user ID from step 2</li>
+                <li>Add fields:
+                    <ul>
+                        <li><code>name</code>: "Admin User"</li>
+                        <li><code>email</code>: "admin@macabre.com"</li>
+                        <li><code>role</code>: "ADMIN"</li>
+                        <li><code>createdAt</code>: timestamp (now)</li>
+                        <li><code>updatedAt</code>: timestamp (now)</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card success">
+        <h3>✅ After Setup</h3>
+        <p>Once you've completed the Firebase Console setup:</p>
+        <ol>
+            <li>Go to <a href="http://localhost:3000/login" target="_blank">http://localhost:3000/login</a></li>
+            <li>Login with: <code>admin@macabre.com</code> / <code>admin123456</code></li>
+            <li>Navigate to <a href="http://localhost:3000/spaces" target="_blank">http://localhost:3000/spaces</a></li>
+            <li>Test the "Post" button to submit a work</li>
+        </ol>
+    </div>
+
+    <div class="card info">
+        <h3>🔧 Alternative: Firebase Login (For Emulators)</h3>
+        <p>If you want to use emulators, run this in terminal:</p>
+        <pre><code>cd /Users/omarrumaihi/Desktop/Film-BMAD/macabre/apps/web
+npx firebase login
+npx firebase emulators:start --project=macabre-4d51d</code></pre>
+        <button onclick="copyToClipboard('cd /Users/omarrumaihi/Desktop/Film-BMAD/macabre/apps/web\nnpx firebase login\nnpx firebase emulators:start --project=macabre-4d51d')">Copy Commands</button>
+    </div>
+
+    <div class="card">
+        <h3>🧪 QA Recommendation</h3>
+        <p><strong>For immediate testing:</strong> Use the Firebase Console approach above.</p>
+        <p><strong>For development:</strong> Set up emulators with <code>firebase login</code>.</p>
+        <p><strong>Both approaches will fix the authentication error!</strong></p>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Commands copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>

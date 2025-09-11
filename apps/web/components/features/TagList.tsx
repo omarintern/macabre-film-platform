@@ -12,11 +12,10 @@ const TagList: React.FC = () => {
   if (isLoading) {
     return (
       <div className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-            <div key={i} className="bg-card rounded-lg border border-border p-6 shadow-sm" data-testid="skeleton">
-              <Skeleton className="h-6 w-3/4 mb-3" />
-              <Skeleton className="h-4 w-1/2" />
+        <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-8 space-y-2">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
+            <div key={i} className="break-inside-avoid mb-2" data-testid="skeleton">
+              <Skeleton className="h-5 w-24 inline-block" />
             </div>
           ))}
         </div>
@@ -63,10 +62,12 @@ const TagList: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Tags Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Tags in Columns */}
+      <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-8 space-y-2">
         {tags.map((tag) => (
-          <TagCard key={tag.name} tag={tag} />
+          <div key={tag.name} className="break-inside-avoid mb-2">
+            <TagCard tag={tag} />
+          </div>
         ))}
       </div>
 

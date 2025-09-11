@@ -30,7 +30,7 @@ describe('TagList', () => {
     
     // Check for loading skeleton elements
     const skeletonElements = screen.getAllByTestId('skeleton');
-    expect(skeletonElements).toHaveLength(8); // 8 skeleton cards
+    expect(skeletonElements).toHaveLength(12); // 12 skeleton cards
   });
 
   it('should render error state', () => {
@@ -73,19 +73,14 @@ describe('TagList', () => {
     render(<TagList />);
     
     // Check that all tags are rendered
-    expect(screen.getByText('#action')).toBeInTheDocument();
-    expect(screen.getByText('#drama')).toBeInTheDocument();
-    expect(screen.getByText('#thriller')).toBeInTheDocument();
+    expect(screen.getByText('action')).toBeInTheDocument();
+    expect(screen.getByText('drama')).toBeInTheDocument();
+    expect(screen.getByText('thriller')).toBeInTheDocument();
     
     // Check for count badges
     expect(screen.getByText('3')).toBeInTheDocument();
     expect(screen.getByText('2')).toBeInTheDocument();
     expect(screen.getByText('1')).toBeInTheDocument();
-    
-    // Check for work count text
-    expect(screen.getByText('3 works')).toBeInTheDocument();
-    expect(screen.getByText('2 works')).toBeInTheDocument();
-    expect(screen.getByText('1 work')).toBeInTheDocument();
     
     // Check for results info
     expect(screen.getByText('Showing 3 tags')).toBeInTheDocument();
@@ -102,7 +97,7 @@ describe('TagList', () => {
 
     render(<TagList />);
     
-    expect(screen.getByText('1 work')).toBeInTheDocument();
+    expect(screen.getByText('Showing 1 tags')).toBeInTheDocument();
   });
 });
 

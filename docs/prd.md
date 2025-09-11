@@ -7,7 +7,7 @@
 * To provide a professional, streamlined, and discoverable platform for screenplay writers to showcase their work.
 * To create a centralized marketplace for producers and directors to find high-quality synopsis writers and commission custom scripts.
 * To become the premier destination for screenplay collaboration in the independent film community.
-* To enforce a discipline of concise, impactful storytelling through a 1000-character limit on short-form works.
+* To enforce a discipline of concise, impactful storytelling through a **2000-character limit** on short-form works.
 
 ### Background Context
 The film industry currently lacks a dedicated, streamlined platform for screenplay collaboration. Writers struggle to be discovered, while producers lack a centralized place to find talent. Existing platforms are often too generic or complex for the specific needs of film professionals. This project aims to solve this by creating a focused, minimalist platform that facilitates efficient and professional connections between creators and clients.
@@ -23,7 +23,7 @@ The film industry currently lacks a dedicated, streamlined platform for screenpl
 ### Functional
 1.  **FR1:** The system shall allow all new users to sign up for a standard "Client" account and log in.
 2.  **FR2:** Creators shall be able to create and manage a public profile to showcase their work.
-3.  **FR3:** Creators shall be able to submit new short text works, which must adhere to a 1000-character limit and can be tagged with genres and hashtags.
+3.  **FR3:** Creators shall be able to submit new short text works, which must adhere to a **2000-character limit** and can be tagged with genres and hashtags.
 4.  **FR4:** All users (including non-logged-in visitors) shall be able to view the "Spaces" page, a gallery of works.
 5.  **FR5:** The system shall feature an "Index" page, which displays a master list of all navigable tags and hashtags associated with submitted works.
 6.  **FR6:** Clicking a tag or hashtag on the "Index" page shall navigate the user to a view showing all works associated with it.
@@ -156,11 +156,12 @@ The user experience must be clean, professional, and content-forward, inspired b
 #### Story 2.2: Content Submission Form
 **As a** Creator, **I want** a simple form to submit a new short text work, **so that** I can add it to my portfolio.
 * **Acceptance Criteria:**
-    1.  A "Submit New Work" link is visible to authenticated 'CREATOR' users.
+    1.  A "Submit New Work" button is visible to authenticated 'CREATOR' users on the Spaces page.
     2.  The form includes fields for a Title, the Body of the work, and Tags/Hashtags.
     3.  A required field exists to classify the submission as "Synopsis", "Scene Description", or "Other".
-    4.  The Body text field enforces a 1000-character maximum.
-    5.  The new work is saved and associated with the logged-in Creator.
+    4.  The Body text field enforces a **2000-character maximum** (updated from 1000).
+    5.  The Body text field uses smaller font size (text-xs) for better content density.
+    6.  The new work is saved and associated with the logged-in Creator.
 
 #### Story 2.3: Display Works on Creator Profile
 **As a** user, **I want** to see a list of works on a Creator's public profile page, **so that** I can review their body of work.

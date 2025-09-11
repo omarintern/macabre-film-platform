@@ -7,7 +7,7 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "npm run dev:web & npm run dev:api",
+    "dev": "npm run dev:web",
     "dev:web": "npm run dev --workspace=apps/web",
     "dev:api": "npm run dev --workspace=apps/api",
     "build": "npm run build --workspaces",
@@ -28,5 +28,7 @@
   },
   "author": "Film Collaboration Platform Team",
   "license": "MIT",
-  "dependencies": {}
+  "dependencies": {
+    "firebase": "^12.2.1"
+  }
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Work } from '../lib/services/workService';
+import { workService, Work } from '../lib/services/workService';
 
 interface PaginationInfo {
   page: number;
@@ -17,7 +17,7 @@ interface UseWorksGalleryResult {
   error: string | null;
 }
 
-export function useWorksGallery(page: number = 1): UseWorksGalleryResult {
+export function useWorksGallery(page: number = 1, refreshTrigger?: number): UseWorksGalleryResult {
   const [works, setWorks] = useState<Work[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -29,36 +29,28 @@ export function useWorksGallery(page: number = 1): UseWorksGalleryResult {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/works?page=${page}&limit=20`);
+        // Use the workService instead of direct fetch
+        const result = await workService.getAllWorks(page, 20);
 
-        if (!response.ok) {
-          if (response.status === 404) {
-            setError('No works found');
-          } else {
-            setError('Failed to load works');
-          }
-          return;
-        }
-
-        const data = await response.json();
-
-        if (data.success) {
-          setWorks(data.works);
-          setPagination(data.pagination);
-        } else {
-          setError('Failed to load works');
-        }
+        setWorks(result.works);
+        setPagination({
+          page: result.page,
+          limit: result.limit,
+          total: result.total,
+          totalPages: result.totalPages,
+          hasNext: result.hasNext,
+          hasPrev: result.hasPrev,
+        });
       } catch (err) {
         console.error('Error fetching works:', err);
-        setError('Failed to load works');
+        setError(err instanceof Error ? err.message : 'Failed to load works');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchWorks();
-  }, [page]);
+  }, [page, refreshTrigger]);
 
   return { works, pagination, isLoading, error };
 }
-

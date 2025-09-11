@@ -1,3 +1,7 @@
+// Auth service for API communication
+// Architecture-compliant version using centralized apiClient
+
+import apiClient from '../apiClient';
 import { User, useUserSessionStore } from '../../stores/userSessionStore';
 
 interface SignupRequest {
@@ -33,36 +37,20 @@ interface LogoutResponse {
 export const authService = {
   async signup(data: SignupRequest): Promise<SignupResponse> {
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result: SignupResponse = await response.json();
+      const result = await apiClient.post<SignupResponse>('/auth/signup', data);
       return result;
     } catch (error) {
       console.error('Signup request failed:', error);
       return {
         success: false,
-        error: 'Network error. Please check your connection and try again.',
+        error: error instanceof Error ? error.message : 'Network error. Please check your connection and try again.',
       };
     }
   },
 
   async login(data: LoginRequest): Promise<LoginResponse> {
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result: LoginResponse = await response.json();
+      const result = await apiClient.post<LoginResponse>('/auth/login', data);
       
       if (result.success && result.user && result.token) {
         // Update user session store on successful login
@@ -75,21 +63,14 @@ export const authService = {
       console.error('Login request failed:', error);
       return {
         success: false,
-        error: 'Network error. Please check your connection and try again.',
+        error: error instanceof Error ? error.message : 'Network error. Please check your connection and try again.',
       };
     }
   },
 
   async logout(): Promise<LogoutResponse> {
     try {
-      const response = await fetch('/api/auth/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      const result: LogoutResponse = await response.json();
+      const result = await apiClient.post<LogoutResponse>('/auth/logout');
       
       if (result.success) {
         // Clear user session store on successful logout
@@ -102,7 +83,7 @@ export const authService = {
       console.error('Logout request failed:', error);
       return {
         success: false,
-        error: 'Network error. Please check your connection and try again.',
+        error: error instanceof Error ? error.message : 'Network error. Please check your connection and try again.',
       };
     }
   },

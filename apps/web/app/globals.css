@@ -3,62 +3,39 @@
 @import url('https://fonts.googleapis.com/css2?family=Georgia:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-:root {
-  /* Synopsis Hub color palette */
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --muted: #4b5563;
-  --muted-background: #fafafa;
-  --border: #e5e5e5;
-  --input: #ffffff;
-  --primary: #1a1a1a;
-  --primary-foreground: #ffffff;
-  --secondary: #404040;
-  --secondary-foreground: #ffffff;
-  --accent: #f5f5f5;
-  --accent-foreground: #1a1a1a;
-  --destructive: #dc2626;
-  --destructive-foreground: #ffffff;
-  --ring: #1a1a1a;
+@theme {
+  /* Tailwind v4 theme configuration */
+  --default-font-family: 'Inter', system-ui, sans-serif;
+  --default-font-feature-settings: normal;
+  --default-font-variation-settings: normal;
+  --default-line-height: 1.5;
+  
+  /* Color system */
+  --color-background: #ffffff;
+  --color-foreground: #1a1a1a;
+  --color-muted: #6b7280;
+  --color-muted-foreground: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-input: #ffffff;
+  --color-primary: #1a1a1a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f3f4f6;
+  --color-secondary-foreground: #1a1a1a;
+  --color-accent: #f3f4f6;
+  --color-accent-foreground: #1a1a1a;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-ring: #3b82f6;
+  --color-chart-1: #f97316;
+  --color-chart-2: #06b6d4;
+  --color-chart-3: #10b981;
+  --color-chart-4: #f59e0b;
+  --color-chart-5: #8b5cf6;
+  
+  /* Border radius */
   --radius: 0.5rem;
   
-  /* Content card colors */
-  --card-orange: #fff5f0;
-  --card-red: #fef2f2;
-  --card-green: #f0fdf4;
-  --card-pink: #fdf2f8;
-  --card-blue: #f0f9ff;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-background: var(--muted-background);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-ring: var(--ring);
-  --radius: var(--radius);
-  
-  /* Gray color scale for proper text contrast */
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-300: #d1d5db;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-  
+  /* Font families */
   --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-serif: 'Georgia', 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, Inconsolata, 'Roboto Mono', monospace;
@@ -70,10 +47,45 @@
   border-color: hsl(var(--border));
 }
 
-/* Global SVG reset to prevent unwanted scaling */
+/* Global SVG reset to prevent unwanted scaling - but preserve icon sizing */
 svg {
   max-width: none;
   max-height: none;
+}
+
+/* Ensure SVG icons maintain their intended size - stronger rules */
+svg.w-5, svg.h-5, svg[class*="w-5"], svg[class*="h-5"] {
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  max-width: 1.25rem !important;
+  max-height: 1.25rem !important;
+}
+
+svg.w-4, svg.h-4, svg[class*="w-4"], svg[class*="h-4"] {
+  width: 1rem !important;
+  height: 1rem !important;
+  max-width: 1rem !important;
+  max-height: 1rem !important;
+}
+
+svg.w-6, svg.h-6, svg[class*="w-6"], svg[class*="h-6"] {
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  max-width: 1.5rem !important;
+  max-height: 1.5rem !important;
+}
+
+svg.w-8, svg.h-8, svg[class*="w-8"], svg[class*="h-8"] {
+  width: 2rem !important;
+  height: 2rem !important;
+  max-width: 2rem !important;
+  max-height: 2rem !important;
+}
+
+/* Additional fallback for any SVG with size classes */
+svg[class*="w-"], svg[class*="h-"] {
+  max-width: inherit !important;
+  max-height: inherit !important;
 }
 
 body {
@@ -107,7 +119,7 @@ h2 {
 
 h3 {
   font-size: 1.5rem;
-  font-weight: 600;;
+  font-weight: 600;
 }
 
 h4 {
@@ -171,16 +183,28 @@ p {
   line-height: 1.75;
 }
 
-/* Elegant link styling */
-a {
+/* Elegant link styling - exclude tag links */
+a:not(.tag-link) {
   color: var(--primary);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-a:hover {
+a:not(.tag-link):hover {
   border-bottom-color: var(--primary);
+}
+
+/* Tag link specific styling */
+a.tag-link {
+  color: #f97316; /* orange-500 */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+a.tag-link:hover {
+  color: #c2410c; /* orange-700 */
 }
 
 /* Refined button base styles */

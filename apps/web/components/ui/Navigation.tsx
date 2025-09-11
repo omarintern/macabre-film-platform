@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '../../stores/userSessionStore';
 import LogoutButton from './LogoutButton';
 import { Button, Skeleton } from '../ui/design-system';
@@ -12,10 +13,18 @@ export default function Navigation() {
     return (
       <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between h-48">
             <div className="flex items-center">
-              <Link href="/" className="text-2xl font-bold text-gray-900 tracking-tight">
-                Macabre
+              <Link href="/" className="flex items-center">
+                <Image 
+                  src="/macabre-logo.png" 
+                  alt="Macabre Logo" 
+                  width={1000}
+                  height={600}
+                  style={{ height: '192px', width: 'auto' }}
+                  quality={100}
+                  priority
+                />
               </Link>
             </div>
             <div className="flex items-center space-x-6">
@@ -30,10 +39,18 @@ export default function Navigation() {
   return (
     <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between h-48">
           <div className="flex items-center space-x-12">
-            <Link href="/" className="text-2xl font-bold text-gray-900 tracking-tight hover:text-gray-700 transition-colors">
-              Macabre
+            <Link href="/" className="flex items-center">
+              <Image 
+                src="/macabre-logo.png" 
+                alt="Macabre Logo" 
+                width={1000}
+                height={600}
+                style={{ height: '192px', width: 'auto' }}
+                quality={100}
+                priority
+              />
             </Link>
             <div className="hidden md:flex items-center space-x-8">
               <Link 
@@ -56,12 +73,26 @@ export default function Navigation() {
               <>
                 <div className="hidden md:flex items-center space-x-6">
                   {user.role === 'ADMIN' && (
-                    <Link 
-                      href="/admin" 
-                      className="text-blue-600 hover:text-blue-800 font-medium transition-colors text-sm"
-                    >
-                      Admin
-                    </Link>
+                    <>
+                      <Link 
+                        href="/admin" 
+                        className="text-blue-600 hover:text-blue-800 font-medium transition-colors text-sm"
+                      >
+                        Admin
+                      </Link>
+                      <Link 
+                        href={`/profile/${user.id}`}
+                        className="text-gray-700 hover:text-gray-900 transition-colors text-sm"
+                      >
+                        Profile
+                      </Link>
+                      <Link 
+                        href="/profile/edit" 
+                        className="text-gray-700 hover:text-gray-900 transition-colors text-sm"
+                      >
+                        Settings
+                      </Link>
+                    </>
                   )}
                   {user.role === 'CREATOR' && (
                     <>
@@ -91,13 +122,7 @@ export default function Navigation() {
                     </span>
                   </div>
                   
-                  {user.role === 'CREATOR' && (
-                    <Button asChild variant="primary" size="sm" className="hidden sm:inline-flex">
-                      <Link href="/submit">
-                        Submit Work
-                      </Link>
-                    </Button>
-                  )}
+
                   
                   <LogoutButton variant="link" />
                 </div>
@@ -110,11 +135,11 @@ export default function Navigation() {
                 >
                   Login
                 </Link>
-                <Button asChild variant="primary" size="sm">
-                  <Link href="/signup">
+                <Link href="/signup">
+                  <Button variant="primary" size="sm">
                     Sign Up
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </>
             )}
           </div>

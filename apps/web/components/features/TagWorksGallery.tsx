@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useTagWorksGallery } from '../../hooks/useTagWorksGallery';
 import WorkCard from './WorkCard';
 import Pagination from '../ui/Pagination';
+import { Work } from '../../lib/services/workService';
 
 interface TagWorksGalleryProps {
   tagName: string;
@@ -19,19 +20,33 @@ const TagWorksGallery: React.FC<TagWorksGalleryProps> = ({ tagName }) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Distribute works chronologically across 3 columns
+  const distributeWorksToColumns = (works: Work[]) => {
+    const columns: Work[][] = [[], [], []];
+    works.forEach((work, index) => {
+      const columnIndex = index % 3;
+      columns[columnIndex].push(work);
+    });
+    return columns;
+  };
+
   // Loading state
   if (isLoading) {
     return (
       <div className="space-y-6" role="status" aria-label="Loading works">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="animate-pulse" data-testid="skeleton" aria-hidden="true">
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
-                <div className="h-3 bg-gray-100 rounded w-1/4"></div>
-              </div>
+          {[0, 1, 2].map((columnIndex) => (
+            <div key={columnIndex} className="space-y-6">
+              {[1, 2].map((i) => (
+                <div key={i} className="animate-pulse" data-testid="skeleton" aria-hidden="true">
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3 mb-4"></div>
+                    <div className="h-3 bg-gray-100 rounded w-1/4"></div>
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -43,37 +58,31 @@ const TagWorksGallery: React.FC<TagWorksGalleryProps> = ({ tagName }) => {
   // Error state
   if (error) {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-md p-6" role="alert" aria-live="polite">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <svg
-              className="h-5 w-5 text-red-400"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <div className="ml-3">
-            <h3 className="text-sm font-medium text-red-800">
-              Error loading works
-            </h3>
-            <p className="mt-1 text-sm text-red-700">
-              {error}
-            </p>
-            <div className="mt-3">
-              <button
-                onClick={() => window.location.reload()}
-                className="text-sm text-red-600 hover:text-red-800 underline"
+      <div className="space-y-6">
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-red-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
               >
-                Try again
-              </button>
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Error loading works
+              </h3>
+              <p className="mt-1 text-sm text-red-700">
+                {error}
+              </p>
+            </div>
+
           </div>
         </div>
       </div>
@@ -113,12 +122,18 @@ const TagWorksGallery: React.FC<TagWorksGalleryProps> = ({ tagName }) => {
     );
   }
 
+  const columns = distributeWorksToColumns(works);
+
   return (
     <div className="space-y-8">
-      {/* Works Grid */}
+      {/* Works Grid - Chronological masonry layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {works.map((work) => (
-          <WorkCard key={work.id} work={work} />
+        {columns.map((column, columnIndex) => (
+          <div key={columnIndex} className="space-y-6">
+            {column.map((work) => (
+              <WorkCard key={work.id} work={work} />
+            ))}
+          </div>
         ))}
       </div>
 

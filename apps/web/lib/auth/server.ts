@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { verifyToken, JWTPayload } from '../utils/jwt';
-import { UserRole } from '../../src/generated/prisma';
+type UserRole = 'CREATOR' | 'ADMIN';
 
 export interface AuthUser {
   userId: string;

@@ -1,7 +1,14 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import PublicProfile from './PublicProfile';
-import { PublicProfile as PublicProfileType } from '../../lib/services/profileService';
+
+interface PublicProfileType {
+  id: string;
+  name?: string;
+  bio?: string;
+  role: 'CREATOR' | 'ADMIN';
+  createdAt: string;
+}
 
 describe('PublicProfile', () => {
   const mockProfile: PublicProfileType = {

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🧪 QA: Firebase Rate Limit Fix</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .warning { background: #fff3cd; border-color: #ffeaa7; color: #856404; }
+        .info { background: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .step { margin: 15px 0; padding: 15px; border-left: 4px solid #007bff; background: #f8f9fa; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: monospace; }
+        .timer { font-size: 24px; font-weight: bold; color: #007bff; }
+    </style>
+</head>
+<body>
+    <h1>🧪 QA: Firebase Rate Limit Resolution</h1>
+    
+    <div class="card error">
+        <h3>❌ Current Issue</h3>
+        <p><strong>Error:</strong> <code>auth/too-many-requests</code></p>
+        <p><strong>Cause:</strong> Too many failed login attempts triggered Firebase security rate limiting</p>
+        <p><strong>Status:</strong> Temporarily blocked for security</p>
+    </div>
+
+    <div class="card warning">
+        <h3>⏰ Rate Limit Timer</h3>
+        <p>Firebase rate limit typically lasts: <span class="timer" id="countdown">5-15 minutes</span></p>
+        <p>Time since page load: <span id="elapsed">0</span> minutes</p>
+    </div>
+
+    <div class="card info">
+        <h3>🚀 IMMEDIATE SOLUTIONS</h3>
+        
+        <div class="step">
+            <h4>Solution 1: Wait and Retry (Recommended)</h4>
+            <ol>
+                <li>Wait 15 minutes (to be safe)</li>
+                <li>Try logging in again with correct credentials</li>
+                <li>Use: <code>admin@macabre.com</code> / <code>admin123456</code></li>
+            </ol>
+            <button onclick="testLogin()">Test Login Now</button>
+        </div>
+
+        <div class="step">
+            <h4>Solution 2: Clear Browser Data</h4>
+            <ol>
+                <li>Open Chrome DevTools (F12)</li>
+                <li>Right-click refresh button → "Empty Cache and Hard Reload"</li>
+                <li>Or go to Settings → Privacy → Clear browsing data</li>
+                <li>Clear cookies and site data for localhost:3000</li>
+            </ol>
+            <button onclick="clearLocalStorage()">Clear Local Storage</button>
+        </div>
+
+        <div class="step">
+            <h4>Solution 3: Try Incognito/Private Window</h4>
+            <ol>
+                <li>Open new incognito/private window</li>
+                <li>Go to <a href="http://localhost:3000/login" target="_blank">http://localhost:3000/login</a></li>
+                <li>Try logging in with fresh browser state</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h4>Solution 4: Reset in Firebase Console</h4>
+            <ol>
+                <li>Go to <a href="https://console.firebase.google.com/project/macabre-4d51d/authentication/users" target="_blank">Firebase Console Users</a></li>
+                <li>Find the admin user</li>
+                <li>Click "..." menu → "Reset password"</li>
+                <li>Set new password: <code>newadmin123</code></li>
+                <li>Try logging in with new password</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="card success">
+        <h3>✅ Prevention for Future</h3>
+        <ul>
+            <li><strong>Double-check credentials</strong> before submitting</li>
+            <li><strong>Use correct email:</strong> <code>admin@macabre.com</code></li>
+            <li><strong>Use correct password:</strong> <code>admin123456</code></li>
+            <li><strong>Don't spam login attempts</strong> if it fails</li>
+        </ul>
+    </div>
+
+    <div class="card info">
+        <h3>🧪 QA Testing Status</h3>
+        <p><strong>Next Test:</strong> <span id="nextTest">Wait 15 minutes, then test login</span></p>
+        <p><strong>Alternative:</strong> Use incognito window for immediate testing</p>
+        <p><strong>Backup Plan:</strong> Reset password in Firebase Console</p>
+    </div>
+
+    <script>
+        let startTime = Date.now();
+        
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 60000);
+            document.getElementById('elapsed').textContent = elapsed;
+            
+            const remaining = Math.max(0, 15 - elapsed);
+            if (remaining > 0) {
+                document.getElementById('countdown').textContent = remaining + ' minutes remaining';
+                document.getElementById('nextTest').textContent = `Wait ${remaining} more minutes, then test login`;
+            } else {
+                document.getElementById('countdown').textContent = 'Rate limit should be cleared!';
+                document.getElementById('nextTest').textContent = 'Ready to test login now!';
+            }
+        }
+        
+        setInterval(updateTimer, 10000); // Update every 10 seconds
+        updateTimer(); // Initial update
+        
+        function testLogin() {
+            window.open('http://localhost:3000/login', '_blank');
+        }
+        
+        function clearLocalStorage() {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert('Local storage cleared! Try logging in now.');
+        }
+    </script>
+</body>
+</html>

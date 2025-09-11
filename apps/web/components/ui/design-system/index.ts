@@ -1,5 +1,5 @@
 // Design System Components
-export { Button, ButtonGroup, buttonVariants } from './Button';
+export { Button, ButtonGroup } from './Button';
 export { Input, inputVariants } from './Input';
 export {
   Card,

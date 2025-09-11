@@ -1,14 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useWorksGallery } from '../../hooks/useWorksGallery';
+import { useRealtimeWorks } from '../../hooks/useRealtimeWorks';
 import WorkCard from './WorkCard';
 import Pagination from '../ui/Pagination';
 import { Skeleton, ErrorAlert } from '../ui/design-system';
+import { Work } from '../../lib/services/workService';
 
-const WorksGallery: React.FC = () => {
+interface WorksGalleryProps {
+  refreshTrigger?: number;
+}
+
+const WorksGallery: React.FC<WorksGalleryProps> = ({ refreshTrigger }) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { works, pagination, isLoading, error } = useWorksGallery(currentPage);
+  const { works, pagination, isLoading, error } = useWorksGallery(currentPage, refreshTrigger);
+  const { realtimeWorks, isConnected } = useRealtimeWorks();
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -16,17 +23,56 @@ const WorksGallery: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Loading state
+  // Combine real-time works with paginated works, avoiding duplicates
+  const allWorks = useMemo(() => {
+    if (!realtimeWorks.length) return works;
+    
+    // Convert realtime works to regular Work format
+    const realtimeAsWorks: Work[] = realtimeWorks.map(rw => ({
+      id: rw.id,
+      title: rw.title,
+      body: rw.body,
+      classification: rw.classification,
+      tags: rw.tags,
+      creatorId: rw.creatorId,
+      createdAt: new Date(rw.timestamp || Date.now()),
+      updatedAt: new Date(rw.timestamp || Date.now()),
+      creator: rw.creator
+    }));
+
+    // Combine and deduplicate by ID
+    const existingIds = new Set(works.map(w => w.id));
+    const newRealtimeWorks = realtimeAsWorks.filter(rw => !existingIds.has(rw.id));
+    
+    // Put new real-time works at the top
+    return [...newRealtimeWorks, ...works];
+  }, [realtimeWorks, works]);
+
+  // Distribute works chronologically across 3 columns
+  const distributeWorksToColumns = (works: Work[]) => {
+    const columns: Work[][] = [[], [], []];
+    works.forEach((work, index) => {
+      const columnIndex = index % 3;
+      columns[columnIndex].push(work);
+    });
+    return columns;
+  };
+
+  // Loading state - updated for column layout
   if (isLoading) {
     return (
       <div className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="bg-card rounded-lg border border-border p-6 shadow-sm">
-              <Skeleton className="h-6 w-3/4 mb-4" />
-              <Skeleton className="h-4 w-1/2 mb-2" />
-              <Skeleton className="h-4 w-2/3 mb-4" />
-              <Skeleton className="h-3 w-1/4" />
+          {[0, 1, 2].map((columnIndex) => (
+            <div key={columnIndex} className="space-y-8">
+              {[1, 2].map((i) => (
+                <div key={i} className="bg-card rounded-lg border border-border p-6 shadow-sm">
+                  <Skeleton className="h-6 w-3/4 mb-4" />
+                  <Skeleton className="h-4 w-1/2 mb-2" />
+                  <Skeleton className="h-4 w-2/3 mb-4" />
+                  <Skeleton className="h-3 w-1/4" />
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -46,7 +92,7 @@ const WorksGallery: React.FC = () => {
   }
 
   // Empty state
-  if (!works || works.length === 0) {
+  if (!allWorks || allWorks.length === 0) {
     return (
       <div className="text-center py-16">
         <svg
@@ -67,16 +113,37 @@ const WorksGallery: React.FC = () => {
         <p className="mt-3 text-muted-foreground max-w-md mx-auto">
           Be the first to submit a work and share your creative vision with the community.
         </p>
+        {isConnected && (
+          <p className="mt-2 text-sm text-green-600">
+            🔴 Live - New submissions will appear instantly
+          </p>
+        )}
       </div>
     );
   }
 
+  const columns = distributeWorksToColumns(allWorks);
+
   return (
     <div className="space-y-12">
-      {/* Works Grid - Using masonry-style layout for content-relative sizing */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {works.map((work) => (
-          <WorkCard key={work.id} work={work} />
+      {/* Real-time status indicator */}
+      {isConnected && (
+        <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center space-x-2 text-sm text-green-600">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span>Live updates active</span>
+          </div>
+        </div>
+      )}
+      
+      {/* Works Grid - Chronological masonry layout with 3 columns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {columns.map((column, columnIndex) => (
+          <div key={columnIndex} className="space-y-8">
+            {column.map((work) => (
+              <WorkCard key={work.id} work={work} />
+            ))}
+          </div>
         ))}
       </div>
 

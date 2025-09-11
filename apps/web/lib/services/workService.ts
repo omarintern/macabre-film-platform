@@ -1,4 +1,8 @@
 // Work service for API communication
+// 100% Firebase Architecture - No more Prisma/API routes
+
+import { firebaseDataService } from '../firebase/dataService';
+import { realtimeService } from '../firebase/realtimeService';
 
 export interface Work {
   id: string;
@@ -14,6 +18,17 @@ export interface Work {
     name: string | null;
     email: string;
   };
+  // Story 2.6: Mosaic chain fields
+  mosaicId?: string;
+  mosaicPosition?: number;
+  mosaicMetaTitle?: string;
+  // Story 2.5: Connection fields (backward compatible)
+  connectionType?: 'none' | 'mosaic' | 'reference';
+  references?: Array<{
+    postId: string;
+    title: string;
+    creatorName: string;
+  }>;
 }
 
 export interface CreateWorkRequest {
@@ -21,6 +36,17 @@ export interface CreateWorkRequest {
   body: string;
   classification: string;
   tags: string[];
+  // Story 2.6: Mosaic chain fields
+  mosaicId?: string;
+  mosaicPosition?: number;
+  mosaicMetaTitle?: string;
+  // Story 2.5: Connection fields (backward compatible)
+  connectionType?: 'none' | 'mosaic' | 'reference';
+  references?: Array<{
+    postId: string;
+    title: string;
+    creatorName: string;
+  }>;
 }
 
 export interface CreateWorkResponse {
@@ -61,31 +87,28 @@ export interface WorkServiceError {
 }
 
 class WorkServiceClass {
-  private baseUrl = '/api/works';
-
   /**
-   * Create a new work
+   * Create a new work - 100% Firebase
    */
-  async createWork(workData: CreateWorkRequest): Promise<Work> {
+  async createWork(workData: CreateWorkRequest, creatorId: string): Promise<Work> {
     try {
-      const response = await fetch(this.baseUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Include cookies for authentication
-        body: JSON.stringify(workData),
-      });
+      let work: Work;
 
-      const data: CreateWorkResponse | WorkServiceError = await response.json();
-
-      if (!response.ok) {
-        const errorData = data as WorkServiceError;
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      // Handle mosaic chain creation
+      if (workData.connectionType === 'mosaic' && workData.mosaicMetaTitle) {
+        work = await this.createMosaicWork(workData, creatorId);
+      } else {
+        // Create regular work
+        work = await firebaseDataService.createWork(workData, creatorId);
       }
-
-      const successData = data as CreateWorkResponse;
-      return successData.work;
+      
+      // Do real-time broadcast in background without blocking
+      realtimeService.broadcastNewWork(work).catch(error => {
+        console.log('Real-time broadcast failed (non-critical):', error);
+      });
+      
+      console.log('✅ Work created successfully in Firebase:', work.title);
+      return work;
     } catch (error) {
       console.error('Work creation error:', error);
       
@@ -98,27 +121,59 @@ class WorkServiceClass {
   }
 
   /**
-   * Get all works for the current user
+   * Create a work as part of a mosaic chain
    */
-  async getMyWorks(): Promise<Work[]> {
-    try {
-      const response = await fetch(this.baseUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Include cookies for authentication
-      });
+  private async createMosaicWork(workData: CreateWorkRequest, creatorId: string): Promise<Work> {
+    if (!workData.mosaicMetaTitle) {
+      throw new Error('Meta-title is required for mosaic chains');
+    }
 
-      const data: GetWorksResponse | WorkServiceError = await response.json();
+    let chainId: string;
+    let position: number;
 
-      if (!response.ok) {
-        const errorData = data as WorkServiceError;
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    if (workData.mosaicId) {
+      // Continue existing chain
+      chainId = workData.mosaicId;
+      
+      // Get current chain to determine next position
+      const chain = await firebaseDataService.getMosaicChain(chainId);
+      if (!chain) {
+        throw new Error('Parent chain not found');
       }
+      position = chain.postCount + 1;
+    } else {
+      // Create new chain
+      const newChain = await firebaseDataService.createMosaicChain({
+        metaTitle: workData.mosaicMetaTitle,
+        creatorId: creatorId
+      });
+      chainId = newChain.id;
+      position = 1;
+    }
 
-      const successData = data as GetWorksResponse;
-      return successData.works;
+    // Create work with chain information
+    const workWithChain = {
+      ...workData,
+      mosaicId: chainId,
+      mosaicPosition: position,
+      mosaicMetaTitle: workData.mosaicMetaTitle
+    };
+
+    const work = await firebaseDataService.createWork(workWithChain, creatorId);
+
+    // Update chain post count
+    await firebaseDataService.updateChainPostCount(chainId);
+
+    return work;
+  }
+
+  /**
+   * Get all works for the current user - 100% Firebase
+   */
+  async getMyWorks(userId: string): Promise<Work[]> {
+    try {
+      const data = await firebaseDataService.getWorksByCreator(userId);
+      return data.works;
     } catch (error) {
       console.error('Works retrieval error:', error);
       
@@ -131,62 +186,14 @@ class WorkServiceClass {
   }
 
   /**
-   * Get a specific work by ID
-   */
-  async getWorkById(id: string): Promise<Work> {
-    try {
-      const response = await fetch(`${this.baseUrl}/${id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      const data: { success: boolean; work: Work } | WorkServiceError = await response.json();
-
-      if (!response.ok) {
-        const errorData = data as WorkServiceError;
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-
-      const successData = data as { success: boolean; work: Work };
-      return successData.work;
-    } catch (error) {
-      console.error('Work retrieval error:', error);
-      
-      if (error instanceof Error) {
-        throw error;
-      }
-      
-      throw new Error('An unexpected error occurred while retrieving the work');
-    }
-  }
-
-  /**
-   * Get all works with pagination (public access)
+   * Get all works with pagination - 100% Firebase
    */
   async getAllWorks(page: number = 1, limit: number = 20): Promise<PaginatedWorksResponse['pagination'] & { works: Work[] }> {
     try {
-      const response = await fetch(`${this.baseUrl}?page=${page}&limit=${limit}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // No credentials needed for public access
-      });
-
-      const data: PaginatedWorksResponse | WorkServiceError = await response.json();
-
-      if (!response.ok) {
-        const errorData = data as WorkServiceError;
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-
-      const successData = data as PaginatedWorksResponse;
+      const data = await firebaseDataService.getAllWorks(page, limit);
       return {
-        works: successData.works,
-        ...successData.pagination,
+        works: data.works,
+        ...data.pagination,
       };
     } catch (error) {
       console.error('Works retrieval error:', error);
@@ -213,8 +220,8 @@ class WorkServiceClass {
     // Body validation
     if (!workData.body?.trim()) {
       errors.push('Body is required');
-    } else if (workData.body.length > 1000) {
-      errors.push('Body must be 1000 characters or less');
+    } else if (workData.body.length > 2000) {
+      errors.push('Body must be 2000 characters or less');
     }
 
     // Classification validation
@@ -271,27 +278,11 @@ class WorkServiceClass {
   }
 
   /**
-   * Get all unique tags with counts
+   * Get all unique tags with counts - 100% Firebase
    */
   async getAllTags(): Promise<Tag[]> {
     try {
-      const response = await fetch(`${this.baseUrl.replace('/works', '/tags')}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // No credentials needed for public access
-      });
-
-      const data: TagsResponse | WorkServiceError = await response.json();
-
-      if (!response.ok) {
-        const errorData = data as WorkServiceError;
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-
-      const successData = data as TagsResponse;
-      return successData.tags;
+      return await firebaseDataService.getAllTags();
     } catch (error) {
       console.error('Tags retrieval error:', error);
       
@@ -316,32 +307,7 @@ class WorkServiceClass {
     hasPrev: boolean;
   }> {
     try {
-      const encodedTagName = encodeURIComponent(tagName);
-      const response = await fetch(`${this.baseUrl}/by-tag/${encodedTagName}?page=${page}&limit=${limit}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // No credentials needed for public access
-      });
-
-      const data: PaginatedWorksResponse | WorkServiceError = await response.json();
-
-      if (!response.ok) {
-        const errorData = data as WorkServiceError;
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-
-      const successData = data as PaginatedWorksResponse;
-      return {
-        works: successData.works,
-        page: successData.pagination.page,
-        limit: successData.pagination.limit,
-        total: successData.pagination.total,
-        totalPages: successData.pagination.totalPages,
-        hasNext: successData.pagination.hasNext,
-        hasPrev: successData.pagination.hasPrev,
-      };
+      return await firebaseDataService.getWorksByTag(tagName, page, limit);
     } catch (error) {
       console.error('Tag works retrieval error:', error);
       
@@ -352,6 +318,33 @@ class WorkServiceClass {
       throw new Error('An unexpected error occurred while retrieving works by tag');
     }
   }
+
+  /**
+   * Get works by creator with pagination
+   */
+  async getWorksByCreator(userId: string, page: number = 1, limit: number = 12): Promise<{
+    works: Work[];
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  }> {
+    try {
+      return await firebaseDataService.getWorksByCreator(userId, page, limit);
+    } catch (error) {
+      console.error('Creator works retrieval error:', error);
+      
+      if (error instanceof Error) {
+        throw error;
+      }
+      
+      throw new Error('An unexpected error occurred while retrieving works by creator');
+    }
+  }
+
+
 }
 
 // Export singleton instance

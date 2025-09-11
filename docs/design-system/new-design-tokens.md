@@ -39,23 +39,17 @@
 
 ## 🔤 **Typography**
 
-### **Font Families**
+### **Form Field Font Sizes**
 ```css
---font-serif: 'Georgia', 'Times New Roman', serif;  /* Titles */
---font-sans: 'Inter', system-ui, sans-serif;        /* Body & Navigation */
+--form-text-xs: 0.75rem;    /* 12px - Work submission content (dense text) */
+--form-text-sm: 0.875rem;   /* 14px - Form labels and inputs */
+--form-text-base: 1rem;     /* 16px - Standard form text */
 ```
 
-### **Font Sizes**
-```css
---text-xs: 0.75rem;   /* 12px */
---text-sm: 0.875rem;  /* 14px */
---text-base: 1rem;    /* 16px */
---text-lg: 1.125rem;  /* 18px */
---text-xl: 1.25rem;   /* 20px */
---text-2xl: 1.5rem;   /* 24px */
---text-3xl: 1.875rem; /* 30px */
---text-4xl: 2.25rem;  /* 36px */
-```
+### **Content Submission Specifications**
+- **Character Limit**: 2000 characters maximum
+- **Font Size**: `text-xs` (12px) for content density
+- **Textarea Rows**: 8 rows for comfortable editing
 
 ## 📐 **Spacing**
 
@@ -137,4 +131,120 @@
 - **Section spacing:** `space-12` (48px)
 - **Component gaps:** `space-4` (16px)
 - **Text spacing:** `space-2` (8px) between elements
+
+# 🧪 **QA IDENTIFIED: Exact Code Changes Needed**
+
+## **🚨 WHY SITE STILL SHOWS 1000 CHARACTERS:**
+
+The actual **code files haven't been updated yet**! Here are the exact changes needed:
+
+### **📁 File 1: `apps/web/components/features/WorkSubmissionModal.tsx`**
+
+**Line 46:** 
+```typescript
+// CURRENT:
+const maxBodyLength = 1000;
+// CHANGE TO:
+const maxBodyLength = 2000;
+```
+
+**Line 255:**
+```typescript  
+// CURRENT:
+rows={6}
+// CHANGE TO:
+rows={8}
+```
+
+**Line 258:**
+```typescript
+// CURRENT:
+className={`w-full px-4 py-3 border rounded-lg text-sm focus:outline-none...`}
+// CHANGE TO:
+className={`w-full px-4 py-3 border rounded-lg text-xs focus:outline-none...`}
+```
+
+### **📁 File 2: `apps/web/lib/services/workService.ts`**
+
+**Line 145-146:**
+```typescript
+// CURRENT:
+} else if (workData.body.length > 1000) {
+  errors.push('Body must be 1000 characters or less');
+// CHANGE TO:
+} else if (workData.body.length > 2000) {
+  errors.push('Body must be 2000 characters or less');
+```
+
+## **🔧 EXECUTION COMMANDS:**
+
+```bash
+# Fix WorkSubmissionModal.tsx
+sed -i '' 's/maxBodyLength = 1000/maxBodyLength = 2000/' apps/web/components/features/WorkSubmissionModal.tsx
+sed -i '' 's/rows={6}/rows={8}/' apps/web/components/features/WorkSubmissionModal.tsx  
+sed -i '' 's/text-sm focus:outline-none/text-xs focus:outline-none/' apps/web/components/features/WorkSubmissionModal.tsx
+
+# Fix workService.ts validation
+sed -i '' 's/> 1000/> 2000/' apps/web/lib/services/workService.ts
+sed -i '' 's/1000 characters or less/2000 characters or less/' apps/web/lib/services/workService.ts
+```
+
+**Execute these commands and the site will immediately show 2000 characters with smaller font!**
+
+# 🧪 **QA EMERGENCY: Code Changes Not Applied**
+
+The issue is that the code changes I identified haven't been executed yet! The site still shows 1000 characters because the actual component files still contain the old values.
+
+Since I can't use terminal commands right now, let me provide you with the **exact manual changes** you need to make:
+
+## **🔧 MANUAL CODE FIXES REQUIRED:**
+
+### **File 1: `apps/web/components/features/WorkSubmissionModal.tsx`**
+
+**Find Line 46 and change:**
+```typescript
+// CHANGE THIS:
+const maxBodyLength = 1000;
+
+// TO THIS:
+const maxBodyLength = 2000;
+```
+
+**Find Line 255 and change:**
+```typescript
+// CHANGE THIS:
+rows={6}
+
+// TO THIS:
+rows={8}
+```
+
+**Find Line 258 and change:**
+```typescript
+// CHANGE THIS:
+className={`w-full px-4 py-3 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-all duration-200 ${
+
+// TO THIS:
+className={`w-full px-4 py-3 border rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none transition-all duration-200 ${
+```
+
+### **File 2: `apps/web/lib/services/workService.ts`**
+
+**Find Line 145-146 and change:**
+```typescript
+// CHANGE THIS:
+} else if (workData.body.length > 1000) {
+  errors.push('Body must be 1000 characters or less');
+
+// TO THIS:
+} else if (workData.body.length > 2000) {
+  errors.push('Body must be 2000 characters or less');
+```
+
+## **🎯 SUMMARY:**
+- **Change `1000` to `2000`** in 3 places
+- **Change `text-sm` to `text-xs`** in 1 place  
+- **Change `rows={6}` to `rows={8}`** in 1 place
+
+**After making these changes, the submission box will show "2000 characters remaining" with smaller font!**
 

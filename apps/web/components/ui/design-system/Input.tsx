@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../lib/utils';
 
 // Input variant definitions
 const inputVariants = cva(
@@ -111,8 +111,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     // Compose class names
     const inputClasses = cn(
       inputVariants({ variant: inputVariant, size, fullWidth }),
-      leftIcon && 'pl-10',
-      rightIcon && 'pr-10',
+      leftIcon ? 'pl-10' : '',
+      rightIcon ? 'pr-10' : '',
       className
     );
 

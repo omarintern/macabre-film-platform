@@ -1,9 +1,16 @@
 'use client';
 
 import React from 'react';
-import { PublicProfile as PublicProfileType } from '../../lib/services/profileService';
 import CreatorWorksList from './CreatorWorksList';
 import { useWorksByCreator } from '../../hooks/useWorksByCreator';
+
+interface PublicProfileType {
+  id: string;
+  name?: string | null;
+  bio?: string | null;
+  role: 'CREATOR' | 'ADMIN';
+  createdAt: string;
+}
 
 interface PublicProfileProps {
   profile: PublicProfileType;
@@ -32,15 +39,14 @@ const PublicProfile: React.FC<PublicProfileProps> = ({ profile }) => {
                 {profile.name ? profile.name.charAt(0).toUpperCase() : '?'}
               </span>
             </div>
-            
-            <div>
+            <div className="flex-1">
               <h1 className="text-3xl font-bold">
                 {profile.name || 'Anonymous Creator'}
               </h1>
-              <p className="text-gray-200 text-lg capitalize">
+              <p className="text-gray-300 text-lg capitalize">
                 {profile.role.toLowerCase()}
               </p>
-              <p className="text-gray-300 text-sm">
+              <p className="text-gray-400 text-sm">
                 Member since {formatDate(profile.createdAt)}
               </p>
             </div>
@@ -49,48 +55,41 @@ const PublicProfile: React.FC<PublicProfileProps> = ({ profile }) => {
 
         {/* Profile Content */}
         <div className="px-6 py-8">
-          {/* Bio Section */}
+          {/* About Section */}
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">About</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">About</h2>
             {profile.bio ? (
-              <div className="prose prose-gray max-w-none">
+              <div className="prose max-w-none">
                 <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                   {profile.bio}
                 </p>
               </div>
             ) : (
-              <p className="text-gray-600 italic">
+              <p className="text-gray-500 italic">
                 This creator hasn&apos;t added a bio yet.
               </p>
             )}
           </div>
 
           {/* Works Section */}
-          <div className="mb-8">
-            <CreatorWorksList 
-              creatorId={profile.id}
-              works={works}
-              isLoading={isLoading}
-              error={error}
-            />
-          </div>
-
-          {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-gray-50 rounded-lg p-6 text-center">
-              <div className="text-2xl font-bold text-gray-900">
-                {isLoading ? '...' : works.length}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Works</h2>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+                <span className="ml-2 text-gray-600">Loading works...</span>
               </div>
-              <div className="text-sm text-gray-600">Works Published</div>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-6 text-center">
-              <div className="text-2xl font-bold text-gray-900">0</div>
-              <div className="text-sm text-gray-600">Collaborations</div>
-            </div>
-            <div className="bg-gray-50 rounded-lg p-6 text-center">
-              <div className="text-2xl font-bold text-gray-900">0</div>
-              <div className="text-sm text-gray-600">Projects</div>
-            </div>
+            ) : error ? (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <p className="text-red-600">Failed to load works. Please try again later.</p>
+              </div>
+            ) : works && works.length > 0 ? (
+              <CreatorWorksList works={works} />
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500">No works submitted yet.</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

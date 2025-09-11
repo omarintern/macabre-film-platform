@@ -1,5 +1,6 @@
 import React from 'react';
 import { Work } from '../../lib/services/workService';
+import WorkCard from './WorkCard';
 
 interface CreatorWorksListProps {
   creatorId?: string; // Used for data fetching in parent component
@@ -9,16 +10,30 @@ interface CreatorWorksListProps {
 }
 
 const CreatorWorksList = ({ works = [], isLoading = false, error }: CreatorWorksListProps) => {
+  // Distribute works chronologically across 3 columns
+  const distributeWorksToColumns = (works: Work[]) => {
+    const columns: Work[][] = [[], [], []];
+    works.forEach((work, index) => {
+      const columnIndex = index % 3;
+      columns[columnIndex].push(work);
+    });
+    return columns;
+  };
+
   // Loading state
   if (isLoading) {
     return (
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-gray-800">Works</h3>
-        <div className="space-y-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-              <div className="h-3 bg-gray-100 rounded w-1/2"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[0, 1, 2].map((columnIndex) => (
+            <div key={columnIndex} className="space-y-6">
+              {[1].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-gray-100 rounded w-1/2"></div>
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -85,49 +100,20 @@ const CreatorWorksList = ({ works = [], isLoading = false, error }: CreatorWorks
     );
   }
 
-  // Works list
+  const columns = distributeWorksToColumns(works);
+
+  // Works list - Chronological masonry layout
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <h3 className="text-lg font-semibold text-gray-800">
         Works ({works.length})
       </h3>
-      <div className="space-y-4">
-        {works.map((work) => (
-          <div
-            key={work.id}
-            className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <h4 className="text-lg font-medium text-gray-900 mb-2">
-                  {work.title}
-                </h4>
-                <div className="flex items-center space-x-4 text-sm text-gray-600">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                    {work.classification}
-                  </span>
-                  <span>
-                    {new Date(work.createdAt).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
-                  </span>
-                </div>
-                {work.tags && work.tags.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1">
-                    {work.tags.map((tag, index) => (
-                      <span
-                        key={index}
-                        className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {columns.map((column, columnIndex) => (
+          <div key={columnIndex} className="space-y-6">
+            {column.map((work) => (
+              <WorkCard key={work.id} work={work} />
+            ))}
           </div>
         ))}
       </div>

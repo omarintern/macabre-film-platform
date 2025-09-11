@@ -3,6 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '../../stores/userSessionStore';
+import Image from 'next/image';
 
 interface SidebarProps {
   className?: string;
@@ -10,6 +12,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const navItems = [
     {
@@ -33,20 +36,21 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
       ),
     },
     {
-      href: '/submit',
-      label: 'Submit Work',
-      description: 'Share your creative work',
+      href: '/index',
+      label: 'Index',
+      description: 'Browse all tags and hashtags',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
         </svg>
       ),
     },
+
   ];
 
   const userActions = [
     {
-      href: '/profile',
+      href: user?.id ? `/profile/${user.id}` : '/profile',
       label: 'Profile',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +58,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
         </svg>
       ),
     },
-    {
+    // Only show admin link if user is an admin
+    ...(user?.role === 'ADMIN' ? [{
       href: '/admin',
       label: 'Admin',
       description: 'Manage users and permissions',
@@ -63,7 +68,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
         </svg>
       ),
-    },
+    }] : []),
     {
       href: '/logout',
       label: 'Sign Out',
@@ -79,8 +84,15 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
     <aside className={`sidebar ${className}`}>
       <div className="sidebar-content">
         {/* Logo */}
-        <div className="sidebar-logo">
-          Macabre
+        <div className="sidebar-logo flex items-center">
+          <Image 
+            src="/macabre-logo.png" 
+            alt="Macabre Logo" 
+            width={1000}
+            height={600}
+            style={{ height: '128px', width: 'auto' }}
+            quality={100}
+          />
         </div>
 
         {/* Search Bar */}

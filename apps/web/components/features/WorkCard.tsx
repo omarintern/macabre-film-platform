@@ -1,85 +1,112 @@
-import React from 'react';
-import { Work } from '../../lib/services/workService';
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Work } from '@/lib/services/workService';
+import { firebaseDataService } from '@/lib/firebase/dataService';
 
 interface WorkCardProps {
   work: Work;
 }
 
-const WorkCard: React.FC<WorkCardProps> = ({ work }) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+export default function WorkCard({ work }: WorkCardProps) {
+  const [chainWorks, setChainWorks] = useState<Work[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Generate pastel color based on work content for consistent but varied appearance
-  const getCardColor = (work: Work) => {
-    const colors = [
-      'card-orange', // Light orange/cream
-      'card-red',    // Light pink/red
-      'card-green',  // Light green
-      'card-pink',   // Light pink
-      'card-blue',   // Light blue
-    ];
-    
-    // Use work ID or title to consistently assign colors
-    const hash = work.id.charCodeAt(0) + work.title.charCodeAt(0);
-    return colors[hash % colors.length];
-  };
+  useEffect(() => {
+    const fetchChainWorks = async () => {
+      if (work.mosaicId) {
+        try {
+          const works = await firebaseDataService.getWorksInChain(work.mosaicId);
+          setChainWorks(works);
+        } catch (error) {
+          console.error('Error fetching chain works:', error);
+        }
+      }
+      setLoading(false);
+    };
 
-  const cardColor = getCardColor(work);
-  const borderColor = cardColor.replace('card-', 'border-') + '-300';
+    fetchChainWorks();
+  }, [work.mosaicId]);
 
   return (
-    <div className={`${cardColor} p-8 border-l-4 ${borderColor} rounded-lg shadow-sm hover:shadow-md transition-all duration-200 group`}>
+    <div className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow">
       {/* Title */}
-      <h3 className="text-xl font-semibold text-gray-900 mb-3 group-hover:text-gray-700 transition-colors duration-200">
+      <h3 className="text-xl font-bold text-gray-900 mb-4">
         {work.title}
       </h3>
 
-      {/* Body Content - No truncation, let content determine height */}
-      <p className="text-gray-700 mb-4 leading-relaxed">
-        {work.body}
-      </p>
-
-      {/* Creator */}
-      <p className="text-sm text-gray-600 mb-4">
-        by {work.creator?.name || 'Anonymous Creator'}
-      </p>
-
-      {/* Tags with color-coordinated styling */}
-      {work.tags && work.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {work.tags.slice(0, 4).map((tag, index) => {
-            const tagColor = cardColor.replace('card-', 'bg-') + '-100';
-            const textColor = cardColor.replace('card-', 'text-') + '-800';
-            
-            return (
-              <span
-                key={index}
-                className={`text-xs ${tagColor} ${textColor} px-3 py-1 rounded-full font-medium`}
-              >
-                #{tag}
-              </span>
-            );
-          })}
-          {work.tags.length > 4 && (
-            <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full">
-              +{work.tags.length - 4} more
-            </span>
-          )}
+      {/* Classification Badge */}
+      {work.classification && (
+        <div className="mb-3">
+          <span className="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+            {work.classification}
+          </span>
         </div>
       )}
 
-      {/* Classification and Date - Subtle footer */}
-              <div className="flex items-center justify-between text-xs text-gray-500 mt-4 pt-3 border-t border-gray-200">
-        <span className="font-medium">{work.classification}</span>
-        <span>{formatDate(work.createdAt)}</span>
+      {/* Body Content */}
+      <div className="mb-4">
+        <p className="text-gray-700 mb-2">{work.body}</p>
+        <p className="text-sm text-gray-500">
+          by {work.creator?.name || 'Anonymous Creator'}
+        </p>
+      </div>
+
+      {/* Footer with Tags and Mosaic Chain */}
+      <div className="border-t border-gray-200 pt-3 mt-3 space-y-2">
+        {/* Row 1: Mosaic Chain */}
+        {work.mosaicId && (
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center space-x-2">
+              <span className="text-gray-600">{work.mosaicMetaTitle || 'Mosaic Chain'}</span>
+              <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="flex items-center space-x-2 flex-wrap">
+              {loading ? (
+                <div className="animate-pulse bg-gray-200 h-4 w-16 rounded"></div>
+              ) : chainWorks.length > 0 ? (
+                chainWorks.map((chainWork, index) => (
+                  <Link 
+                    key={chainWork.id}
+                    href={`/works/${chainWork.id}`} 
+                    className="text-blue-600 hover:text-blue-800 text-sm hover:underline"
+                  >
+                    {chainWork.title}
+                    {index < chainWorks.length - 1 && <span className="text-gray-400 mx-1">•</span>}
+                  </Link>
+                ))
+              ) : (
+                <span className="text-gray-500 text-sm">No chain works found</span>
+              )}
+            </div>
+          </div>
+        )}
+        
+        {/* Row 2: Tags */}
+        {work.tags && work.tags.length > 0 && (
+          <div className="flex items-center space-x-1 text-sm text-gray-600">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+            </svg>
+            <span>
+              {work.tags.slice(0, 3).map(tag => `#${tag}`).join(', ')}
+              {work.tags.length > 3 && ` +${work.tags.length - 3} more`}
+            </span>
+          </div>
+        )}
+        
+        {/* Row 3: Date */}
+        <div className="text-sm text-gray-500">
+          {new Date(work.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+          })}
+        </div>
       </div>
     </div>
   );
-};
-
-export default WorkCard;
+}

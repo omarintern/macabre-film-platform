@@ -3,14 +3,16 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authService } from '../../../lib/services/authService';
+import { useAuth } from '../../../stores/userSessionStore';
 
 interface FormData {
+  name: string;
   email: string;
   password: string;
 }
 
 interface FormErrors {
+  name?: string;
   email?: string;
   password?: string;
   general?: string;
@@ -18,7 +20,9 @@ interface FormErrors {
 
 export default function SignupPage() {
   const router = useRouter();
+  const { signUp } = useAuth();
   const [formData, setFormData] = useState<FormData>({
+    name: '',
     email: '',
     password: '',
   });
@@ -45,6 +49,11 @@ export default function SignupPage() {
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    }
 
     // Email validation
     if (!formData.email.trim()) {
@@ -93,20 +102,16 @@ export default function SignupPage() {
     setErrors({});
 
     try {
-      const result = await authService.signup({
-        email: formData.email.trim(),
-        password: formData.password,
-      });
-
-      if (result.success) {
-        // Redirect to login page on successful sign-up (AC: 4)
-        router.push('/login');
-      } else {
-        setErrors({ general: result.error || 'Sign-up failed. Please try again.' });
-      }
+      // Use Firebase Auth directly - no API routes needed!
+      await signUp(formData.name.trim(), formData.email.trim(), formData.password);
+      
+      // Redirect to spaces page on successful sign-up
+      router.push('/spaces');
     } catch (error) {
       console.error('Signup error:', error);
-      setErrors({ general: 'An unexpected error occurred. Please try again.' });
+      setErrors({ 
+        general: error instanceof Error ? error.message : 'Sign-up failed. Please try again.' 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -126,6 +131,32 @@ export default function SignupPage() {
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
           <div className="space-y-4">
+            {/* Name Field */}
+            <div>
+              <label htmlFor="name" className="sr-only">
+                Full Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                required
+                value={formData.name}
+                onChange={handleInputChange}
+                className={`relative block w-full px-3 py-2 border ${
+                  errors.name ? 'border-red-300' : 'border-gray-300'
+                } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-gray-500 focus:border-gray-500 focus:z-10 sm:text-sm`}
+                placeholder="Full name"
+                aria-describedby={errors.name ? 'name-error' : undefined}
+              />
+              {errors.name && (
+                <p id="name-error" className="mt-1 text-sm text-red-600" role="alert">
+                  {errors.name}
+                </p>
+              )}
+            </div>
+
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="sr-only">

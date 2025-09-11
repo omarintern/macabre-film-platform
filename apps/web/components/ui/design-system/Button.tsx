@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../lib/utils';
 
 // Button props interface (pure Tailwind implementation)
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -140,6 +140,85 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = 'Button';
 
+// ButtonGroup component (pure Tailwind implementation)
+interface ButtonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
+  ({ className, children, ...props }, ref) => {
+    const groupClasses = cn(
+      'inline-flex rounded-md shadow-sm',
+      className
+    );
+
+    // Clone children and modify their classes for grouped styling
+    const childrenArray = React.Children.toArray(children);
+    const modifiedChildren = childrenArray.map((child, index) => {
+      if (React.isValidElement(child) && child.type === Button) {
+        const isFirst = index === 0;
+        const isLast = index === childrenArray.length - 1;
+        const isMiddle = !isFirst && !isLast;
+
+        // Build additional classes for grouped styling
+        let additionalClasses = 'relative';
+        
+        if (!isFirst) {
+          additionalClasses += ' -ml-px';
+        }
+        
+        if (isFirst && !isLast) {
+          additionalClasses += ' rounded-r-none';
+        } else if (isLast && !isFirst) {
+          additionalClasses += ' rounded-l-none';
+        } else if (isMiddle) {
+          additionalClasses += ' rounded-l-none rounded-r-none';
+        }
+
+        // Clone with modified className
+        return React.cloneElement(child as React.ReactElement<React.HTMLAttributes<HTMLElement>>, {
+          ...(child.props as React.HTMLAttributes<HTMLElement>),
+          className: cn((child.props as React.HTMLAttributes<HTMLElement>)?.className, additionalClasses),
+          style: {
+            ...((child.props as React.HTMLAttributes<HTMLElement>)?.style || {}),
+            zIndex: 'auto', // Base z-index, will be overridden by hover/focus
+          },
+          onMouseEnter: (e: React.MouseEvent) => {
+            (e.target as HTMLElement).style.zIndex = '10';
+            (child.props as React.HTMLAttributes<HTMLElement>)?.onMouseEnter?.(e);
+          },
+          onMouseLeave: (e: React.MouseEvent) => {
+            (e.target as HTMLElement).style.zIndex = 'auto';
+            (child.props as React.HTMLAttributes<HTMLElement>)?.onMouseLeave?.(e);
+          },
+          onFocus: (e: React.FocusEvent) => {
+            (e.target as HTMLElement).style.zIndex = '10';
+            (child.props as React.HTMLAttributes<HTMLElement>)?.onFocus?.(e);
+          },
+          onBlur: (e: React.FocusEvent) => {
+            (e.target as HTMLElement).style.zIndex = 'auto';
+            (child.props as React.HTMLAttributes<HTMLElement>)?.onBlur?.(e);
+          },
+        });
+      }
+      return child;
+    });
+
+    return (
+      <div
+        className={groupClasses}
+        ref={ref}
+        role="group"
+        {...props}
+      >
+        {modifiedChildren}
+      </div>
+    );
+  }
+);
+
+ButtonGroup.displayName = 'ButtonGroup';
+
 // Export components
-export { Button };
-export type { ButtonProps };
+export { Button, ButtonGroup };
+export type { ButtonProps, ButtonGroupProps };

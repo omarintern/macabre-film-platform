@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '../utils/jwt';
-import { UserRole } from '../../src/generated/prisma';
+type UserRole = 'CREATOR' | 'ADMIN';
 
 export interface AuthUser {
   userId: string;
