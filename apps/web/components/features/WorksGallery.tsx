@@ -35,8 +35,8 @@ const WorksGallery: React.FC<WorksGalleryProps> = ({ refreshTrigger }) => {
       classification: rw.classification,
       tags: rw.tags,
       creatorId: rw.creatorId,
-      createdAt: new Date(rw.timestamp || Date.now()),
-      updatedAt: new Date(rw.timestamp || Date.now()),
+      createdAt: new Date(rw.timestamp || Date.now()).toISOString(),
+      updatedAt: new Date(rw.timestamp || Date.now()).toISOString(),
       creator: rw.creator
     }));
 
