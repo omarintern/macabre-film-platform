@@ -104,6 +104,9 @@ export default function ProfileEditForm({ user }: ProfileEditFormProps) {
 
       // Fetch the updated user data
       const updatedUser = await firebaseDataService.getUserById(user.id);
+      if (!updatedUser) {
+        throw new Error("Failed to fetch updated user data");
+      }
       // Update the user session store
       setUserSession(updatedUser, ''); // Firebase handles tokens internally
 
