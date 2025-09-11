@@ -39,7 +39,7 @@ describe('WorkService', () => {
         json: async () => ({ success: true, work: mockWork }),
       } as Response);
 
-      const result = await workService.createWork(validWorkData);
+      const result = await workService.createWork(validWorkData, "test-user-id");
 
       expect(result).toEqual(mockWork);
       expect(mockFetch).toHaveBeenCalledWith('/api/works', {
@@ -59,13 +59,13 @@ describe('WorkService', () => {
         json: async () => ({ error: 'Title is required' }),
       } as Response);
 
-      await expect(workService.createWork(validWorkData)).rejects.toThrow('Title is required');
+      await expect(workService.createWork(validWorkData, "test-user-id")).rejects.toThrow('Title is required');
     });
 
     it('should throw error when fetch fails', async () => {
       mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
-      await expect(workService.createWork(validWorkData)).rejects.toThrow('Network error');
+      await expect(workService.createWork(validWorkData, "test-user-id")).rejects.toThrow('Network error');
     });
 
     it('should throw generic error when API returns no specific error', async () => {
@@ -75,7 +75,7 @@ describe('WorkService', () => {
         json: async () => ({}),
       } as Response);
 
-      await expect(workService.createWork(validWorkData)).rejects.toThrow('HTTP error! status: 500');
+      await expect(workService.createWork(validWorkData, "test-user-id")).rejects.toThrow('HTTP error! status: 500');
     });
   });
 
@@ -88,7 +88,7 @@ describe('WorkService', () => {
         json: async () => ({ success: true, works: mockWorks }),
       } as Response);
 
-      const result = await workService.getMyWorks();
+      const result = await workService.getMyWorks("test-user-id");
 
       expect(result).toEqual(mockWorks);
       expect(mockFetch).toHaveBeenCalledWith('/api/works', {
@@ -107,7 +107,7 @@ describe('WorkService', () => {
         json: async () => ({ error: 'Authentication required' }),
       } as Response);
 
-      await expect(workService.getMyWorks()).rejects.toThrow('Authentication required');
+      await expect(workService.getMyWorks("test-user-id")).rejects.toThrow('Authentication required');
     });
   });
 

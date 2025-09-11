@@ -193,7 +193,13 @@ class WorkServiceClass {
       const data = await firebaseDataService.getAllWorks(page, limit);
       return {
         works: data.works,
-        ...data.pagination,
+        page: data.page,
+        limit: data.limit,
+        total: data.total,
+        totalPages: data.totalPages,
+        hasNext: data.hasNext,
+        hasPrev: data.hasPrev,
+        
       };
     } catch (error) {
       console.error('Works retrieval error:', error);

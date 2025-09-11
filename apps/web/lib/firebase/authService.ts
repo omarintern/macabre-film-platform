@@ -25,7 +25,7 @@ export interface User {
   role: 'CREATOR' | 'ADMIN';
   createdAt: string;
   updatedAt: string;
-}
+  bio: string | null;  bio: string | null;}
 
 export interface SignUpRequest {
   name: string;
@@ -69,7 +69,8 @@ class FirebaseAuthService {
           email,
           role: 'CREATOR',
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
+          bio: null
         },
         token
       };
@@ -103,7 +104,8 @@ class FirebaseAuthService {
           email: userData.email,
           role: userData.role,
           createdAt: userData.createdAt.toDate().toISOString(),
-          updatedAt: userData.updatedAt.toDate().toISOString()
+          updatedAt: userData.updatedAt.toDate().toISOString(),
+          bio: userData.bio || null
         },
         token
       };
@@ -143,7 +145,8 @@ class FirebaseAuthService {
         email: userData.email,
         role: userData.role,
         createdAt: userData.createdAt.toDate().toISOString(),
-        updatedAt: userData.updatedAt.toDate().toISOString()
+        updatedAt: userData.updatedAt.toDate().toISOString(),
+          bio: userData.bio || null
       };
     } catch (error) {
       console.error('Get current user error:', error);
@@ -167,7 +170,8 @@ class FirebaseAuthService {
               email: userData.email,
               role: userData.role,
               createdAt: userData.createdAt.toDate().toISOString(),
-              updatedAt: userData.updatedAt.toDate().toISOString()
+              updatedAt: userData.updatedAt.toDate().toISOString(),
+          bio: userData.bio || null
             });
           } else {
             callback(null);
@@ -216,7 +220,8 @@ class FirebaseAuthService {
         email,
         role: 'ADMIN',
         createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+          bio: null
       };
     } catch (error) {
       console.error('Create initial admin error:', error);
@@ -239,7 +244,8 @@ class FirebaseAuthService {
         email: userData.email,
         role: userData.role,
         createdAt: userData.createdAt.toDate().toISOString(),
-        updatedAt: userData.updatedAt.toDate().toISOString()
+        updatedAt: userData.updatedAt.toDate().toISOString(),
+          bio: userData.bio || null
       };
     } catch (error) {
       console.error('Get user by ID error:', error);

@@ -15,7 +15,8 @@ import {
   QuerySnapshot,
   updateDoc,
   deleteDoc,
-  setDoc
+  setDoc,
+  serverTimestamp
 } from 'firebase/firestore';
 import { 
   createUserWithEmailAndPassword,
@@ -747,6 +748,53 @@ class FirebaseDataService {
       await signOut(auth);
     } catch (error) {
       console.error('Sign out error:', error);
+      throw error;
+    }
+
+  /**
+   * Get single work by ID
+   */
+  async getWorkById(workId: string): Promise<Work | null> {
+    try {
+      const workDoc = await getDoc(doc(db, "works", workId));
+      
+      if (!workDoc.exists()) {
+        return null;
+      }
+      
+      const data = workDoc.data();
+      return {
+        id: workDoc.id,
+        title: data.title,
+        body: data.body,
+        classification: data.classification,
+        tags: data.tags || [],
+        creatorId: data.creatorId,
+        createdAt: data.createdAt?.toDate().toISOString() || new Date().toISOString(),
+        updatedAt: data.updatedAt?.toDate().toISOString() || new Date().toISOString(),
+        creator: data.creator || { id: data.creatorId, name: null, email: "" },
+        mosaicId: data.mosaicId,
+        mosaicPosition: data.mosaicPosition,
+        mosaicMetaTitle: data.mosaicMetaTitle,
+        connectionType: data.connectionType || "none"
+      };
+    } catch (error) {
+      console.error("Error getting work by ID:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Promote user to admin role
+   */
+  async promoteUserToAdmin(userId: string): Promise<void> {
+    try {
+      await updateDoc(doc(db, "users", userId), {
+        role: "ADMIN",
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error("Error promoting user to admin:", error);
       throw error;
     }
   }
