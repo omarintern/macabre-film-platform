@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../../stores/userSessionStore';
+import { useUserSessionStore } from '../../stores/userSessionStore';
 import { firebaseDataService } from '../../lib/firebase/dataService';
 import { Button } from '../ui/design-system';
 
@@ -32,7 +32,7 @@ interface FormErrors {
 }
 
 export default function ProfileEditForm({ user }: ProfileEditFormProps) {
-  const { setUserSession } = useAuth();
+  const { setUserSession } = useUserSessionStore();
   const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     name: user?.name || '',
