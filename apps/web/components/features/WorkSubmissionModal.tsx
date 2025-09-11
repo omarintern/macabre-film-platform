@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button, ErrorAlert } from '../ui/design-system';
-import { Work } from './WorkSubmissionForm';
+import { Work } from '../../lib/firebase/dataService';
 import { workService } from '../../lib/services/workService';
 import { useAuth } from '../../stores/userSessionStore';
 import MosaicChainBuilder from './MosaicChainBuilder';
