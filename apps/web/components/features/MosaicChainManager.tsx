@@ -54,7 +54,7 @@ export default function MosaicChainManager({
     if (!editingChain || !editMetaTitle.trim()) return;
     
     try {
-      await firebaseDataService.updateMosaicChainMetaTitle(editingChain.id, editMetaTitle.trim());
+      await firebaseDataService.updateMosaicChain(editingChain.id, { metaTitle: editMetaTitle.trim() });
       await loadChains(); // Reload to get updated data
       setEditingChain(null);
       setEditMetaTitle('');
