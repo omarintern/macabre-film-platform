@@ -191,11 +191,11 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
             (e.target as HTMLElement).style.zIndex = 'auto';
             (child.props as React.HTMLAttributes<HTMLElement>)?.onMouseLeave?.(e);
           },
-          onFocus: (e: React.FocusEvent) => {
+          onFocus: (e: React.FocusEvent<HTMLElement>) => {
             (e.target as HTMLElement).style.zIndex = '10';
             (child.props as React.HTMLAttributes<HTMLElement>)?.onFocus?.(e);
           },
-          onBlur: (e: React.FocusEvent) => {
+          onBlur: (e: React.FocusEvent<HTMLElement>) => {
             (e.target as HTMLElement).style.zIndex = 'auto';
             (child.props as React.HTMLAttributes<HTMLElement>)?.onBlur?.(e);
           },
