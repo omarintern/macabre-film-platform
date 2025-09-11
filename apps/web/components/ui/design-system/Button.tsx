@@ -183,11 +183,11 @@ const ButtonGroup = React.forwardRef<HTMLDivElement, ButtonGroupProps>(
             ...((child.props as React.HTMLAttributes<HTMLElement>)?.style || {}),
             zIndex: 'auto', // Base z-index, will be overridden by hover/focus
           },
-          onMouseEnter: (e: React.MouseEvent) => {
+          onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
             (e.target as HTMLElement).style.zIndex = '10';
             (child.props as React.HTMLAttributes<HTMLElement>)?.onMouseEnter?.(e);
           },
-          onMouseLeave: (e: React.MouseEvent) => {
+          onMouseLeave: (e: React.MouseEvent<HTMLElement>) => {
             (e.target as HTMLElement).style.zIndex = 'auto';
             (child.props as React.HTMLAttributes<HTMLElement>)?.onMouseLeave?.(e);
           },
