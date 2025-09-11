@@ -53,7 +53,7 @@ export default function ChainNavigation({
           {!isFirstPost && previousPostId ? (
             <Button
               onClick={handlePrevious}
-              variant="outline"
+              variant="secondary"
               className="flex items-center space-x-2"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -111,7 +111,7 @@ export default function ChainNavigation({
           {!isLastPost && nextPostId ? (
             <Button
               onClick={handleNext}
-              variant="outline"
+              variant="secondary"
               className="flex items-center space-x-2"
             >
               <span>Next</span>

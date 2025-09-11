@@ -124,7 +124,7 @@ export default function MosaicChainManager({
         </div>
         <Button
           onClick={loadChains}
-          variant="outline"
+          variant="secondary"
           className="text-sm"
         >
           Refresh
@@ -172,7 +172,7 @@ export default function MosaicChainManager({
                         </Button>
                         <Button
                           onClick={handleCancelEdit}
-                          variant="outline"
+                          variant="secondary"
                           size="sm"
                         >
                           Cancel
@@ -197,7 +197,7 @@ export default function MosaicChainManager({
                   <div className="flex space-x-2 ml-4">
                     <Button
                       onClick={() => handleEditMetaTitle(chain)}
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                     >
                       Edit Title
