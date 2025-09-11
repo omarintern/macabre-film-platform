@@ -31,7 +31,7 @@ export default function ChainManagementPage() {
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Access Denied</h1>
           <p className="text-gray-600 mb-6">Only creators can manage mosaic chains.</p>
           <Link href="/">
-            <Button variant="outline">Go Home</Button>
+            <Button variant="secondary">Go Home</Button>
           </Link>
         </div>
       </div>
@@ -57,7 +57,7 @@ export default function ChainManagementPage() {
             </div>
             <div className="flex space-x-4">
               <Link href="/profile/edit">
-                <Button variant="outline">Edit Profile</Button>
+                <Button variant="secondary">Edit Profile</Button>
               </Link>
               <Link href="/spaces">
                 <Button>View Spaces</Button>
